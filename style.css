@@ -80,8 +80,8 @@ svg { display: block; }
 
 .parade {
   width: 100%;
-  height: 22vh;
-  max-height: 180px;
+  height: 18vh;
+  max-height: 160px;
   position: relative;
   overflow: hidden;
 }
@@ -115,7 +115,69 @@ svg { display: block; }
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.06); }
 }
-.play-label { font-size: clamp(30px, 9vw, 44px); font-weight: 800; color: #f06a1c; }
+.play-label { font-size: clamp(30px, 9vw, 44px); font-weight: 800; color: #f06a1c; margin-top: -1vh; }
+
+.btn-zukan {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  color: #2f8be0;
+  font-size: clamp(22px, 6.5vw, 30px);
+  font-weight: 800;
+  padding: 12px 28px;
+  border-radius: 999px;
+  box-shadow: 0 6px 0 rgba(47, 139, 224, .25);
+}
+.btn-zukan svg { width: 1.4em; height: 1.4em; }
+.btn-zukan:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(47, 139, 224, .25); }
+
+/* ---------- ずかん ---------- */
+
+#screen-zukan { flex-direction: column; gap: 8px; padding-bottom: 0; }
+.zukan-head { display: flex; align-items: center; justify-content: space-between; flex: none; }
+.btn-back, .zukan-spacer { width: 56px; height: 56px; }
+.btn-back {
+  border-radius: 50%;
+  background: #fff;
+  color: #ff8a3d;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, .08);
+}
+.btn-back svg { width: 30px; height: 30px; }
+.zukan-title { font-size: clamp(30px, 9vw, 42px); font-weight: 800; color: #2f8be0; text-shadow: 0 3px 0 #fff; }
+.zukan-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: max-content;
+  gap: 12px;
+  padding: 4px 2px calc(var(--safe-bottom) + 20px);
+}
+.zcard {
+  background: #fff;
+  border-radius: 24px;
+  padding: 8px 10px 10px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, .06);
+  overflow: hidden;
+}
+.zart { aspect-ratio: 2 / 1; }
+.zart svg, .zart img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.zname { font-size: clamp(24px, 7vw, 32px); font-weight: 800; margin-top: 2px; }
+.zcard:active { transform: scale(.97); }
+.zcard.zgo { animation: hooray .8s ease-out; }
+.zcard.zgo .zart svg, .zcard.zgo .zart img { animation: rumble 1.8s ease-in-out; }
+@keyframes rumble {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70% { transform: translate(3px, -2px); }
+  20%, 40%, 60%, 80% { transform: translate(-3px, 1px); }
+}
+@media (min-width: 600px) { .zukan-list { grid-template-columns: 1fr 1fr; } }
 
 /* 保護者用のボタン（目立たない） */
 .btn-hidden-corner, .btn-small-faint {
@@ -235,6 +297,14 @@ svg { display: block; }
   transition: transform .15s, opacity .3s, filter .3s;
   animation: cardin .45s cubic-bezier(.2, 1.4, .5, 1) backwards;
   position: relative;
+  overflow: hidden;
+}
+/* せいかい のあと、乗り物が走っていく */
+.card.drive svg, .card.drive img { animation: driveoff 1.6s cubic-bezier(.5, 0, .9, .5) forwards; }
+@keyframes driveoff {
+  0% { transform: translateX(0); }
+  15% { transform: translateX(-4%); }
+  100% { transform: translateX(130%); }
 }
 .card:nth-child(2) { animation-delay: .08s; }
 .card:nth-child(3) { animation-delay: .16s; }
@@ -462,6 +532,29 @@ svg { display: block; }
   font-size: 16px;
 }
 .set-btn.primary { background: #2f8be0; color: #fff; font-weight: 700; }
+.set-hint { font-size: 12px; color: #999; margin-top: 5px; line-height: 1.5; }
+.set-select {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #d5d9e2;
+  background: #fff;
+  color: #222;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 14px;
+  background: #eef0f4;
+  color: #999;
+  text-decoration: line-through;
+}
+.chip.on { background: #e3f1ff; color: #1b5fa8; text-decoration: none; font-weight: 700; }
+.set-howto { margin-top: 12px; font-size: 14px; color: #555; background: #f6f7f9; border-radius: 12px; padding: 10px 12px; }
+.set-howto summary { font-weight: 700; color: #2f8be0; }
+.set-howto ol { padding-left: 1.3em; margin: 8px 0 0; line-height: 1.6; }
 .set-note { font-size: 13px; color: #777; line-height: 1.6; margin: 14px 0 0; }
 .set-note.small { font-size: 12px; color: #aaa; margin-top: 6px; }
 
@@ -477,4 +570,6 @@ svg { display: block; }
   .end-star { width: 22vh; }
   .end-text { font-size: clamp(26px, 8vh, 44px); }
   .end-list { display: none; }
+  #screen-start { flex-wrap: wrap; flex-direction: row; align-content: center; column-gap: 24px; }
+  .start-title, .parade { width: 100%; }
 }

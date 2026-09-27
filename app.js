@@ -6,12 +6,15 @@
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
   // ---------------- せってい（端末に保存） ----------------
-  const DEFAULTS = { count: 5, voice: true, sfx: true, rate: 0.9 };
+  // level: 1=かんたん 2=ふつう 3=むずかしい / off: 出さない乗り物のid / voiceName: 選んだ声（空=自動）
+  const DEFAULTS = { count: 5, voice: true, sfx: true, rate: 0.95, level: 2, off: [], voiceName: '' };
   let settings = Object.assign({}, DEFAULTS);
   try {
     const saved = JSON.parse(localStorage.getItem('norimono-settings') || '{}');
     settings = Object.assign(settings, saved);
   } catch (e) { /* 保存できない環境でも遊べるようにする */ }
+  if ([0.8, 0.95].indexOf(Number(settings.rate)) < 0) settings.rate = DEFAULTS.rate;
+  if (!Array.isArray(settings.off)) settings.off = [];
   function saveSettings() {
     try { localStorage.setItem('norimono-settings', JSON.stringify(settings)); } catch (e) { }
   }
@@ -21,14 +24,26 @@
     ok: 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window,
     voice: null,
     current: null,
-    pickVoice() {
-      if (!this.ok) return;
+    // 日本語の声を、自然に聞こえる順に並べる
+    japaneseVoices() {
+      if (!this.ok) return [];
       const voices = window.speechSynthesis.getVoices() || [];
-      const ja = voices.filter((v) => /^ja[-_]?/i.test(v.lang || ''));
-      this.voice =
-        ja.find((v) => /Kyoko|O-ren|Hattori/i.test(v.name)) ||
-        ja.find((v) => v.localService) ||
-        ja[0] || null;
+      const score = (v) => {
+        let n = 0;
+        if (/premium|プレミアム/i.test(v.name)) n += 100;
+        if (/enhanced|拡張/i.test(v.name)) n += 60;
+        if (/Kyoko|O-ren|Otoya|Hattori|Google/i.test(v.name)) n += 20;
+        // iPhoneに入っている「おもしろ声」（片言っぽく聞こえる）は使わない
+        if (/Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley|Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Kathy|Ralph/i.test(v.name)) n -= 200;
+        return n;
+      };
+      return voices
+        .filter((v) => /^ja([-_]|$)/i.test(v.lang || ''))
+        .sort((a, b) => score(b) - score(a));
+    },
+    pickVoice() {
+      const ja = this.japaneseVoices();
+      this.voice = (settings.voiceName && ja.find((v) => v.name === settings.voiceName)) || ja[0] || null;
     },
     // 話し終わったら（または一定時間で）resolve する
     say(text) {
@@ -38,8 +53,8 @@
         const u = new SpeechSynthesisUtterance(text);
         u.lang = 'ja-JP';
         if (this.voice) u.voice = this.voice;
-        u.rate = Number(settings.rate) || 0.9;
-        u.pitch = 1.15;
+        u.rate = Number(settings.rate) || 0.95;
+        u.pitch = 1; // 高さを変えると不自然になるので そのまま
         let done = false;
         const finish = () => { if (!done) { done = true; resolve(); } };
         u.onend = finish;
@@ -92,6 +107,56 @@
       osc.connect(gain).connect(this.ctx.destination);
       osc.start(t0);
       osc.stop(t0 + dur + 0.05);
+    },
+    // 音の高さを points=[[秒, Hz], ...] のとおりに動かす
+    sweep(points, type, vol, start) {
+      if (!this.ctx || !settings.sfx) return;
+      const t0 = this.ctx.currentTime + (start || 0);
+      const end = points[points.length - 1][0];
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(points[0][1], t0);
+      points.slice(1).forEach(([t, f]) => osc.frequency.linearRampToValueAtTime(f, t0 + t));
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(vol, t0 + 0.05);
+      gain.gain.setValueAtTime(vol, t0 + end - 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + end);
+      osc.connect(gain).connect(this.ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + end + 0.05);
+    },
+    // のりもの ごとの音
+    honk(kind) {
+      switch (kind) {
+        case 'horn': // 新幹線の「ファーン」
+          this.sweep([[0, 523], [1.0, 523]], 'triangle', 0.14);
+          this.sweep([[0, 659], [1.0, 659]], 'triangle', 0.1);
+          break;
+        case 'train': // 「ガタンゴトン」
+          [0, 0.18, 0.55, 0.73, 1.1, 1.28].forEach((t, i) => this.tone(i % 2 ? 110 : 150, t, 0.14, 'square', 0.07));
+          break;
+        case 'police': // 「ウー」
+          this.sweep([[0, 450], [0.7, 900], [1.3, 900], [1.9, 450]], 'triangle', 0.13);
+          break;
+        case 'fire': // 「ウー カンカンカン」
+          this.sweep([[0, 400], [0.8, 850], [1.2, 850], [1.6, 500]], 'triangle', 0.12);
+          [0.2, 0.5, 0.8, 1.1].forEach((t) => this.tone(1900, t, 0.25, 'sine', 0.1));
+          break;
+        case 'ambulance': // 「ピーポー ピーポー」
+          [0, 0.5, 1.0, 1.5].forEach((t, i) => this.sweep([[0, i % 2 ? 770 : 960], [0.45, i % 2 ? 770 : 960]], 'triangle', 0.13, t));
+          break;
+        case 'carhorn': // 「プップー」
+          this.tone(420, 0, 0.14, 'square', 0.07);
+          this.tone(420, 0.2, 0.5, 'square', 0.07);
+          break;
+        case 'digger': // 「ガガガガ」
+          for (let i = 0; i < 12; i++) this.tone(70 + (i % 2) * 15, i * 0.1, 0.08, 'square', 0.08);
+          break;
+        case 'engine': // 「ブロロロ」
+          for (let i = 0; i < 14; i++) this.tone(95 - i * 2, i * 0.08, 0.07, 'sawtooth', 0.06);
+          break;
+      }
     },
     pop() { this.tone(660, 0, 0.12, 'sine', 0.15); },
     correct() {
@@ -236,20 +301,47 @@
   let game = null;
   let token = 0; // 画面を離れたときに古いタイマーを無視するため
 
+  // 設定で「出す」になっている乗り物
+  function enabledVehicles() {
+    const list = VEHICLES.filter((v) => settings.off.indexOf(v.id) < 0);
+    return list.length >= 2 ? list : VEHICLES;
+  }
+
+  // まちがいの選択肢をえらぶ（むずかしさで変える）
+  function pickOthers(t, pool) {
+    const level = Number(settings.level) || 2;
+    const need = level === 1 ? 1 : 2;
+    const cand = shuffle(pool.filter((v) => v.id !== t.id));
+    const rest = shuffle(VEHICLES.filter((v) => v.id !== t.id && cand.indexOf(v) < 0));
+    let ordered;
+    if (level === 1) ordered = cand.filter((v) => v.group !== t.group).concat(cand, rest);
+    else if (level === 3) ordered = cand.filter((v) => v.group === t.group).concat(cand, rest);
+    else ordered = cand.concat(rest);
+    const out = [];
+    ordered.forEach((v) => { if (out.length < need && out.indexOf(v) < 0) out.push(v); });
+    return out;
+  }
+
   function newGame() {
     token++;
     fx.clear();
-    const n = Math.min(Number(settings.count) || 5, VEHICLES.length);
-    const targets = shuffle(VEHICLES).slice(0, n);
+    const pool = enabledVehicles();
+    const n = Number(settings.count) || 5;
+    // 乗り物が少ないときは くりかえし出す（同じものが続かないように）
+    const targets = [];
+    while (targets.length < n) {
+      shuffle(pool).forEach((v) => {
+        if (targets.length < n && targets[targets.length - 1] !== v) targets.push(v);
+      });
+    }
     game = {
-      rounds: targets.map((t) => {
-        const others = shuffle(VEHICLES.filter((v) => v.id !== t.id)).slice(0, 2);
-        return { target: t, choices: shuffle([t].concat(others)) };
-      }),
+      rounds: targets.map((t) => ({ target: t, choices: shuffle([t].concat(pickOthers(t, pool))) })),
       idx: 0,
       misses: 0,
       locked: false,
-      lastRetry: 0
+      lastRetry: 0,
+      idleTimer: null,
+      idleCount: 0
     };
     renderProgress();
     show('game');
@@ -269,13 +361,33 @@
     const t = game.rounds[game.idx].target;
     const q = $('#question');
     q.classList.remove('bump'); void q.offsetWidth; q.classList.add('bump');
-    return speech.say(`${t.say} は どれ？`);
+    armIdle();
+    return speech.say(`${t.say}は、どれ？`);
   }
+
+  // しばらくタップがないときは、やさしく もう一度きく（2回まで）
+  function armIdle() {
+    if (!game) return;
+    clearTimeout(game.idleTimer);
+    const my = token;
+    game.idleTimer = setTimeout(() => {
+      if (my !== token || !game || game.locked || game.idleCount >= 2) return;
+      game.idleCount++;
+      const t = game.rounds[game.idx].target;
+      const q = $('#question');
+      q.classList.remove('bump'); void q.offsetWidth; q.classList.add('bump');
+      speech.say(`${t.say}は、どれかな？`);
+      armIdle();
+    }, 10000);
+  }
+
+  const PRAISE = ['せいかい！', 'すごい！せいかい！', 'やったね！せいかい！', 'せいかい！よくできたね。'];
 
   function renderRound() {
     const round = game.rounds[game.idx];
     const t = round.target;
     game.misses = 0;
+    game.idleCount = 0;
     game.locked = false;
 
     const qn = $('#qname');
@@ -285,6 +397,7 @@
 
     const box = $('#choices');
     box.innerHTML = '';
+    box.classList.toggle('two', round.choices.length === 2);
     round.choices.forEach((v) => {
       const b = document.createElement('button');
       b.className = 'card';
@@ -306,6 +419,7 @@
     if (v.id === t.id) {
       // ---- せいかい ----
       game.locked = true;
+      clearTimeout(game.idleTimer);
       const my = token;
       card.classList.add('correct');
       document.querySelectorAll('.card').forEach((c) => { if (c !== card) c.classList.add('fade'); });
@@ -323,7 +437,14 @@
       const stars = document.querySelectorAll('#progress .pstar');
       if (stars[game.idx]) stars[game.idx].classList.add('on');
 
-      await Promise.all([wait(2500), speech.say(`せいかい！ ${t.say} だね！`).then(() => wait(300))]);
+      const praise = PRAISE[Math.floor(Math.random() * PRAISE.length)];
+      await Promise.all([wait(2400), speech.say(`${praise}${t.say}だね！`)]);
+      if (my !== token) return;
+
+      // 乗り物の音を鳴らして、走っていく
+      card.classList.add('drive');
+      sfx.honk(t.honk);
+      await wait(1700);
       if (my !== token) return;
 
       game.idx++;
@@ -344,7 +465,8 @@
         const cards = document.querySelectorAll('.card');
         if (cards[idx]) cards[idx].classList.add('hint');
       }
-      speech.say(`もういちど！ ${t.say} は どれ？`);
+      armIdle();
+      speech.say(`もう一度！${t.say}は、どれ？`);
     }
   }
 
@@ -357,16 +479,40 @@
     sfx.fanfare();
     fx.rain(120);
     setTimeout(() => { if (my === token) fx.rain(80); }, 1200);
-    speech.say('すごい！ ぜんぶ できたね！');
+    speech.say('すごい！全部できたね！');
   }
 
   function goHome() {
     token++;
+    if (game) clearTimeout(game.idleTimer);
     game = null;
     speech.stop();
     fx.clear();
     startParade();
     show('start');
+  }
+
+  // ---------------- ずかん ----------------
+  function openZukan() {
+    token++;
+    const list = $('#zukan-list');
+    list.innerHTML = '';
+    VEHICLES.forEach((v) => {
+      const b = document.createElement('button');
+      b.className = 'zcard';
+      b.setAttribute('aria-label', v.name);
+      b.innerHTML = `<div class="zart">${art(v)}</div><div class="zname" style="color:${v.color || '#2f8be0'}">${v.name}</div>`;
+      b.addEventListener('click', () => {
+        unlockAudio();
+        const my = token;
+        b.classList.remove('zgo'); void b.offsetWidth; b.classList.add('zgo');
+        speech.say(`${v.say}！`).then(() => { if (my === token) sfx.honk(v.honk); });
+      });
+      list.appendChild(b);
+    });
+    list.scrollTop = 0;
+    show('zukan');
+    speech.say('ずかん。さわってみてね。');
   }
 
   // ---------------- 長押しボタン（保護者用） ----------------
@@ -402,15 +548,49 @@
       refreshSettingsUI();
     });
   });
+  function renderVehicleChips() {
+    const box = $('#set-vehicles');
+    box.innerHTML = '';
+    VEHICLES.forEach((v) => {
+      const b = document.createElement('button');
+      b.className = 'chip' + (settings.off.indexOf(v.id) < 0 ? ' on' : '');
+      b.textContent = v.name;
+      b.addEventListener('click', () => {
+        const i = settings.off.indexOf(v.id);
+        if (i >= 0) settings.off.splice(i, 1);
+        else if (VEHICLES.length - settings.off.length > 3) settings.off.push(v.id); // 最低3つは残す
+        saveSettings();
+        renderVehicleChips();
+      });
+      box.appendChild(b);
+    });
+  }
+  function renderVoiceSelect() {
+    const sel = $('#set-voice');
+    const ja = speech.japaneseVoices();
+    sel.innerHTML = '<option value="">おすすめ（自動）</option>' +
+      ja.map((v) => `<option value="${v.name.replace(/"/g, '&quot;')}">${v.name}</option>`).join('');
+    sel.value = ja.some((v) => v.name === settings.voiceName) ? settings.voiceName : '';
+    if (!ja.length) sel.innerHTML = '<option value="">（日本語の声が見つかりません）</option>';
+  }
+  $('#set-voice').addEventListener('change', (e) => {
+    settings.voiceName = e.target.value;
+    saveSettings();
+    speech.pickVoice();
+    unlockAudio();
+    speech.say('はやぶさは、どれ？');
+  });
   function openSettings() {
     refreshSettingsUI();
+    renderVehicleChips();
+    renderVoiceSelect();
     $('#settings').hidden = false;
   }
   $('#btn-close-settings').addEventListener('click', () => { $('#settings').hidden = true; });
   $('#btn-test-voice').addEventListener('click', () => {
     unlockAudio();
     sfx.correct();
-    speech.say('はやぶさ は どれ？');
+    speech.say('せいかい！はやぶさだね！').then(() => sfx.honk('ambulance'));
   });
 
   // ---------------- ボタンの動き ----------------
@@ -429,13 +609,15 @@
   longPress($('#btn-settings'), 1200, openSettings);
   longPress($('#btn-home'), 1200, goHome);
   $('#btn-end-home').addEventListener('click', goHome);
+  $('#btn-zukan').addEventListener('click', () => { unlockAudio(); sfx.pop(); openZukan(); });
+  $('#btn-zukan-back').addEventListener('click', goHome);
 
   // ---------------- 誤操作の防止 ----------------
   document.addEventListener('contextmenu', (e) => e.preventDefault());
   document.addEventListener('gesturestart', (e) => e.preventDefault()); // ピンチで拡大しない
   document.addEventListener('dblclick', (e) => e.preventDefault());
   document.addEventListener('touchmove', (e) => {
-    if (!e.target.closest('.settings-panel')) e.preventDefault(); // 画面がびよーんと動かない
+    if (!e.target.closest('.settings-panel, .zukan-list')) e.preventDefault(); // 画面がびよーんと動かない
   }, { passive: false });
 
   // アプリを閉じたら声を止める

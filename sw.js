@@ -1,6 +1,6 @@
 /* オフラインで遊べるようにするための仕組み（Service Worker）
  * ファイルを更新したら、下の CACHE の番号（v1 → v2 …）を上げると確実に反映されます。 */
-const CACHE = 'norimono-v1';
+const CACHE = 'norimono-v2';
 const FILES = [
   './',
   './index.html',

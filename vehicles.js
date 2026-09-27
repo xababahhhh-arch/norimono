@@ -14,8 +14,11 @@
  *
  *   id    : 半角英字の名前（ほかと重ならないように）
  *   name  : 画面に表示する名前
- *   say   : 読み上げる言葉（ひらがなにすると正しく読まれやすい）
+ *   say   : 読み上げる言葉。ふつうの日本語の書き方（漢字・カタカナ）にすると、
+ *           アクセントが自然になります（例: 消防車、京急）
  *   color : 問題文の名前の色
+ *   group : なかま（shinkansen / train / emergency / work）… 「むずかしさ」で使います
+ *   honk  : 正解・ずかんで鳴る音（horn / train / police / fire / ambulance / carhorn / digger / engine）
  */
 
 // ---- イラスト用の小さな部品 ----------------------------------
@@ -60,7 +63,7 @@ const ROAD = `<rect x="0" y="138" width="320" height="6" rx="3" fill="#b3b8bf"/>
 
 var VEHICLES = [
   {
-    id: 'hayabusa', name: 'はやぶさ', say: 'はやぶさ', color: '#00a07a', image: '',
+    id: 'hayabusa', name: 'はやぶさ', say: 'はやぶさ', color: '#00a07a', image: '', group: 'shinkansen', honk: 'horn',
     svg: trainSVG({
       id: 'hayabusa',
       body: 'M-10,52 L140,52 C200,52 238,70 272,96 C290,109 304,116 306,121 C307,124 305,126 300,126 L-10,126 Z',
@@ -72,7 +75,7 @@ var VEHICLES = [
     })
   },
   {
-    id: 'komachi', name: 'こまち', say: 'こまち', color: '#c4172c', image: '',
+    id: 'komachi', name: 'こまち', say: 'こまち', color: '#c4172c', image: '', group: 'shinkansen', honk: 'horn',
     svg: trainSVG({
       id: 'komachi',
       body: 'M-10,52 L165,52 C212,52 244,70 270,94 C288,110 304,117 308,121 C309,124 306,126 300,126 L-10,126 Z',
@@ -84,7 +87,7 @@ var VEHICLES = [
     })
   },
   {
-    id: 'doctoryellow', name: 'ドクターイエロー', say: 'ドクターイエロー', color: '#d9a400', image: '',
+    id: 'doctoryellow', name: 'ドクターイエロー', say: 'ドクターイエロー', color: '#d9a400', image: '', group: 'shinkansen', honk: 'horn',
     svg: trainSVG({
       id: 'doctoryellow',
       body: 'M-10,50 L160,50 C195,50 214,62 232,80 C248,96 272,102 298,108 C310,111 310,122 302,126 L-10,126 Z',
@@ -96,7 +99,7 @@ var VEHICLES = [
     })
   },
   {
-    id: 'n700s', name: 'N700S', say: 'えぬ ななひゃく えす', color: '#1646a0', image: '',
+    id: 'n700s', name: 'N700S', say: 'エヌななひゃくエス', color: '#1646a0', image: '', group: 'shinkansen', honk: 'horn',
     svg: trainSVG({
       id: 'n700s',
       body: 'M-10,50 L150,50 C190,50 214,64 234,84 C250,100 278,106 300,112 C310,115 309,124 301,126 L-10,126 Z',
@@ -108,7 +111,7 @@ var VEHICLES = [
     })
   },
   {
-    id: 'romancecar', name: 'ロマンスカー', say: 'ロマンスカー', color: '#e2502f', image: '',
+    id: 'romancecar', name: 'ロマンスカー', say: 'ロマンスカー', color: '#e2502f', image: '', group: 'train', honk: 'train',
     svg: trainSVG({
       id: 'romancecar',
       body: 'M-10,40 L230,40 C268,40 290,56 300,86 C305,102 306,116 304,126 L-10,126 Z',
@@ -123,7 +126,7 @@ var VEHICLES = [
     })
   },
   {
-    id: 'keikyu', name: 'けいきゅう', say: 'けいきゅう', color: '#e5171f', image: '',
+    id: 'keikyu', name: 'けいきゅう', say: '京急', color: '#e5171f', image: '', group: 'train', honk: 'train',
     svg: trainSVG({
       id: 'keikyu',
       body: 'M-10,42 L284,42 C294,42 298,46 300,54 L306,118 C306,123 303,126 298,126 L-10,126 Z',
@@ -137,7 +140,7 @@ var VEHICLES = [
     })
   },
   {
-    id: 'patocar', name: 'パトカー', say: 'パトカー', color: '#2a2f38', image: '',
+    id: 'patocar', name: 'パトカー', say: 'パトカー', color: '#2a2f38', image: '', group: 'emergency', honk: 'police',
     svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs><clipPath id="clip-patocar"><path d="M18,104 C18,92 26,86 40,84 L92,80 L124,56 C130,52 138,50 150,50 L212,50 C224,50 232,54 240,62 L260,82 L292,88 C302,90 306,96 306,106 L306,114 C306,119 302,122 296,122 L26,122 C21,122 18,118 18,112 Z"/></clipPath></defs>
   ${ROAD}
@@ -158,7 +161,7 @@ var VEHICLES = [
 </svg>`
   },
   {
-    id: 'shobosha', name: 'しょうぼうしゃ', say: 'しょうぼうしゃ', color: '#e60f1e', image: '',
+    id: 'shobosha', name: 'しょうぼうしゃ', say: '消防車', color: '#e60f1e', image: '', group: 'emergency', honk: 'fire',
     svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   ${ROAD}
   <rect x="14" y="62" width="212" height="58" rx="6" fill="#e60f1e"/>
@@ -181,7 +184,7 @@ var VEHICLES = [
 </svg>`
   },
   {
-    id: 'kyukyusha', name: 'きゅうきゅうしゃ', say: 'きゅうきゅうしゃ', color: '#e0303a', image: '',
+    id: 'kyukyusha', name: 'きゅうきゅうしゃ', say: '救急車', color: '#e0303a', image: '', group: 'emergency', honk: 'ambulance',
     svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs><clipPath id="clip-kyukyusha"><path d="M16,48 C16,42 20,38 28,38 L214,38 C226,38 232,42 238,50 L262,80 L292,86 C302,88 306,94 306,104 L306,114 C306,119 302,122 296,122 L24,122 C19,122 16,118 16,112 Z"/></clipPath></defs>
   ${ROAD}
@@ -202,7 +205,7 @@ var VEHICLES = [
 </svg>`
   },
   {
-    id: 'bus', name: 'バス', say: 'バス', color: '#1f9d55', image: '',
+    id: 'bus', name: 'バス', say: 'バス', color: '#1f9d55', image: '', group: 'work', honk: 'carhorn',
     svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs><clipPath id="clip-bus"><rect x="12" y="36" width="296" height="86" rx="14"/></clipPath></defs>
   ${ROAD}
@@ -222,7 +225,7 @@ var VEHICLES = [
 </svg>`
   },
   {
-    id: 'shovel', name: 'ショベルカー', say: 'ショベルカー', color: '#e0a000', image: '',
+    id: 'shovel', name: 'ショベルカー', say: 'ショベルカー', color: '#e0a000', image: '', group: 'work', honk: 'digger',
     svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <rect x="0" y="140" width="320" height="6" rx="3" fill="#b89b72"/>
   <rect x="26" y="108" width="196" height="32" rx="16" fill="#3b3b3b"/>
@@ -241,7 +244,7 @@ var VEHICLES = [
 </svg>`
   },
   {
-    id: 'gomi', name: 'ごみしゅうしゅうしゃ', say: 'ごみしゅうしゅうしゃ', color: '#2a7fd4', image: '',
+    id: 'gomi', name: 'ごみしゅうしゅうしゃ', say: 'ゴミ収集車', color: '#2a7fd4', image: '', group: 'work', honk: 'engine',
     svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   ${ROAD}
   <rect x="20" y="110" width="280" height="8" fill="#3d4450"/>
