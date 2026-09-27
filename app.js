@@ -79,14 +79,18 @@
   // ---------------- 効果音（Web Audio API） ----------------
   const sfx = {
     ctx: null,
+    ensure() {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      if (!this.ctx) this.ctx = new AC();
+      return this.ctx;
+    },
     unlock() {
       // iPhone では、最初のタップの中で音声の準備をする必要がある
       try {
         if (navigator.audioSession) navigator.audioSession.type = 'playback';
       } catch (e) { }
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return;
-      if (!this.ctx) this.ctx = new AC();
+      if (!this.ensure()) return;
       if (this.ctx.state === 'suspended') this.ctx.resume();
       const buf = this.ctx.createBuffer(1, 1, 22050);
       const src = this.ctx.createBufferSource();
@@ -107,56 +111,6 @@
       osc.connect(gain).connect(this.ctx.destination);
       osc.start(t0);
       osc.stop(t0 + dur + 0.05);
-    },
-    // 音の高さを points=[[秒, Hz], ...] のとおりに動かす
-    sweep(points, type, vol, start) {
-      if (!this.ctx || !settings.sfx) return;
-      const t0 = this.ctx.currentTime + (start || 0);
-      const end = points[points.length - 1][0];
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(points[0][1], t0);
-      points.slice(1).forEach(([t, f]) => osc.frequency.linearRampToValueAtTime(f, t0 + t));
-      gain.gain.setValueAtTime(0.0001, t0);
-      gain.gain.exponentialRampToValueAtTime(vol, t0 + 0.05);
-      gain.gain.setValueAtTime(vol, t0 + end - 0.12);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + end);
-      osc.connect(gain).connect(this.ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + end + 0.05);
-    },
-    // のりもの ごとの音
-    honk(kind) {
-      switch (kind) {
-        case 'horn': // 新幹線の「ファーン」
-          this.sweep([[0, 523], [1.0, 523]], 'triangle', 0.14);
-          this.sweep([[0, 659], [1.0, 659]], 'triangle', 0.1);
-          break;
-        case 'train': // 「ガタンゴトン」
-          [0, 0.18, 0.55, 0.73, 1.1, 1.28].forEach((t, i) => this.tone(i % 2 ? 110 : 150, t, 0.14, 'square', 0.07));
-          break;
-        case 'police': // 「ウー」
-          this.sweep([[0, 450], [0.7, 900], [1.3, 900], [1.9, 450]], 'triangle', 0.13);
-          break;
-        case 'fire': // 「ウー カンカンカン」
-          this.sweep([[0, 400], [0.8, 850], [1.2, 850], [1.6, 500]], 'triangle', 0.12);
-          [0.2, 0.5, 0.8, 1.1].forEach((t) => this.tone(1900, t, 0.25, 'sine', 0.1));
-          break;
-        case 'ambulance': // 「ピーポー ピーポー」
-          [0, 0.5, 1.0, 1.5].forEach((t, i) => this.sweep([[0, i % 2 ? 770 : 960], [0.45, i % 2 ? 770 : 960]], 'triangle', 0.13, t));
-          break;
-        case 'carhorn': // 「プップー」
-          this.tone(420, 0, 0.14, 'square', 0.07);
-          this.tone(420, 0.2, 0.5, 'square', 0.07);
-          break;
-        case 'digger': // 「ガガガガ」
-          for (let i = 0; i < 12; i++) this.tone(70 + (i % 2) * 15, i * 0.1, 0.08, 'square', 0.08);
-          break;
-        case 'engine': // 「ブロロロ」
-          for (let i = 0; i < 14; i++) this.tone(95 - i * 2, i * 0.08, 0.07, 'sawtooth', 0.06);
-          break;
-      }
     },
     pop() { this.tone(660, 0, 0.12, 'sine', 0.15); },
     correct() {
@@ -187,6 +141,134 @@
       u.lang = 'ja-JP';
       window.speechSynthesis.speak(u);
     }
+  }
+
+  // ---------------- 録音した声・音（この端末の中だけに保存） ----------------
+  // key の形: 'name:<乗り物id>' 名前の声 / 'sound:<乗り物id>' 本物の音 / 'phrase:<q|ok|retry|end>' ことば
+  const PHRASES = [
+    { key: 'phrase:q', text: 'は、どれ？', note: '名前のあとに つなげて流します' },
+    { key: 'phrase:ok', text: 'せいかい！', note: '名前の前に流します' },
+    { key: 'phrase:retry', text: 'もういちど！' },
+    { key: 'phrase:end', text: 'すごい！ぜんぶできたね！' }
+  ];
+
+  const db = {
+    p: null,
+    open() {
+      if (!this.p) {
+        this.p = new Promise((res, rej) => {
+          const r = indexedDB.open('norimono', 1);
+          r.onupgradeneeded = () => r.result.createObjectStore('clips');
+          r.onsuccess = () => res(r.result);
+          r.onerror = () => rej(r.error);
+        });
+      }
+      return this.p;
+    },
+    async run(mode, fn) {
+      const d = await this.open();
+      return new Promise((res, rej) => {
+        const tx = d.transaction('clips', mode);
+        const req = fn(tx.objectStore('clips'));
+        tx.oncomplete = () => res(req.result);
+        tx.onerror = () => rej(tx.error);
+      });
+    },
+    get(k) { return this.run('readonly', (st) => st.get(k)); },
+    set(k, v) { return this.run('readwrite', (st) => st.put(v, k)); },
+    del(k) { return this.run('readwrite', (st) => st.delete(k)); },
+    keys() { return this.run('readonly', (st) => st.getAllKeys()); }
+  };
+
+  // 前後の無音を切って、音の大きさをそろえる
+  function trimBuffer(ctx, b) {
+    const d = b.getChannelData(0);
+    let peak = 0;
+    for (let i = 0; i < d.length; i++) peak = Math.max(peak, Math.abs(d[i]));
+    if (peak < 0.001) return b;
+    const th = peak * 0.08;
+    let a = 0, z = d.length - 1;
+    while (a < z && Math.abs(d[a]) < th) a++;
+    while (z > a && Math.abs(d[z]) < th) z--;
+    const pad = Math.floor(b.sampleRate * 0.06);
+    a = Math.max(0, a - pad);
+    z = Math.min(d.length - 1, z + pad);
+    const gain = Math.min(0.9 / peak, 6);
+    const out = ctx.createBuffer(1, z - a + 1, b.sampleRate);
+    const o = out.getChannelData(0);
+    for (let i = a; i <= z; i++) o[i - a] = d[i] * gain;
+    return out;
+  }
+
+  const clips = {
+    buf: {},
+    playing: [],
+    decode(data) {
+      const ctx = sfx.ensure();
+      if (!ctx) return Promise.resolve(null);
+      return (data instanceof Blob ? data.arrayBuffer() : Promise.resolve(data)).then((ab) =>
+        new Promise((res) => ctx.decodeAudioData(ab, (b) => res(trimBuffer(ctx, b)), () => res(null))));
+    },
+    async load(key, data) {
+      const b = await this.decode(data);
+      if (b) this.buf[key] = b; else delete this.buf[key];
+    },
+    async loadAll() {
+      try {
+        const keys = await db.keys();
+        for (const k of keys) {
+          const blob = await db.get(k);
+          if (blob) await this.load(k, blob);
+        }
+      } catch (e) { /* 保存できない環境 */ }
+      // vehicles.js に書いた 本物の音のファイル
+      for (const v of VEHICLES) {
+        if (!v.sound) continue;
+        try {
+          const r = await fetch(v.sound);
+          if (r.ok) await this.load('file:' + v.id, await r.arrayBuffer());
+        } catch (e) { }
+      }
+    },
+    has(keys) { return keys.every((k) => this.buf[k]); },
+    stop() {
+      this.playing.forEach((src) => { try { src.stop(); } catch (e) { } });
+      this.playing = [];
+    },
+    // 順番につなげて流す。流し終わるころに resolve
+    play(keys) {
+      const ctx = sfx.ctx;
+      if (!ctx) return Promise.resolve();
+      this.stop();
+      let t = ctx.currentTime + 0.05;
+      keys.forEach((k) => {
+        const b = this.buf[k];
+        if (!b) return;
+        const src = ctx.createBufferSource();
+        src.buffer = b;
+        src.connect(ctx.destination);
+        src.start(t);
+        this.playing.push(src);
+        t += b.duration + 0.05;
+      });
+      return wait((t - ctx.currentTime) * 1000);
+    }
+  };
+
+  // しゃべる：録音がそろっていれば おうちの人の声、なければ iPhone の読み上げ
+  function talk(keys, text) {
+    if (!settings.voice) return Promise.resolve();
+    if (clips.has(keys)) { speech.stop(); return clips.play(keys); }
+    clips.stop();
+    return speech.say(text);
+  }
+
+  // 乗り物の本物の音（録音 または sounds フォルダのファイル）。なければ鳴らさない
+  function vehicleSound(v) {
+    if (!settings.sfx) return Promise.resolve();
+    const key = clips.buf['sound:' + v.id] ? 'sound:' + v.id : clips.buf['file:' + v.id] ? 'file:' + v.id : null;
+    if (!key) return Promise.resolve();
+    return Promise.race([clips.play([key]), wait(5000)]);
   }
 
   // ---------------- 紙吹雪・キラキラ ----------------
@@ -362,7 +444,7 @@
     const q = $('#question');
     q.classList.remove('bump'); void q.offsetWidth; q.classList.add('bump');
     armIdle();
-    return speech.say(`${t.say}は、どれ？`);
+    return talk(['name:' + t.id, 'phrase:q'], `${t.say}は、どれ？`);
   }
 
   // しばらくタップがないときは、やさしく もう一度きく（2回まで）
@@ -376,7 +458,7 @@
       const t = game.rounds[game.idx].target;
       const q = $('#question');
       q.classList.remove('bump'); void q.offsetWidth; q.classList.add('bump');
-      speech.say(`${t.say}は、どれかな？`);
+      talk(['name:' + t.id, 'phrase:q'], `${t.say}は、どれかな？`);
       armIdle();
     }, 10000);
   }
@@ -431,6 +513,7 @@
 
       const pop = $('#correct-pop');
       $('#cp-name').textContent = t.name;
+      $('#cp-name').classList.toggle('long', t.name.length >= 8);
       $('#cp-name').style.color = t.color || '#2f8be0';
       pop.classList.remove('show'); void pop.offsetWidth; pop.classList.add('show');
 
@@ -438,13 +521,12 @@
       if (stars[game.idx]) stars[game.idx].classList.add('on');
 
       const praise = PRAISE[Math.floor(Math.random() * PRAISE.length)];
-      await Promise.all([wait(2400), speech.say(`${praise}${t.say}だね！`)]);
+      await Promise.all([wait(2400), talk(['phrase:ok', 'name:' + t.id], `${praise}${t.say}だね！`)]);
       if (my !== token) return;
 
       // 乗り物の音を鳴らして、走っていく
       card.classList.add('drive');
-      sfx.honk(t.honk);
-      await wait(1700);
+      await Promise.all([wait(1700), vehicleSound(t)]);
       if (my !== token) return;
 
       game.idx++;
@@ -466,7 +548,7 @@
         if (cards[idx]) cards[idx].classList.add('hint');
       }
       armIdle();
-      speech.say(`もう一度！${t.say}は、どれ？`);
+      talk(['phrase:retry', 'name:' + t.id, 'phrase:q'], `もう一度！${t.say}は、どれ？`);
     }
   }
 
@@ -479,7 +561,7 @@
     sfx.fanfare();
     fx.rain(120);
     setTimeout(() => { if (my === token) fx.rain(80); }, 1200);
-    speech.say('すごい！全部できたね！');
+    talk(['phrase:end'], 'すごい！全部できたね！');
   }
 
   function goHome() {
@@ -487,6 +569,7 @@
     if (game) clearTimeout(game.idleTimer);
     game = null;
     speech.stop();
+    clips.stop();
     fx.clear();
     startParade();
     show('start');
@@ -497,22 +580,31 @@
     token++;
     const list = $('#zukan-list');
     list.innerHTML = '';
-    VEHICLES.forEach((v) => {
-      const b = document.createElement('button');
-      b.className = 'zcard';
-      b.setAttribute('aria-label', v.name);
-      b.innerHTML = `<div class="zart">${art(v)}</div><div class="zname" style="color:${v.color || '#2f8be0'}">${v.name}</div>`;
-      b.addEventListener('click', () => {
-        unlockAudio();
-        const my = token;
-        b.classList.remove('zgo'); void b.offsetWidth; b.classList.add('zgo');
-        speech.say(`${v.say}！`).then(() => { if (my === token) sfx.honk(v.honk); });
-      });
-      list.appendChild(b);
+    GROUPS.forEach((g) => {
+      const members = VEHICLES.filter((v) => v.group === g.id);
+      if (!members.length) return;
+      const h = document.createElement('div');
+      h.className = 'zgroup';
+      h.textContent = g.name;
+      list.appendChild(h);
+      members.forEach((v) => addZukanCard(list, v));
     });
     list.scrollTop = 0;
     show('zukan');
-    speech.say('ずかん。さわってみてね。');
+  }
+
+  function addZukanCard(list, v) {
+    const b = document.createElement('button');
+    b.className = 'zcard';
+    b.setAttribute('aria-label', v.name);
+    b.innerHTML = `<div class="zart">${art(v)}</div><div class="zname" style="color:${v.color || '#2f8be0'}">${v.name}</div>`;
+    b.addEventListener('click', () => {
+      unlockAudio();
+      const my = token;
+      b.classList.remove('zgo'); void b.offsetWidth; b.classList.add('zgo');
+      talk(['name:' + v.id], `${v.say}！`).then(() => { if (my === token) vehicleSound(v); });
+    });
+    list.appendChild(b);
   }
 
   // ---------------- 長押しボタン（保護者用） ----------------
@@ -551,6 +643,28 @@
   function renderVehicleChips() {
     const box = $('#set-vehicles');
     box.innerHTML = '';
+    // なかまごと まとめて オン・オフ
+    GROUPS.forEach((g) => {
+      const ids = VEHICLES.filter((v) => v.group === g.id).map((v) => v.id);
+      const offCount = ids.filter((id) => settings.off.indexOf(id) >= 0).length;
+      const b = document.createElement('button');
+      b.className = 'chip group' + (offCount === 0 ? ' on' : offCount < ids.length ? ' part' : '');
+      b.textContent = g.name + ' ぜんぶ';
+      b.addEventListener('click', () => {
+        if (offCount === 0) {
+          const next = settings.off.concat(ids);
+          if (VEHICLES.length - next.length >= 3) settings.off = next; // 最低3つは残す
+        } else {
+          settings.off = settings.off.filter((id) => ids.indexOf(id) < 0);
+        }
+        saveSettings();
+        renderVehicleChips();
+      });
+      box.appendChild(b);
+    });
+    const sep = document.createElement('div');
+    sep.className = 'chip-sep';
+    box.appendChild(sep);
     VEHICLES.forEach((v) => {
       const b = document.createElement('button');
       b.className = 'chip' + (settings.off.indexOf(v.id) < 0 ? ' on' : '');
@@ -578,7 +692,7 @@
     saveSettings();
     speech.pickVoice();
     unlockAudio();
-    speech.say('はやぶさは、どれ？');
+    talk(['name:hayabusa', 'phrase:q'], 'はやぶさは、どれ？');
   });
   function openSettings() {
     refreshSettingsUI();
@@ -590,7 +704,110 @@
   $('#btn-test-voice').addEventListener('click', () => {
     unlockAudio();
     sfx.correct();
-    speech.say('せいかい！はやぶさだね！').then(() => sfx.honk('ambulance'));
+    talk(['phrase:ok', 'name:hayabusa'], 'せいかい！はやぶさだね！');
+  });
+
+  // ---------------- 声と音の録音（保護者用） ----------------
+  const rec = { mr: null, stream: null, key: null, btn: null, timer: null };
+
+  function recControls(key, label) {
+    const has = !!clips.buf[key];
+    return `<div class="rc${has ? ' has' : ''}" data-key="${key}"><span class="rc-label">${label}</span>` +
+      `<button class="rc-rec" aria-label="録音">●</button><button class="rc-play" aria-label="再生"${has ? '' : ' disabled'}>▶</button>` +
+      `<button class="rc-del" aria-label="消す"${has ? '' : ' disabled'}>✕</button></div>`;
+  }
+  function renderRecorder() {
+    let h = '<div class="rec-group">ことば</div>';
+    PHRASES.forEach((p) => {
+      h += `<div class="rec-row"><div class="rec-name">「${p.text}」${p.note ? `<small>${p.note}</small>` : ''}</div>${recControls(p.key, 'ことば')}</div>`;
+    });
+    GROUPS.forEach((g) => {
+      const members = VEHICLES.filter((v) => v.group === g.id);
+      if (!members.length) return;
+      h += `<div class="rec-group">${g.name}</div>`;
+      members.forEach((v) => {
+        h += `<div class="rec-row"><div class="rec-name"><span class="rec-thumb">${art(v)}</span>${v.name}</div>` +
+          recControls('name:' + v.id, 'なまえ') + recControls('sound:' + v.id, 'おと') + '</div>';
+      });
+    });
+    $('#rec-list').innerHTML = h;
+  }
+  function refreshRecControl(key) {
+    const el = document.querySelector(`.rc[data-key="${key}"]`);
+    if (!el) return;
+    const has = !!clips.buf[key];
+    el.classList.toggle('has', has);
+    el.querySelector('.rc-play').disabled = !has;
+    el.querySelector('.rc-del').disabled = !has;
+  }
+  function stopRec() {
+    clearTimeout(rec.timer);
+    if (rec.mr && rec.mr.state !== 'inactive') rec.mr.stop();
+    if (rec.btn) { rec.btn.classList.remove('recording'); rec.btn.textContent = '●'; }
+    rec.mr = null;
+    rec.btn = null;
+  }
+  async function toggleRec(key, btn) {
+    const wasSame = rec.mr && rec.key === key;
+    if (rec.mr) stopRec();
+    if (wasSame) return;
+    if (!window.MediaRecorder || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert('この端末・ブラウザでは録音できません。');
+      return;
+    }
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      alert('マイクが使えませんでした。iPhoneの「設定」→「Safari」→「マイク」で許可してください。');
+      return;
+    }
+    speech.stop();
+    clips.stop();
+    const chunks = [];
+    const mr = new MediaRecorder(stream);
+    mr.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+    mr.onstop = async () => {
+      stream.getTracks().forEach((t) => t.stop()); // マイクを切る（音が小さくなるのを防ぐ）
+      const blob = new Blob(chunks, { type: mr.mimeType || 'audio/mp4' });
+      if (blob.size < 300) return;
+      try { await db.set(key, blob); } catch (e) { alert('保存できませんでした。'); return; }
+      await clips.load(key, blob);
+      refreshRecControl(key);
+      setTimeout(() => clips.play([key]), 250);
+    };
+    rec.mr = mr;
+    rec.key = key;
+    rec.btn = btn;
+    btn.classList.add('recording');
+    btn.textContent = '■';
+    mr.start();
+    rec.timer = setTimeout(stopRec, key.indexOf('sound:') === 0 ? 10000 : 5000);
+  }
+  $('#rec-list').addEventListener('click', async (e) => {
+    const btn = e.target.closest('button');
+    const box = e.target.closest('.rc');
+    if (!btn || !box) return;
+    unlockAudio();
+    const key = box.dataset.key;
+    if (btn.classList.contains('rc-rec')) toggleRec(key, btn);
+    else if (btn.classList.contains('rc-play')) clips.play([key]);
+    else if (btn.classList.contains('rc-del')) {
+      if (!confirm('この録音を消しますか？')) return;
+      try { await db.del(key); } catch (err) { }
+      delete clips.buf[key];
+      refreshRecControl(key);
+    }
+  });
+  $('#btn-open-recorder').addEventListener('click', () => {
+    unlockAudio();
+    renderRecorder();
+    $('#recorder').hidden = false;
+  });
+  $('#btn-rec-close').addEventListener('click', () => {
+    stopRec();
+    clips.stop();
+    $('#recorder').hidden = true;
   });
 
   // ---------------- ボタンの動き ----------------
@@ -617,7 +834,7 @@
   document.addEventListener('gesturestart', (e) => e.preventDefault()); // ピンチで拡大しない
   document.addEventListener('dblclick', (e) => e.preventDefault());
   document.addEventListener('touchmove', (e) => {
-    if (!e.target.closest('.settings-panel, .zukan-list')) e.preventDefault(); // 画面がびよーんと動かない
+    if (!e.target.closest('.settings-panel, .zukan-list, .rec-list')) e.preventDefault(); // 画面がびよーんと動かない
   }, { passive: false });
 
   // アプリを閉じたら声を止める
@@ -631,4 +848,5 @@
   }
 
   startParade();
+  clips.loadAll();
 })();

@@ -144,6 +144,9 @@
       </div>
     </div>
 
+    <button id="btn-open-recorder" class="set-btn rec-open">🎙 声と音の録音（おうちの人の声・本物の音）</button>
+    <div class="set-hint">「はやぶさ」「は、どれ？」などを録音すると、iPhoneの読み上げの代わりに その声で問題を出します。</div>
+
     <button id="btn-test-voice" class="set-btn">声と音のテスト</button>
 
     <details class="set-howto">
@@ -160,10 +163,24 @@
       音が出ないときは、iPhoneの音量と、マナーモード（消音）スイッチを確認してください。<br>
       お子さまが他の画面に移動しないようにするには、iPhoneの「アクセスガイド」機能が便利です。
     </p>
-    <p class="set-note small">のりもの あてっこ Ver.2</p>
+    <p class="set-note small">のりもの あてっこ Ver.3</p>
 
     <button id="btn-close-settings" class="set-btn primary">とじる</button>
   </div>
+</div>
+
+<!-- 声と音の録音（保護者向け） -->
+<div id="recorder" class="recorder" hidden>
+  <div class="rec-head">
+    <h2>声と音の録音</h2>
+    <button id="btn-rec-close" class="rec-close">とじる</button>
+  </div>
+  <p class="rec-note">
+    ● で録音開始、■ で止めます（声は5秒、音は10秒で自動で止まります）。録音はこのiPhoneの中だけに保存されます。<br>
+    <b>なまえ</b>：乗り物の名前をはっきり読んでください。「ことば」もそろうと、問題文がすべておうちの人の声になります。<br>
+    <b>おと</b>：駅や道で本物の音を録ると、正解したときや ずかんで流れます。
+  </p>
+  <div id="rec-list" class="rec-list"></div>
 </div>
 
 <script src="vehicles.js"></script>

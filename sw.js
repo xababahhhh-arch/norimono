@@ -1,6 +1,6 @@
 /* オフラインで遊べるようにするための仕組み（Service Worker）
  * ファイルを更新したら、下の CACHE の番号（v1 → v2 …）を上げると確実に反映されます。 */
-const CACHE = 'norimono-v2';
+const CACHE = 'norimono-v3';
 const FILES = [
   './',
   './index.html',
@@ -13,11 +13,14 @@ const FILES = [
   './icons/icon-512.png'
 ];
 
-// vehicles.js に書いた画像ファイルも保存しておく
+// vehicles.js に書いた画像・音のファイルも保存しておく
 try {
   importScripts('./vehicles.js');
   if (self.VEHICLES) {
-    self.VEHICLES.forEach((v) => { if (v.image) FILES.push('./' + v.image); });
+    self.VEHICLES.forEach((v) => {
+      if (v.image) FILES.push('./' + v.image);
+      if (v.sound) FILES.push('./' + v.sound);
+    });
   }
 } catch (e) { }
 
