@@ -1,0 +1,29 @@
+{
+  "_fixture": "3. 0歳から参加できるファミリー公演（2回公演）（架空）",
+  "event_id": "2026-08-01-sample-family",
+  "event_type": "family_performance",
+  "basic": { "title": "0歳からのサンプル親子コンサート", "subtitle": "おとのもりのなかまたち", "description": "赤ちゃんから大人まで、いっしょに楽しめるコンサートです。" },
+  "status": { "code": "on_sale" },
+  "schedule": {
+    "dates": [
+      { "date": "2026-08-01", "weekday_on_flyer": "土", "session_label": "1回目", "doors_open": "10:30", "start_time": "11:00", "end_time": "11:45" },
+      { "date": "2026-08-01", "weekday_on_flyer": "土", "session_label": "2回目", "doors_open": "13:30", "start_time": "14:00", "end_time": "14:45" }
+    ],
+    "duration": "約45分", "intermission": "休憩なし"
+  },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "ホール" },
+  "performers": [
+    { "name": "鈴木みどり", "instrument": "うた", "profile": "こども向けコンサートを中心に活動している。" },
+    { "name": "佐藤たろう", "instrument": "ピアノ" }
+  ],
+  "program": { "works": [{ "work": "おもちゃのチャチャチャ" }, { "work": "さんぽ" }, { "composer": "サン＝サーンス", "work": "動物の謝肉祭より「白鳥」" }], "notes": "曲目は変更になる場合があります。" },
+  "pricing": {
+    "seating_type": "全席自由",
+    "prices": [{ "category": "大人", "amount": 1000 }, { "category": "こども（3歳〜高校生）", "amount": 500 }],
+    "age_requirement": "0歳から入場できます",
+    "lap_seating": "2歳以下は膝上鑑賞無料（大人1名につき1名まで）。お席が必要な場合は有料です。"
+  },
+  "tickets": { "sales_start": "2026-06-06", "ticket_channels": [{ "name": "さくらプラザチケットセンター", "phone": "045-000-0000" }] },
+  "accessibility": { "stroller": "ベビーカー置き場があります。", "age_accessibility": "途中入退場できます。", "accessible_toilet": "おむつ替えのできる多目的トイレがあります。" },
+  "organization": { "organizer": "さくらプラザ（架空）", "phone": "045-000-0000", "contact": "さくらプラザ" }
+}

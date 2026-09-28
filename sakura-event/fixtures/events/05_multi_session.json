@@ -1,0 +1,21 @@
+{
+  "_fixture": "5. 複数回公演（2日間・3回）（架空）",
+  "event_id": "2026-10-17-sample-play",
+  "event_type": "performance",
+  "genre": "演劇",
+  "basic": { "title": "サンプル劇団 公演「とつかの坂道」", "description": "戸塚の町を舞台にした、ある家族の物語です。" },
+  "status": { "code": "on_sale" },
+  "schedule": {
+    "dates": [
+      { "date": "2026-10-17", "weekday_on_flyer": "土", "doors_open": "13:30", "start_time": "14:00", "status": "few_tickets" },
+      { "date": "2026-10-17", "weekday_on_flyer": "土", "doors_open": "17:30", "start_time": "18:00" },
+      { "date": "2026-10-18", "weekday_on_flyer": "日", "doors_open": "13:30", "start_time": "14:00", "status": "sold_out" }
+    ],
+    "duration": "約100分（休憩なし）"
+  },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "ホール" },
+  "performers": [{ "name": "サンプル劇団", "role": "出演" }],
+  "pricing": { "seating_type": "全席指定", "prices": [{ "category": "一般", "amount": 4000 }, { "category": "高校生以下", "amount": 2000 }], "age_requirement": "未就学児入場不可" },
+  "tickets": { "sales_start": "2026-08-01", "ticket_channels": [{ "name": "さくらプラザチケットセンター", "phone": "045-000-0000" }] },
+  "organization": { "organizer": "サンプル劇団（架空）", "co_organizer": "さくらプラザ（架空）", "phone": "045-000-2222", "contact": "サンプル劇団" }
+}

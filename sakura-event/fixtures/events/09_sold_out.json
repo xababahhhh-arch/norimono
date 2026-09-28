@@ -1,0 +1,16 @@
+{
+  "_fixture": "9. 完売イベント（架空）",
+  "event_id": "2026-05-30-sample-quartet",
+  "event_type": "performance",
+  "genre": "クラシック",
+  "basic": { "title": "サンプル弦楽四重奏団 演奏会" },
+  "status": { "code": "sold_out", "label": "予定枚数終了", "updated_at": "2026-05-10" },
+  "updates": [{ "date": "2026-05-10", "type": "status", "text": "チケットは予定枚数を終了しました。当日券の販売はありません。" }],
+  "schedule": { "dates": [{ "date": "2026-05-30", "weekday_on_flyer": "土", "doors_open": "14:30", "start_time": "15:00" }] },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "ホール" },
+  "performers": [{ "name": "サンプル弦楽四重奏団", "profile": "サンプル市内で活動する弦楽四重奏団。" }],
+  "program": { "works": [{ "composer": "ハイドン", "work": "弦楽四重奏曲 第77番「皇帝」" }, { "composer": "ドヴォルザーク", "work": "弦楽四重奏曲 第12番「アメリカ」" }] },
+  "pricing": { "seating_type": "全席指定", "prices": [{ "category": "一般", "amount": 2500 }], "age_requirement": "未就学児入場不可" },
+  "tickets": { "sales_start": "2026-03-07", "ticket_channels": [{ "name": "さくらプラザチケットセンター", "phone": "045-000-0000" }] },
+  "organization": { "organizer": "さくらプラザ（架空）", "phone": "045-000-0000", "contact": "さくらプラザ" }
+}

@@ -1,0 +1,24 @@
+{
+  "_fixture": "10. 受付終了イベント（架空）",
+  "event_id": "2026-07-18-sample-lecture",
+  "event_type": "lecture",
+  "basic": { "title": "はじめてのサンプル音楽講座", "description": "オーケストラの楽器のしくみを、実演を交えて紹介する講座です（全2回）。" },
+  "status": { "code": "registration_closed", "updated_at": "2026-07-04" },
+  "updates": [
+    { "date": "2026-07-04", "type": "status", "text": "定員に達したため電話受付は実施しません" },
+    { "date": "2026-06-01", "type": "notice", "text": "受付を開始しました。" }
+  ],
+  "schedule": {
+    "dates": [
+      { "date": "2026-07-18", "weekday_on_flyer": "土", "session_label": "第1回", "doors_open": "13:30", "start_time": "14:00", "end_time": "15:30" },
+      { "date": "2026-07-25", "weekday_on_flyer": "土", "session_label": "第2回", "doors_open": "13:30", "start_time": "14:00", "end_time": "15:30" }
+    ]
+  },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "アトリエ" },
+  "performers": [{ "name": "音野しらべ", "role": "講師", "profile": "サンプル交響楽団の楽団員として活動。" }],
+  "program": { "works": [{ "section": "第1回", "work": "弦楽器のしくみ" }, { "section": "第2回", "work": "管楽器と打楽器のしくみ" }] },
+  "pricing": { "prices": [{ "category": "受講料（全2回）", "amount": 2000 }], "age_requirement": "高校生以上" },
+  "tickets": { "sales_start": null },
+  "participation": { "capacity": "30名（先着順）", "application_method": "さくらプラザ窓口または電話", "application_start": "2026-06-01" },
+  "organization": { "organizer": "さくらプラザ（架空）", "phone": "045-000-0000", "contact": "さくらプラザ" }
+}

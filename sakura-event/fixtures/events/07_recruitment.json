@@ -1,0 +1,20 @@
+{
+  "_fixture": "7. 参加者募集（合唱団員）（架空）",
+  "event_id": "2026-12-20-sample-choir",
+  "event_type": "recruitment",
+  "basic": { "title": "第九を歌おう！ サンプル合唱団員募集", "description": "12月の演奏会で「第九」を歌う合唱団員を募集します。" },
+  "status": { "code": "registration_open" },
+  "schedule": {
+    "dates": [{ "date": "2026-12-20", "weekday_on_flyer": "日", "session_label": "本番", "doors_open": null, "start_time": "15:00" }],
+    "start_date": "2026-08-01", "end_date": "2026-08-31",
+    "schedule_notes": "練習日：9月〜12月の土曜日 18:00〜20:00（全12回）"
+  },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "リハーサル室（練習）、ホール（本番）" },
+  "performers": { "items": [], "none_confirmed": true },
+  "pricing": { "prices": [{ "category": "参加費", "amount": 8000, "note": "楽譜代別" }], "age_requirement": null },
+  "participation": {
+    "eligibility": "中学生以上で、全練習日に参加できる方", "capacity": "80名（先着順）", "participation_fee": "8,000円（楽譜代別）",
+    "application_method": "さくらプラザ窓口または電話で申し込んでください。", "application_start": "2026-08-01", "application_deadline": "2026-08-31"
+  },
+  "organization": { "organizer": "さくらプラザ（架空）", "phone": "045-000-0000", "contact": "さくらプラザ" }
+}

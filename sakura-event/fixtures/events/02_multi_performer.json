@@ -1,0 +1,21 @@
+{
+  "_fixture": "2. 複数出演公演（ジャズ・曲目は当日発表）（架空）",
+  "event_id": "2026-09-12-sample-jazz",
+  "event_type": "performance",
+  "genre": "ジャズ",
+  "basic": { "title": "さくらプラザ サンプル・ジャズナイト", "description": "ピアノ、ベース、ドラムスのトリオに、ゲストのサックスが加わります。" },
+  "status": { "code": "few_tickets" },
+  "schedule": { "dates": [{ "date": "2026-09-12", "weekday_on_flyer": "土", "doors_open": "17:30", "start_time": "18:00" }] },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "ホール" },
+  "performers": [
+    { "name": "北野 光", "instrument": "ピアノ", "profile": "サンプル音楽院でジャズピアノを学ぶ。自身のトリオで活動している。" },
+    { "name": "Sam Ples", "roman_name": "Sam Ples", "instrument": "ベース", "profile": "サンプル市出身のベーシスト。" },
+    { "name": "東 大地", "instrument": "ドラムス" },
+    { "name": "西川 そら", "role": "ゲスト", "instrument": "サックス" }
+  ],
+  "program": { "works": [], "notes": "曲目は当日発表します。" },
+  "pricing": { "seating_type": "全席自由", "prices": [{ "category": "一般", "amount": 3500 }, { "category": "U25", "amount": 2000, "note": "25歳以下" }], "age_requirement": "未就学児入場不可" },
+  "tickets": { "sales_start": "2026-07-11", "ticket_channels": [{ "name": "さくらプラザチケットセンター", "phone": "045-000-0000" }] },
+  "organization": { "organizer": "さくらプラザ（架空）", "phone": "045-000-0000", "contact": "さくらプラザ" },
+  "media": {}
+}
