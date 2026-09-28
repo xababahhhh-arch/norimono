@@ -122,8 +122,7 @@
   ], "none_confirmed": false },
 
   "program": {
-    "items": [ { "id": "w1", "composer": Field, "work": Field, "section": Field, "notes": Field } ],
-    "none_confirmed": false,
+    "works": { "items": [ { "id": "w1", "composer": Field, "work": Field, "section": Field, "notes": Field } ], "none_confirmed": false },
     "notes": Field                               // 「曲目は変更になる場合があります」など
   },
 
@@ -197,7 +196,8 @@
     "source_files": [ { "name": "flyer_front.pdf", "type": "application/pdf", "pages": 1 } ],
     "extractor": "rules-1.0",
     "finalized": false,                          // 確認ゲート通過後に true
-    "finalized_at": null
+    "finalized_at": null,
+    "page_url": "https://…"                      // 公開したHPページのURL（SNSの導線に使う。未入力なら「［HPページのURL］」と表示）
   }
 }
 ```
@@ -245,12 +245,20 @@ HPでは新しい順に「更新履歴」として表示し、出演者変更・
 | 会場 | `venue.venue` | 空のまま確認済みにはできない |
 | 出演者 | `performers`（各 `name`） | 出演者なしは「該当なし」で確認 |
 | 料金 | `pricing.prices`（各 `category` `amount` または `label`） | 無料は amount 0 |
+| （参考）曲目 | `program.works` | 必須確認ではないが、SNS「C」はここが空だと生成しない |
 | 年齢制限 | `pricing.age_requirement` | |
 | チケット発売情報 | `tickets.sales_start`（WS・講座・募集は `participation.application_start` / `application_method`） | |
 | 電話番号 | `organization.phone` | 形式チェックあり |
 | 外部URL | 値のある URL 項目すべて（`links` `ticket_channels[].url` `participation.application_url` `media.video`） | `http(s)://` のみ |
 
-## 7. 空の値と「情報なし」
+## 7. fixture の簡略表記
+
+テスト用の `fixtures/events/*.json` は、Field を素の値で書いた簡略表記です（例：`"title": "○○"`）。
+`normalizeEvent(json, { confirmed: true })` で Field に変換し、確認済みとして扱います。
+値を `null` と明記した項目は「確認済み（該当なし）」、書かなかった項目は「情報なし」になります。
+アプリで event.json を読み込むときは `confirmed: false` で読み込み、Field 形式で保存された確認状態だけを引き継ぎます。
+
+## 8. 空の値と「情報なし」
 
 - 生成器は空の項目について、**推測で埋めず**、HPでは原則として見出しごと非表示にします。
 - ただし必須セクション（日時・会場・料金・問い合わせ）が空の場合は、下書きプレビューで「情報なし（要確認）」と表示し、確定をブロックします。

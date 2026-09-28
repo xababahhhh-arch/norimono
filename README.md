@@ -51,3 +51,6 @@
 1. `images` フォルダに画像を入れる（例: `images/hayabusa.png`、横長がおすすめ）
 2. `vehicles.js` の該当の乗り物の `image: ''` を `image: 'images/hayabusa.png'` に変える
 3. `sw.js` 1行目付近の `norimono-v1` を `norimono-v2` に変える（iPhoneに新しい版を確実に届けるため）
+
+## 同じリポジトリの別アプリ
+- [sakura-event/](sakura-event/README.md)：戸塚区民文化センターさくらプラザ イベント広報生成システム（チラシ → event.json → 人の確認 → HP/SNS）

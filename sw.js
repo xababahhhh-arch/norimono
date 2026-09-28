@@ -44,6 +44,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  // 同じサイトに置いた別アプリ（sakura-event/）はキャッシュしない
+  if (new URL(req.url).pathname.includes('/sakura-event/')) return;
   event.respondWith(
     caches.open(CACHE).then((cache) =>
       cache.match(req, { ignoreSearch: true }).then((cached) => {
