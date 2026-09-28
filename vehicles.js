@@ -15,7 +15,9 @@
  *   id    : 半角英字の名前（ほかと重ならないように）
  *   name  : 画面に表示する名前
  *   say   : iPhoneが読み上げる言葉。漢字のほうがアクセントが自然になりますが、
- *           「〜車」を「くるま」と読むなど まちがえる言葉は ひらがなにします（例: しょうぼうしゃ）
+ *           「〜車」を「くるま」と読むなど まちがえる言葉は ひらがなにします（例: しょうぼうしゃ）。
+ *           ただし ひらがなだけだと言葉の区切りをまちがえることがあります
+ *           （例:「えのでん」→「え・の・で・ん」）。そのときは漢字やカタカナにします（例: 江ノ電、ゴヒャッ系）
  *   color : 問題文の名前の色
  *   group : なかま（下の GROUPS のどれか）… ずかんの見出しと「むずかしさ」で使います
  *   sound : 乗り物の本物の音のファイル（例: 'sounds/kyukyusha.mp3'）。空なら音なし。
@@ -378,7 +380,7 @@ VEHICLES.push(
     })
   },
   {
-    id: 's500', name: '500けい', say: 'ごひゃっけい', color: '#4a5a78', image: '', group: 'shinkansen', sound: '',
+    id: 's500', name: '500けい', say: 'ゴヒャッ系', color: '#4a5a78', image: '', group: 'shinkansen', sound: '',
     svg: trainSVG({
       id: 's500',
       body: 'M-10,56 L110,56 C190,56 250,74 300,104 C312,112 310,122 300,124 L-10,126 Z',
@@ -388,7 +390,7 @@ VEHICLES.push(
     })
   },
   {
-    id: 's0', name: '0けい', say: 'ゼロけい', color: '#1a4fa0', image: '', group: 'shinkansen', sound: '',
+    id: 's0', name: '0けい', say: 'ゼロ系', color: '#1a4fa0', image: '', group: 'shinkansen', sound: '',
     svg: trainSVG({
       id: 's0',
       body: 'M-10,50 L200,50 C240,50 262,62 276,82 C288,100 302,110 302,120 L298,126 L-10,126 Z',
@@ -507,7 +509,7 @@ VEHICLES.push(
     })
   },
   {
-    id: 'enoden', name: 'えのでん', say: 'えのでん', color: '#2e7d4f', image: '', group: 'train', sound: '',
+    id: 'enoden', name: 'えのでん', say: '江ノ電', color: '#2e7d4f', image: '', group: 'train', sound: '',
     svg: trainSVG({
       id: 'enoden',
       body: 'M-10,44 L290,44 C300,44 304,50 304,58 L304,120 C304,124 302,126 298,126 L-10,126 Z',
@@ -554,7 +556,7 @@ VEHICLES.push(
   ${[204, 226, 262, 284].map((x) => `<circle cx="${x}" cy="132" r="8" fill="#2a2f38"/>`).join('')}`)
   },
   {
-    id: 'hinotori', name: 'ひのとり', say: 'ひのとり', color: '#a0141e', image: '', group: 'train', sound: '',
+    id: 'hinotori', name: 'ひのとり', say: 'ヒノトリ', color: '#a0141e', image: '', group: 'train', sound: '',
     svg: trainSVG({
       id: 'hinotori',
       body: 'M-10,42 L230,42 C272,42 300,64 306,98 L306,120 C306,124 303,126 298,126 L-10,126 Z',
@@ -566,7 +568,7 @@ VEHICLES.push(
 
   // ===== たすけるくるま =====
   {
-    id: 'shirobai', name: 'しろバイ', say: 'しろバイ', color: '#2a2f38', image: '', group: 'emergency', sound: '',
+    id: 'shirobai', name: 'しろバイ', say: '白バイ', color: '#2a2f38', image: '', group: 'emergency', sound: '',
     svg: svgBox(`${ROAD}
   <path d="M40,106 L146,112" stroke="#c9ced6" stroke-width="7" stroke-linecap="round"/>
   <circle cx="76" cy="110" r="28" fill="#2b2b2b"/><circle cx="76" cy="110" r="16" fill="#c9ced6"/><circle cx="76" cy="110" r="5" fill="#6b7280"/>
@@ -587,7 +589,7 @@ VEHICLES.push(
   <circle cx="256" cy="84" r="5" fill="#fff6c8" stroke="#9aa1ab" stroke-width="2"/>`)
   },
   {
-    id: 'hashigo', name: 'はしごしゃ', say: 'はしごしゃ', color: '#e60f1e', image: '', group: 'emergency', sound: '',
+    id: 'hashigo', name: 'はしごしゃ', say: 'はしご車', color: '#e60f1e', image: '', group: 'emergency', sound: '',
     svg: svgBox(`${ROAD}
   <rect x="14" y="70" width="212" height="50" rx="6" fill="#e60f1e"/>
   <rect x="14" y="106" width="212" height="5" fill="#fff"/>
