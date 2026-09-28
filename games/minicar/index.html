@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>ミニカーロード</title>
+
+<meta name="theme-color" content="#0d1015">
+<meta name="description" content="スマホの上をミニカーが走っているように見せるスクロール道路アプリ">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ミニカーロード">
+<meta name="format-detection" content="telephone=no">
+
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAWfmNhQlgAABZ+anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFlhqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjVmZTQ1MzMxLTk3ZWYtNGJlNi1iODRlLTNlMTJkZThlNDM2OQAAAAOTanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAAuGp1bWIAAABEanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5pbmdyZWRpZW50LnYzAAAAABhjMnNoU5HbpUuDPOIzeVeF8qQKOQAAAGxjYm9yo2lkYzpmb3JtYXRpaW1hZ2UvcG5namluc3RhbmNlSUR4LHhtcDppaWQ6NzQ3ODU3MDctMGM2OC00MDk5LTg2MzktN2JlMjY0ZDY5MWUxbHJlbGF0aW9uc2hpcGhwYXJlbnRPZgAAAeJqdW1iAAAAQWp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuYWN0aW9ucy52MgAAAAAYYzJzaP0l4WXOMv7gfoWWY+pV2/QAAAGZY2JvcqJnYWN0aW9uc4KiZmFjdGlvbmtjMnBhLm9wZW5lZGpwYXJhbWV0ZXJzoWtpbmdyZWRpZW50c4GiY3VybHgtc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5pbmdyZWRpZW50LnYzZGhhc2hYIPvJpt1YHmYvBndQ9BErOVuNMSf+HqM4lLKeAl+jnoIppGZhY3Rpb254HWNvbS5hbnRocm9waWMuY2xhdWRlLnByb3ZpZGVkanBhcmFtZXRlcnOheB9jb20uYW50aHJvcGljLm9yaWdpbi1jb25maWRlbmNlZ3Vua25vd25rZGVzY3JpcHRpb254ZkNsYXVkZSBwcm92aWRlZCB0aGlzIGZpbGUgYXQgdGhlIHJlcXVlc3Qgb2YgYSB1c2VyIGFuZCBtYXkgaGF2ZSBjcmVhdGVkIG9yIG1vZGlmaWVkIHRoZSBmaWxlIGNvbnRlbnRzLm1zb2Z0d2FyZUFnZW50oWRuYW1lZkNsYXVkZXJhbGxBY3Rpb25zSW5jbHVkZWT1AAAAyGp1bWIAAABAanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5oYXNoLmRhdGEAAAAAGGMyc2hOrmWhYCUy6pmanAZkHlkXAAAAgGNib3KlY2FsZ2ZzaGEyNTZjcGFkTQAAAAAAAAAAAAAAAABkaGFzaFgg4msigw7ruSXSHQoE2zEVhgad0Rzdb3T4CkYuiqO/0BlkbmFtZW5qdW1iZiBtYW5pZmVzdGpleGNsdXNpb25zgaJlc3RhcnQYIWZsZW5ndGgZFooAAAI+anVtYgAAACdqdW1kYzJjbAARABCAAACqADibcQNjMnBhLmNsYWltLnYyAAAAAg9jYm9ypWNhbGdmc2hhMjU2aXNpZ25hdHVyZXhNc2VsZiNqdW1iZj0vYzJwYS91cm46YzJwYTo1ZmU0NTMzMS05N2VmLTRiZTYtYjg0ZS0zZTEyZGU4ZTQzNjkvYzJwYS5zaWduYXR1cmVqaW5zdGFuY2VJRHgseG1wOmlpZDplMTdiNDkzMy0yNzRhLTRjZDctYTY3NS1iYWI4NzcxNGYyOWVyY3JlYXRlZF9hc3NlcnRpb25zg6JjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg+8mm3VgeZi8Gd1D0ESs5W40xJ/4eoziUsp4CX6OegimiY3VybHgqc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5hY3Rpb25zLnYyZGhhc2hYIDPS5gelBPsypYOIGQyWS8eoUP0bmg3O9eLMdd87RtFbomN1cmx4KXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaGFzaC5kYXRhZGhhc2hYIC1Y3ON25Ef3IjUz8F8HHy7viBBUP++HSzvtj/ju/egYdGNsYWltX2dlbmVyYXRvcl9pbmZvo2RuYW1lb0FudGhyb3BpYyBGaWxlc2d2ZXJzaW9uZTEuMC4wa3NwZWNWZXJzaW9uZTIuNC4wAAAQOGp1bWIAAAAoanVtZGMyY3MAEQAQgAAAqgA4m3EDYzJwYS5zaWduYXR1cmUAAAAQCGNib3LShFkCEqIBJhghWQIKMIICBjCCAY2gAwIBAgIUQOWgCu7COdC+uIP6BkIFPWdVEwAwCgYIKoZIzj0EAwMwSTEXMBUGA1UEChMOQW50aHJvcGljLCBQQkMxLjAsBgNVBAMTJUFudGhyb3BpYyBDb250ZW50IENyZWRlbnRpYWxzIFJvb3QgQ0EwHhcNMjYwODA3MTg0MzU2WhcNMjgwODA2MTk0MzU2WjBEMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEpMCcGA1UEAxMgQW50aHJvcGljIENsYXVkZSBDb250ZW50IFNpZ25pbmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASYegpry1AYBRTVNL1CpTlbROnY3dey+UrsF9C3phYrATN3ZHf93Mo8RQN0KOUuOn19P4oWNFWe5n2/She9N7eTo1gwVjAOBgNVHQ8BAf8EBAMCB4AwFQYDVR0lBA4wDAYKKwYBBAGD6F4CATAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFM5R4gSBTmRbI/jjxM+aPpzB11zCMAoGCCqGSM49BAMDA2cAMGQCMDFzHRSeAXrSy1WOzkbhPZ6Km2wGTmZ/2gK18k8BQGXyqz88Rdrz6CTX9flAnYNVxgIwcF9c3fVhqmJKpi+UhasNUMko69cyX6STPfta3Q8EjyzDjzoyrol46FP6VFHhvUcJoWNwYWRZDZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAWfmNhQlgAABZ+anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFlhqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjVmZTQ1MzMxLTk3ZWYtNGJlNi1iODRlLTNlMTJkZThlNDM2OQAAAAOTanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAAuGp1bWIAAABEanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5pbmdyZWRpZW50LnYzAAAAABhjMnNoU5HbpUuDPOIzeVeF8qQKOQAAAGxjYm9yo2lkYzpmb3JtYXRpaW1hZ2UvcG5namluc3RhbmNlSUR4LHhtcDppaWQ6NzQ3ODU3MDctMGM2OC00MDk5LTg2MzktN2JlMjY0ZDY5MWUxbHJlbGF0aW9uc2hpcGhwYXJlbnRPZgAAAeJqdW1iAAAAQWp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuYWN0aW9ucy52MgAAAAAYYzJzaP0l4WXOMv7gfoWWY+pV2/QAAAGZY2JvcqJnYWN0aW9uc4KiZmFjdGlvbmtjMnBhLm9wZW5lZGpwYXJhbWV0ZXJzoWtpbmdyZWRpZW50c4GiY3VybHgtc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5pbmdyZWRpZW50LnYzZGhhc2hYIPvJpt1YHmYvBndQ9BErOVuNMSf+HqM4lLKeAl+jnoIppGZhY3Rpb254HWNvbS5hbnRocm9waWMuY2xhdWRlLnByb3ZpZGVkanBhcmFtZXRlcnOheB9jb20uYW50aHJvcGljLm9yaWdpbi1jb25maWRlbmNlZ3Vua25vd25rZGVzY3JpcHRpb254ZkNsYXVkZSBwcm92aWRlZCB0aGlzIGZpbGUgYXQgdGhlIHJlcXVlc3Qgb2YgYSB1c2VyIGFuZCBtYXkgaGF2ZSBjcmVhdGVkIG9yIG1vZGlmaWVkIHRoZSBmaWxlIGNvbnRlbnRzLm1zb2Z0d2FyZUFnZW50oWRuYW1lZkNsYXVkZXJhbGxBY3Rpb25zSW5jbHVkZWT1AAAAyGp1bWIAAABAanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5oYXNoLmRhdGEAAAAAGGMyc2hOrmWhYCUy6pmanAZkHlkXAAAAgGNib3KlY2FsZ2ZzaGEyNTZjcGFkTQAAAAAAAAAAAAAAAABkaGFzaFgg4msigw7ruSXSHQoE2zEVhgad0Rzdb3T4CkYuiqO/0BlkbmFtZW5qdW1iZiBtYW5pZmVzdGpleGNsdXNpb25zgaJlc3RhcnQYIWZsZW5ndGgZFooAAAI+anVtYgAAACdqdW1kYzJjbAARABCAAACqADibcQNjMnBhLmNsYWltLnYyAAAAAg9jYm9ypWNhbGdmc2hhMjU2aXNpZ25hdHVyZXhNc2VsZiNqdW1iZj0vYzJwYS91cm46YzJwYTo1ZmU0NTMzMS05N2VmLTRiZTYtYjg0ZS0zZTEyZGU4ZTQzNjkvYzJwYS5zaWduYXR1cmVqaW5zdGFuY2VJRHgseG1wOmlpZDplMTdiNDkzMy0yNzRhLTRjZDctYTY3NS1iYWI4NzcxNGYyOWVyY3JlYXRlZF9hc3NlcnRpb25zg6JjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg+8mm3VgeZi8Gd1D0ESs5W40xJ/4eoziUsp4CX6OegimiY3VybHgqc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5hY3Rpb25zLnYyZGhhc2hYIDPS5gelBPsypYOIGQyWS8eoUP0bmg3O9eLMdd87RtFbomN1cmx4KXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaGFzaC5kYXRhZGhhc2hYIC1Y3ON25Ef3IjUz8F8HHy7viBBUP++HSzvtj/ju/egYdGNsYWltX2dlbmVyYXRvcl9pbmZvo2RuYW1lb0FudGhyb3BpYyBGaWxlc2d2ZXJzaW9uZTEuMC4wa3NwZWNWZXJzaW9uZTIuNC4wAAAQOGp1bWIAAAAoanVtZGMyY3MAEQAQgAAAqgA4m3EDYzJwYS5zaWduYXR1cmUAAAAQCGNib3LShFkCEqIBJhghWQIKMIICBjCCAY2gAwIBAgIUQOWgCu7COdC+uIP6BkIFPWdVEwAwCgYIKoZIzj0EAwMwSTEXMBUGA1UEChMOQW50aHJvcGljLCBQQkMxLjAsBgNVBAMTJUFudGhyb3BpYyBDb250ZW50IENyZWRlbnRpYWxzIFJvb3QgQ0EwHhcNMjYwODA3MTg0MzU2WhcNMjgwODA2MTk0MzU2WjBEMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEpMCcGA1UEAxMgQW50aHJvcGljIENsYXVkZSBDb250ZW50IFNpZ25pbmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASYegpry1AYBRTVNL1CpTlbROnY3dey+UrsF9C3phYrATN3ZHf93Mo8RQN0KOUuOn19P4oWNFWe5n2/She9N7eTo1gwVjAOBgNVHQ8BAf8EBAMCB4AwFQYDVR0lBA4wDAYKKwYBBAGD6F4CATAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFM5R4gSBTmRbI/jjxM+aPpzB11zCMAoGCCqGSM49BAMDA2cAMGQCMDFzHRSeAXrSy1WOzkbhPZ6Km2wGTmZ/2gK18k8BQGXyqz88Rdrz6CTX9flAnYNVxgIwcF9c3fVhqmJKpi+UhasNUMko69cyX6STPfta3Q8EjyzDjzoyrol46FP6VFHhvUcJoWNwYWRZDZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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">
+<style>
+:root{
+  --pit:#12161c;          /* ピットレーンの床 */
+  --pit-hi:#1d242e;
+  --flame:#ff6a00;        /* ダイキャストのフレームオレンジ */
+  --flame-dark:#b53f00;
+  --nitro:#2fdcf0;
+  --nitro-dark:#0b7c8c;
+  --brake:#ff2d55;
+  --brake-dark:#a30f2c;
+  --ink:#f2f5f8;
+  --ink-dim:#8d99a8;
+  --gap:10px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* .sheet や .install の display 指定が [hidden] に勝ってしまうため明示的に打ち消す */
+[hidden]{display:none !important}
+
+html,body{
+  height:100%;
+  overflow:hidden;
+  background:#0d1015;
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  -webkit-user-select:none;user-select:none;
+  -webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:none;
+  overscroll-behavior:none;
+}
+
+body{position:fixed;inset:0;width:100%;height:100%}
+
+#game{
+  position:fixed;inset:0;
+  width:100%;height:100%;
+  display:block;
+  touch-action:none;
+}
+
+/* ── 上部の計器 ───────────────────────────── */
+.hud{
+  position:fixed;
+  top:calc(env(safe-area-inset-top,0px) + 56px);
+  left:calc(env(safe-area-inset-left,0px) + 12px);
+  right:calc(env(safe-area-inset-right,0px) + 12px);
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:12px;pointer-events:none;
+}
+
+.gauge{
+  background:rgba(12,15,20,.62);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;
+  padding:7px 12px 9px;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+
+.speed{display:flex;align-items:baseline;gap:5px;line-height:1}
+.speed span:first-child{
+  font-size:30px;font-weight:800;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+  color:var(--ink);
+}
+.unit{font-size:11px;color:var(--ink-dim);font-weight:600}
+
+.nitro-bar{
+  margin-top:7px;width:104px;height:7px;border-radius:99px;
+  background:rgba(255,255,255,.14);overflow:hidden;
+}
+.nitro-bar i{
+  display:block;height:100%;width:100%;
+  background:linear-gradient(90deg,var(--nitro-dark),var(--nitro));
+  transition:width .12s linear;
+}
+
+.hud-btns{display:flex;gap:8px;pointer-events:auto}
+.icon{
+  width:46px;height:46px;border:0;border-radius:14px;
+  background:rgba(12,15,20,.62);
+  border:1px solid rgba(255,255,255,.10);
+  color:var(--ink);font-size:20px;line-height:1;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  touch-action:manipulation;
+}
+.icon:active{background:rgba(255,255,255,.18)}
+.icon.on{background:var(--flame);border-color:var(--flame);color:#150a00}
+
+.fps{
+  position:fixed;top:calc(env(safe-area-inset-top,0px) + 62px);left:calc(env(safe-area-inset-left,0px) + 14px);
+  font-size:11px;color:var(--ink-dim);font-variant-numeric:tabular-nums;
+}
+
+/* ── 下部の操作パネル ─────────────────────── */
+.controls{
+  position:fixed;
+  left:calc(env(safe-area-inset-left,0px) + 10px);
+  right:calc(env(safe-area-inset-right,0px) + 10px);
+  bottom:calc(env(safe-area-inset-bottom,0px) + 10px);
+  display:flex;flex-direction:column;gap:var(--gap);
+}
+
+.cruise{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(12,15,20,.62);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;padding:8px 14px;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.cruise-label{font-size:13px;font-weight:700;color:var(--ink-dim);flex:none}
+
+input[type=range]{
+  -webkit-appearance:none;appearance:none;
+  flex:1;height:26px;background:transparent;
+}
+input[type=range]::-webkit-slider-runnable-track{
+  height:10px;border-radius:99px;
+  background:linear-gradient(90deg,var(--flame-dark),var(--flame));
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:30px;height:30px;margin-top:-10px;border-radius:50%;
+  background:#fff;border:4px solid var(--flame);
+}
+
+.pads{display:grid;grid-template-columns:1fr 1.25fr 1.25fr 1fr;gap:var(--gap)}
+
+.pad{
+  border:0;border-radius:20px;
+  height:88px;
+  font-size:22px;font-weight:800;letter-spacing:.02em;
+  color:#fff;
+  background:var(--pit-hi);
+  box-shadow:0 6px 0 #0a0d11;
+  transition:transform .05s linear, box-shadow .05s linear;
+  touch-action:none;
+}
+.pad:active,.pad.held{transform:translateY(5px);box-shadow:0 1px 0 #0a0d11}
+
+.steer{font-size:32px;background:var(--pit-hi);color:var(--ink)}
+.gas{background:var(--flame);box-shadow:0 6px 0 var(--flame-dark);color:#1b0a00}
+.gas:active,.gas.held{box-shadow:0 1px 0 var(--flame-dark)}
+.brake{background:var(--brake);box-shadow:0 6px 0 var(--brake-dark)}
+.brake:active,.brake.held{box-shadow:0 1px 0 var(--brake-dark)}
+
+.nitro{
+  border:0;border-radius:20px;height:64px;width:100%;
+  font-size:22px;font-weight:800;letter-spacing:.08em;
+  color:#04252b;
+  background:linear-gradient(180deg,#7ef0ff,var(--nitro));
+  box-shadow:0 6px 0 var(--nitro-dark);
+  touch-action:none;
+}
+.nitro:active,.nitro.held{transform:translateY(5px);box-shadow:0 1px 0 var(--nitro-dark)}
+.nitro.empty{filter:grayscale(.85) brightness(.7)}
+
+/* ── 設定シート ───────────────────────────── */
+.sheet{
+  position:fixed;inset:0;z-index:20;
+  background:rgba(5,7,10,.6);
+  display:flex;align-items:flex-end;
+}
+.sheet-inner{
+  width:100%;
+  background:var(--pit);
+  border-top:3px solid var(--flame);
+  border-radius:22px 22px 0 0;
+  padding:20px 20px calc(env(safe-area-inset-bottom,0px) + 20px);
+  display:flex;flex-direction:column;gap:16px;
+}
+.sheet h2{font-size:18px;font-weight:800}
+.field{display:flex;flex-direction:column;gap:6px;font-size:15px;font-weight:600}
+.field.row{flex-direction:row;align-items:center;justify-content:space-between}
+.field input[type=checkbox]{width:52px;height:32px;accent-color:var(--flame)}
+.sheet-actions{display:flex;gap:10px;margin-top:4px}
+.sheet-actions button{
+  flex:1;height:54px;border:0;border-radius:16px;
+  font-size:16px;font-weight:800;
+}
+.ghost{background:var(--pit-hi);color:var(--ink)}
+.solid{background:var(--flame);color:#1b0a00}
+
+/* ── 追加案内 ─────────────────────────────── */
+.install{
+  position:fixed;z-index:30;
+  left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 280px);
+  background:rgba(12,15,20,.92);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+  font-size:13px;line-height:1.5;
+}
+.install button{
+  flex:none;border:0;border-radius:12px;padding:10px 14px;
+  background:var(--flame);color:#1b0a00;font-weight:800;font-size:13px;
+}
+
+/* こどもモード：下の操作ボタンを隠し、画面タッチだけで遊ぶ */
+body.kids .pads,
+body.kids .cruise,
+body.kids .nitro,
+body.kids .nitro-bar{display:none}
+body.kids .controls{pointer-events:none}
+
+.icon.holding{background:var(--flame);border-color:var(--flame);color:#150a00}
+.field small{font-weight:500;color:var(--ink-dim);font-size:12px}
+
+@media (prefers-reduced-motion:reduce){
+  .pad,.nitro{transition:none}
+}
+
+</style>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<div class="hud">
+  <div class="gauge">
+    <div class="speed"><span id="speedVal">0</span><span class="unit">km/h</span></div>
+    <div class="nitro-bar"><i id="nitroFill"></i></div>
+  </div>
+  <div class="hud-btns">
+    <button class="icon" id="btnNight" type="button" aria-label="夜にする">🌙</button>
+    <button class="icon" id="btnGuide" type="button" aria-label="ガイドを消す">🅿</button>
+    <button class="icon" id="btnMenu" type="button" aria-label="設定（長押しで開く）">⚙</button>
+  </div>
+  <div class="fps" id="fps" hidden>60fps</div>
+</div>
+
+<div class="controls">
+  <div class="cruise">
+    <span class="cruise-label">スピード</span>
+    <input type="range" id="speedSlider" min="0" max="100" value="40" aria-label="スピード">
+  </div>
+
+  <div class="pads">
+    <button class="pad steer" id="padLeft" type="button" aria-label="左へ">◀</button>
+    <button class="pad brake" id="padBrake" type="button">とまる</button>
+    <button class="pad gas" id="padGas" type="button">はしる</button>
+    <button class="pad steer" id="padRight" type="button" aria-label="右へ">▶</button>
+  </div>
+
+  <button class="nitro" id="padNitro" type="button">ニトロ</button>
+</div>
+
+<div class="sheet" id="menu" hidden>
+  <div class="sheet-inner">
+    <h2>設定</h2>
+
+    <label class="field row">
+      <span>こどもモード<br><small>画面のどこを触っても左右／自動で走る</small></span>
+      <input type="checkbox" id="kidsMode" checked>
+    </label>
+
+    <label class="field">
+      <span>はしるはやさ</span>
+      <input type="range" id="speedSlider2" min="0" max="100" value="40">
+    </label>
+
+    <label class="field">
+      <span>ミニカーガイドの大きさ <b id="carSizeVal">16×8mm</b></span>
+      <input type="range" id="carSize" min="8" max="100" value="25">
+    </label>
+
+    <label class="field">
+      <span>カーブの強さ</span>
+      <input type="range" id="curveAmount" min="0" max="100" value="60">
+    </label>
+
+    <label class="field row">
+      <span>ガイドをずっと表示</span>
+      <input type="checkbox" id="guideAlways" checked>
+    </label>
+
+    <label class="field row">
+      <span>fpsを表示</span>
+      <input type="checkbox" id="showFps">
+    </label>
+
+    <label class="field row">
+      <span>画面を消さない</span>
+      <input type="checkbox" id="keepAwake" checked>
+    </label>
+
+    <div class="sheet-actions">
+      <button class="ghost" id="btnReset" type="button">最初から走る</button>
+      <button class="solid" id="btnClose" type="button">とじる</button>
+    </div>
+  </div>
+</div>
+
+<div class="install" id="install" hidden>
+  <p>ホーム画面に追加すると全画面で遊べます。<br>共有ボタン → 「ホーム画面に追加」</p>
+  <button id="installClose" type="button">わかった</button>
+</div>
+
+<script>
+'use strict';
+/* ミニカーロード ─ 実物のミニカーを画面の上に置いて遊ぶスクロール道路 */
+(function () {
+
+  // ── 基本ユーティリティ ─────────────────────────────
+  const $ = (id) => document.getElementById(id);
+  const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+  const hash = (n) => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+
+  const cv = $('game');
+  const ctx = cv.getContext('2d', { alpha: false, desynchronized: true });
+
+  // ── 画面と車体のサイズ ─────────────────────────────
+  // iPhone はおよそ 6 CSSpx ≒ 1mm。Hot Wheels は約 64mm × 30mm。
+  const PX_PER_MM = 6;
+  const CAR_BASE_L = 64 * PX_PER_MM; // Hot Wheels 実寸 64mm = 384px
+  const CAR_BASE_W = 30 * PX_PER_MM; // 同 30mm = 180px
+  let carScale = 0.25;               // ガイドの大きさ（実寸に対する比）
+  let CAR_L = CAR_BASE_L * carScale, CAR_W = CAR_BASE_W * carScale;
+  let TIRE_DX = CAR_W * 0.38, TIRE_W = 8, SMOKE_SCALE = 0.55;
+
+  function applyCarSize() {
+    CAR_L = CAR_BASE_L * carScale;
+    CAR_W = CAR_BASE_W * carScale;
+    TIRE_DX = CAR_W * 0.38;
+    TIRE_W = Math.max(5, 22 * carScale);
+    SMOKE_SCALE = clamp(carScale * 2.2, 0.45, 1.4);
+  }
+
+  let W = 0, H = 0, DPR = 1;
+  let ROAD_HALF = 150, SHOULDER = 22, CAR_Y = 400;
+
+  // ── 配色 ───────────────────────────────────────────
+  const PALETTE = {
+    day: {
+      grass: '#4c8f3a', grassAlt: '#437f33',
+      shoulder: '#9ba1a8', shoulderDot: 'rgba(255,255,255,.28)',
+      road: '#4e535b', roadSeam: '#454a52',
+      edge: '#f3f6f9', center: '#ffcf33',
+      tree: '#2e6a29', treeAlt: '#255821', trunk: '#4a3320',
+      skid: 'rgba(22,18,16,.45)', smokeAlpha: 0.5
+    },
+    night: {
+      grass: '#16311e', grassAlt: '#122a19',
+      shoulder: '#3d434a', shoulderDot: 'rgba(255,255,255,.12)',
+      road: '#242830', roadSeam: '#1f232a',
+      edge: '#9fadbd', center: '#c08c25',
+      tree: '#12301a', treeAlt: '#0d2414', trunk: '#241a12',
+      skid: 'rgba(0,0,0,.5)', smokeAlpha: 0.38
+    }
+  };
+  let P = PALETTE.day;
+
+  // ── 状態 ───────────────────────────────────────────
+  const MAX_SPEED = 1450;            // world px / 秒
+  const state = {
+    distance: 0,
+    speed: 0,
+    cruise: 0.40,
+    gas: false,
+    brake: false,
+    steerInput: 0,
+    btnSteer: 0,
+    touchSteer: 0,
+    kids: true,
+    steer: 0,
+    lateral: 0,
+    anchor: 0,
+    nitroFuel: 1,
+    nitroOn: false,
+    nitroLock: false,
+    nitroHeld: false,
+    night: false,
+    guideAlways: true,
+    guideTimer: 12,
+    curveAmount: 0.6,
+    showFps: false,
+    keepAwake: true,
+    fps: 60
+  };
+
+  // ── 道路の生成（先の形をあらかじめ作っておく）──────
+  const road = { step: 24, lastW: 0, samples: [], heading: 0, curv: 0, target: 0, nextAt: 0 };
+
+  function resetRoad() {
+    road.samples.length = 0;
+    road.lastW = state.distance - 600;
+    road.heading = 0; road.curv = 0; road.target = 0;
+    road.nextAt = road.lastW + 400;
+    road.samples.push({ w: road.lastW, x: 0 });
+    ensureRoad(state.distance + H + 300);
+  }
+
+  function ensureRoad(uptoW) {
+    const maxOff = W * 0.42;
+    while (road.lastW < uptoW) {
+      road.lastW += road.step;
+      if (road.lastW > road.nextAt) {
+        road.target = (hash(road.lastW * 0.017) * 2 - 1) * 0.0022 * state.curveAmount;
+        road.nextAt = road.lastW + 500 + hash(road.lastW * 0.031) * 900;
+      }
+      road.curv += (road.target - road.curv) * 0.05;
+      road.heading = clamp(road.heading + road.curv * road.step, -0.55, 0.55);
+
+      let x = road.samples[road.samples.length - 1].x + road.heading * road.step;
+      if (x > maxOff) { x = maxOff; road.heading = -Math.abs(road.heading) * 0.6; road.target = -Math.abs(road.target); }
+      if (x < -maxOff) { x = -maxOff; road.heading = Math.abs(road.heading) * 0.6; road.target = Math.abs(road.target); }
+      road.samples.push({ w: road.lastW, x });
+    }
+    while (road.samples.length > 4 && road.samples[1].w < state.distance - 500) road.samples.shift();
+  }
+
+  function roadCenterAt(w) {
+    const s = road.samples;
+    if (!s.length) return 0;
+    const i = (w - s[0].w) / road.step;
+    if (i <= 0) return s[0].x;
+    if (i >= s.length - 1) return s[s.length - 1].x;
+    const i0 = i | 0, f = i - i0;
+    return s[i0].x * (1 - f) + s[i0 + 1].x * f;
+  }
+
+  // 画面上の y に対応する道路中心の x
+  const worldAtY = (y) => state.distance + (H - y);
+  // ミニカーの位置で道路が画面中央に来るように全体を平行移動する。
+  // カーブは「車より前後の道路が横にずれる」という形で見える。
+  const centerAtW = (w) => W / 2 + (roadCenterAt(w) - state.anchor) + state.lateral;
+  const centerAtY = (y) => centerAtW(worldAtY(y));
+  const screenY = (w) => H - (w - state.distance);
+
+  // ── エフェクト用のデータ ───────────────────────────
+  let skidStrokes = [];   // {pts:[{w,dx}]}
+  let activeSkid = null;
+  let lastSkidW = 0;
+  let smoke = [];         // {w,dx,r,life,max,vx,vw,tint}
+  let sparks = [];        // ニトロの火花 {w,dx,life,max,vx}
+
+  // ── スプライト（毎フレーム作らずに使い回す）────────
+  let smokeSprite = null, glowSprite = null, headlight = null, vignette = null;
+
+  function makeSmokeSprite() {
+    const s = 128, c = document.createElement('canvas');
+    c.width = c.height = s;
+    const g = c.getContext('2d');
+    const rg = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    rg.addColorStop(0, 'rgba(255,255,255,.95)');
+    rg.addColorStop(.45, 'rgba(255,255,255,.35)');
+    rg.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = rg; g.fillRect(0, 0, s, s);
+    return c;
+  }
+
+  function makeGlowSprite() {
+    const s = 256, c = document.createElement('canvas');
+    c.width = c.height = s;
+    const g = c.getContext('2d');
+    const rg = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    rg.addColorStop(0, 'rgba(255,226,150,.85)');
+    rg.addColorStop(.4, 'rgba(255,206,110,.28)');
+    rg.addColorStop(1, 'rgba(255,200,100,0)');
+    g.fillStyle = rg; g.fillRect(0, 0, s, s);
+    return c;
+  }
+
+  function makeHeadlight() {
+    const w = 560, h = 720, c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    const g = c.getContext('2d');
+    g.beginPath();
+    g.moveTo(w / 2 - 70, h);
+    g.lineTo(w / 2 + 70, h);
+    g.lineTo(w / 2 + 250, 0);
+    g.lineTo(w / 2 - 250, 0);
+    g.closePath();
+    g.clip();
+    const lg = g.createLinearGradient(0, h, 0, 0);
+    lg.addColorStop(0, 'rgba(255,244,206,.5)');
+    lg.addColorStop(.45, 'rgba(255,240,190,.22)');
+    lg.addColorStop(1, 'rgba(255,236,180,0)');
+    g.fillStyle = lg; g.fillRect(0, 0, w, h);
+    return c;
+  }
+
+  function makeVignette() {
+    const c = document.createElement('canvas');
+    c.width = Math.max(2, Math.round(W / 4));
+    c.height = Math.max(2, Math.round(H / 4));
+    const g = c.getContext('2d');
+    const rg = g.createRadialGradient(c.width / 2, c.height * 0.5, c.width * 0.25,
+      c.width / 2, c.height * 0.5, c.width * 1.15);
+    rg.addColorStop(0, 'rgba(0,0,10,0)');
+    rg.addColorStop(1, 'rgba(0,0,12,.72)');
+    g.fillStyle = rg; g.fillRect(0, 0, c.width, c.height);
+    return c;
+  }
+
+  // ── サイズ調整 ─────────────────────────────────────
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.round(cv.clientWidth || window.innerWidth || 390);
+    H = Math.round(cv.clientHeight || window.innerHeight || 700);
+    cv.width = Math.round(W * DPR);
+    cv.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    ROAD_HALF = Math.round(W * 0.40);
+    SHOULDER = Math.round(W * 0.055);
+    CAR_Y = clamp(Math.round((H - 170) / 2 + 20), 240, H - 300);
+
+    vignette = makeVignette();
+    resetRoad();
+  }
+
+  // ── 入力 ───────────────────────────────────────────
+  function holdButton(el, down, up) {
+    const start = (e) => {
+      e.preventDefault();
+      if (el.dataset.held) return;
+      el.dataset.held = '1'; el.classList.add('held');
+      down();
+    };
+    const end = () => {
+      if (!el.dataset.held) return;
+      delete el.dataset.held; el.classList.remove('held');
+      up();
+    };
+    if (window.PointerEvent) {
+      el.addEventListener('pointerdown', start);
+      el.addEventListener('pointerup', end);
+      el.addEventListener('pointercancel', end);
+      el.addEventListener('pointerleave', end);
+      el.addEventListener('lostpointercapture', end);
+    } else {
+      el.addEventListener('touchstart', start, { passive: false });
+      el.addEventListener('touchend', end);
+      el.addEventListener('touchcancel', end);
+      el.addEventListener('mousedown', start);
+      el.addEventListener('mouseup', end);
+      el.addEventListener('mouseleave', end);
+    }
+  }
+
+  // 画面のどこでも：左半分をさわると左、右半分をさわると右
+  function bindScreenSteer() {
+    const active = new Set();
+    const setDir = (clientX) => { state.touchSteer = clientX < W / 2 ? -1 : 1; };
+    const clear = () => { if (active.size === 0) state.touchSteer = 0; };
+
+    if (window.PointerEvent) {
+      cv.addEventListener('pointerdown', (e) => {
+        e.preventDefault(); active.add(e.pointerId); setDir(e.clientX); kick();
+      });
+      cv.addEventListener('pointermove', (e) => { if (active.has(e.pointerId)) setDir(e.clientX); });
+      const up = (e) => { active.delete(e.pointerId); clear(); };
+      cv.addEventListener('pointerup', up);
+      cv.addEventListener('pointercancel', up);
+      cv.addEventListener('pointerleave', up);
+    } else {
+      cv.addEventListener('touchstart', (e) => {
+        e.preventDefault(); active.add(1); setDir(e.touches[0].clientX); kick();
+      }, { passive: false });
+      cv.addEventListener('touchmove', (e) => { setDir(e.touches[0].clientX); }, { passive: false });
+      const end = () => { active.clear(); clear(); };
+      cv.addEventListener('touchend', end);
+      cv.addEventListener('touchcancel', end);
+      cv.addEventListener('mousedown', (e) => { active.add(1); setDir(e.clientX); });
+      cv.addEventListener('mousemove', (e) => { if (active.size) setDir(e.clientX); });
+      window.addEventListener('mouseup', () => { active.clear(); clear(); });
+    }
+  }
+
+  function setKids(on) {
+    state.kids = on;
+    document.body.classList.toggle('kids', on);
+  }
+
+  function bindUI() {
+    bindScreenSteer();
+    holdButton($('padGas'), () => { state.gas = true; kick(); }, () => { state.gas = false; });
+    holdButton($('padBrake'), () => { state.brake = true; kick(); }, () => { state.brake = false; });
+    holdButton($('padLeft'), () => { state.btnSteer = -1; kick(); }, () => { if (state.btnSteer < 0) state.btnSteer = 0; });
+    holdButton($('padRight'), () => { state.btnSteer = 1; kick(); }, () => { if (state.btnSteer > 0) state.btnSteer = 0; });
+    holdButton($('padNitro'), () => { state.nitroHeld = true; kick(); }, () => { state.nitroHeld = false; });
+
+    $('speedSlider').addEventListener('input', (e) => {
+      state.cruise = e.target.value / 100;
+      $('speedSlider2').value = e.target.value;
+    });
+
+    $('btnNight').addEventListener('click', () => setNight(!state.night));
+    $('btnGuide').addEventListener('click', () => {
+      state.guideAlways = !state.guideAlways;
+      state.guideTimer = state.guideAlways ? 999 : 3;
+      $('guideAlways').checked = state.guideAlways;
+      $('btnGuide').classList.toggle('on', state.guideAlways);
+    });
+
+    // 設定は長押しで開く（小さな子が勝手に開かないように）
+    const gear = $('btnMenu');
+    let gearTimer = null;
+    const gearStart = (e) => {
+      if (e && e.preventDefault) e.preventDefault();
+      gear.classList.add('holding');
+      clearTimeout(gearTimer);
+      gearTimer = setTimeout(() => { $('menu').hidden = false; gear.classList.remove('holding'); }, 700);
+    };
+    const gearEnd = () => { clearTimeout(gearTimer); gear.classList.remove('holding'); };
+    if (window.PointerEvent) {
+      gear.addEventListener('pointerdown', gearStart);
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach((t) => gear.addEventListener(t, gearEnd));
+    } else {
+      gear.addEventListener('mousedown', gearStart);
+      gear.addEventListener('touchstart', gearStart, { passive: false });
+      ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach((t) => gear.addEventListener(t, gearEnd));
+    }
+    $('btnClose').addEventListener('click', () => { $('menu').hidden = true; });
+    $('menu').addEventListener('click', (e) => { if (e.target === $('menu')) $('menu').hidden = true; });
+
+    $('btnReset').addEventListener('click', () => {
+      state.distance = 0; state.speed = 0; state.lateral = 0; state.steer = 0;
+      state.nitroFuel = 1; state.nitroLock = false;
+      skidStrokes = []; activeSkid = null; smoke = []; sparks = [];
+      resetRoad();
+      $('menu').hidden = true;
+    });
+
+    $('curveAmount').addEventListener('input', (e) => { state.curveAmount = e.target.value / 100; });
+
+    $('kidsMode').addEventListener('change', (e) => {
+      setKids(e.target.checked);
+      if (e.target.checked) { state.gas = false; state.brake = false; state.nitroHeld = false; state.btnSteer = 0; }
+    });
+
+    $('carSize').addEventListener('input', (e) => {
+      carScale = e.target.value / 100;
+      applyCarSize();
+      $('carSizeVal').textContent = Math.round(CAR_L / PX_PER_MM) + '×' + Math.round(CAR_W / PX_PER_MM) + 'mm';
+    });
+
+    $('speedSlider2').addEventListener('input', (e) => {
+      state.cruise = e.target.value / 100;
+      $('speedSlider').value = e.target.value;
+    });
+    $('guideAlways').addEventListener('change', (e) => {
+      state.guideAlways = e.target.checked;
+      state.guideTimer = state.guideAlways ? 999 : 3;
+      $('btnGuide').classList.toggle('on', state.guideAlways);
+    });
+    $('showFps').addEventListener('change', (e) => {
+      state.showFps = e.target.checked;
+      $('fps').hidden = !state.showFps;
+    });
+    $('keepAwake').addEventListener('change', (e) => {
+      state.keepAwake = e.target.checked;
+      if (state.keepAwake) requestWakeLock(); else releaseWakeLock();
+    });
+
+    $('installClose').addEventListener('click', () => { $('install').hidden = true; });
+
+    $('btnGuide').classList.add('on');
+
+    // ブラウザ既定のジェスチャを止める
+    document.addEventListener('touchmove', (e) => {
+      if (e.target && e.target.tagName === 'INPUT') return;
+      e.preventDefault();
+    }, { passive: false });
+    document.addEventListener('gesturestart', (e) => e.preventDefault());
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+  }
+
+  function setNight(on) {
+    state.night = on;
+    P = on ? PALETTE.night : PALETTE.day;
+    $('btnNight').textContent = on ? '☀' : '🌙';
+    $('btnNight').setAttribute('aria-label', on ? '昼にする' : '夜にする');
+    document.querySelector('meta[name=theme-color]').setAttribute('content', on ? '#05070a' : '#0d1015');
+  }
+
+  // ── 画面を消さない（対応端末のみ）───────────────────
+  let wakeLock = null;
+  async function requestWakeLock() {
+    try {
+      if ('wakeLock' in navigator && state.keepAwake && !wakeLock) {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      }
+    } catch (_) { /* 非対応でも遊べる */ }
+  }
+  function releaseWakeLock() { if (wakeLock) { wakeLock.release().catch(() => { }); wakeLock = null; } }
+  function kick() { requestWakeLock(); }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') { last = performance.now(); requestWakeLock(); }
+    else releaseWakeLock();
+  });
+
+  // ── 更新 ───────────────────────────────────────────
+  function update(dt) {
+    // 画面タッチ優先、ボタンが押されていればそちら
+    state.steerInput = state.btnSteer !== 0 ? state.btnSteer : state.touchSteer;
+
+    // ニトロ
+    if (state.nitroFuel <= 0.001) state.nitroLock = true;
+    if (state.nitroFuel >= 0.30) state.nitroLock = false;
+    const canNitro = state.nitroHeld && !state.nitroLock;
+    if (canNitro) {
+      if (!state.nitroOn) burst();
+      state.nitroOn = true;
+      state.nitroFuel = Math.max(0, state.nitroFuel - dt * 0.34);
+    } else {
+      state.nitroOn = false;
+      state.nitroFuel = Math.min(1, state.nitroFuel + dt * 0.13);
+    }
+
+    // 速度
+    let target = MAX_SPEED * state.cruise;
+    if (state.gas) target = MAX_SPEED;
+    if (state.nitroOn) target = MAX_SPEED * 1.4;
+    if (state.brake) target = 0;
+    const rate = target > state.speed ? (state.nitroOn ? 2800 : 1500) : 2400;
+    state.speed += clamp(target - state.speed, -rate * dt, rate * dt);
+    state.speed = clamp(state.speed, 0, MAX_SPEED * 1.4);
+    state.distance += state.speed * dt;
+
+    // ハンドル（道路のほうを横に流して曲がって見せる）
+    state.steer += (state.steerInput - state.steer) * Math.min(1, dt * 9);
+    const maxLat = Math.max(40, ROAD_HALF - CAR_W / 2 + SHOULDER * 0.5);
+    state.lateral -= state.steer * (150 + state.speed * 0.30) * dt;
+    if (Math.abs(state.steerInput) < 0.01) state.lateral *= Math.max(0, 1 - dt * 1.8);
+    state.lateral = clamp(state.lateral, -maxLat, maxLat);
+
+    ensureRoad(state.distance + H + 300);
+    state.anchor = roadCenterAt(worldAtY(CAR_Y));
+
+    // スキッド判定
+    const hardTurn = Math.abs(state.steer) > 0.55 && state.speed > 520;
+    const hardBrake = state.brake && state.speed > 620;
+    const skidding = hardTurn || hardBrake || (state.nitroOn && state.speed < MAX_SPEED * 0.55);
+    updateSkid(skidding);
+
+    // 煙
+    if (skidding) {
+      const n = 1 + (state.speed > 900 ? 1 : 0);
+      for (let i = 0; i < n; i++) puff(hardTurn ? Math.sign(state.steer) : (Math.random() < .5 ? -1 : 1));
+    }
+    if (state.nitroOn && Math.random() < 0.7) puff(Math.random() < .5 ? -1 : 1, true);
+
+    // 路肩に乗ったら砂ぼこり
+    const offRoad = Math.abs(state.lateral) > ROAD_HALF - CAR_W / 2;
+    if (offRoad && state.speed > 300 && Math.random() < 0.8) puff(-Math.sign(state.lateral));
+
+    updateParticles(dt);
+
+    // 説明ラベルの表示時間
+    if (state.guideTimer > 0) state.guideTimer -= dt;
+  }
+
+  function updateSkid(on) {
+    if (on) {
+      const w = worldAtY(CAR_Y);
+      const cx = centerAtW(w);
+      if (!activeSkid) {
+        activeSkid = [{ pts: [] }, { pts: [] }];
+        skidStrokes.push(activeSkid[0], activeSkid[1]);
+        lastSkidW = -1e9;
+      }
+      if (w - lastSkidW > 10) {
+        lastSkidW = w;
+        activeSkid[0].pts.push({ w, dx: (W / 2 - TIRE_DX) - cx });
+        activeSkid[1].pts.push({ w, dx: (W / 2 + TIRE_DX) - cx });
+      }
+    } else {
+      activeSkid = null;
+    }
+    // 画面の下に流れ切ったものを捨てる
+    if (skidStrokes.length > 60 || Math.random() < 0.1) {
+      for (let i = 0; i < skidStrokes.length; i++) {
+        const pts = skidStrokes[i].pts;
+        while (pts.length > 2 && pts[1].w < state.distance - 140) pts.shift();
+      }
+      skidStrokes = skidStrokes.filter((s) => {
+        if (s === (activeSkid && activeSkid[0]) || s === (activeSkid && activeSkid[1])) return true;
+        return s.pts.length && s.pts[s.pts.length - 1].w > state.distance - 120;
+      });
+    }
+  }
+
+  function puff(side, exhaust) {
+    if (smoke.length > 150) return;
+    const w = worldAtY(CAR_Y + CAR_L * 0.42) - Math.random() * 20;
+    const cx = centerAtW(w);
+    const dx = (W / 2 + side * (exhaust ? TIRE_DX * 0.45 : TIRE_DX)) - cx + (Math.random() * 16 - 8);
+    smoke.push({
+      w, dx,
+      r: (exhaust ? 14 + Math.random() * 10 : 20 + Math.random() * 16) * SMOKE_SCALE,
+      life: exhaust ? 0.5 : 0.9 + Math.random() * 0.5,
+      max: exhaust ? 0.5 : 1.4,
+      vx: side * (30 + Math.random() * 90),
+      vw: -(60 + Math.random() * 140),
+      tint: exhaust ? 1 : 0
+    });
+    if (exhaust && sparks.length < 60) {
+      sparks.push({
+        w, dx: dx * 0.4,
+        life: 0.28, max: 0.28,
+        vx: (Math.random() * 2 - 1) * 120
+      });
+    }
+  }
+
+  function burst() {
+    for (let i = 0; i < 14; i++) puff(Math.random() < .5 ? -1 : 1, true);
+  }
+
+  function updateParticles(dt) {
+    for (let i = smoke.length - 1; i >= 0; i--) {
+      const p = smoke[i];
+      p.life -= dt;
+      p.r += dt * (p.tint ? 90 : 55);
+      p.dx += p.vx * dt;
+      p.w += p.vw * dt;
+      if (p.life <= 0 || screenY(p.w) > H + 120) smoke.splice(i, 1);
+    }
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.life -= dt;
+      s.dx += s.vx * dt;
+      s.w -= 500 * dt;
+      if (s.life <= 0) sparks.splice(i, 1);
+    }
+  }
+
+  // ── 描画 ───────────────────────────────────────────
+  const EDGE_STEP = 16;
+  let edges = [];
+
+  function computeEdges() {
+    edges.length = 0;
+    for (let y = H + EDGE_STEP; y >= -EDGE_STEP * 2; y -= EDGE_STEP) {
+      edges.push({ y, cx: centerAtY(y) });
+    }
+  }
+
+  function bandPath(half) {
+    ctx.beginPath();
+    for (let i = 0; i < edges.length; i++) {
+      const e = edges[i];
+      if (i === 0) ctx.moveTo(e.cx - half, e.y); else ctx.lineTo(e.cx - half, e.y);
+    }
+    for (let i = edges.length - 1; i >= 0; i--) {
+      const e = edges[i];
+      ctx.lineTo(e.cx + half, e.y);
+    }
+    ctx.closePath();
+  }
+
+  function strokeAlong(offset, width, color, dashRange) {
+    ctx.beginPath();
+    let started = false;
+    for (let i = 0; i < edges.length; i++) {
+      const e = edges[i];
+      if (dashRange && (e.y < dashRange[0] || e.y > dashRange[1])) { started = false; continue; }
+      const x = e.cx + offset;
+      if (!started) { ctx.moveTo(x, e.y); started = true; } else ctx.lineTo(x, e.y);
+    }
+    ctx.lineWidth = width;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+  }
+
+  function drawBackground() {
+    ctx.fillStyle = P.grass;
+    ctx.fillRect(0, 0, W, H);
+
+    // 横じま（速度が伝わるように）
+    const band = 190;
+    ctx.fillStyle = P.grassAlt;
+    let k = Math.floor(state.distance / band) - 1;
+    for (; ; k++) {
+      const y = screenY(k * band);
+      if (y < -band) break;
+      if (y > H + band) continue;
+      ctx.fillRect(0, y - band * 0.5, W, band * 0.5);
+    }
+  }
+
+  function drawScenery() {
+    const spacing = 240;
+    let k = Math.floor((state.distance - 200) / spacing);
+    for (; ; k++) {
+      const w = k * spacing + hash(k * 1.7) * 120;
+      const y = screenY(w);
+      if (y < -140) break;
+      if (y > H + 140) continue;
+
+      const side = hash(k * 3.1) > 0.5 ? 1 : -1;
+      const dist = ROAD_HALF + SHOULDER + 20 + hash(k * 5.3) * 90;
+      const x = centerAtY(y) + side * dist;
+      if (x < -90 || x > W + 90) continue;
+
+      const type = hash(k * 7.9);
+      if (type < 0.72) {
+        const r = 26 + hash(k * 11.3) * 16;
+        ctx.fillStyle = P.trunk;
+        ctx.fillRect(x - 5, y, 10, 22);
+        ctx.fillStyle = hash(k * 13.7) > 0.5 ? P.tree : P.treeAlt;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // 標識ポール
+        ctx.fillStyle = P.trunk;
+        ctx.fillRect(x - 3, y - 26, 6, 34);
+        ctx.fillStyle = state.night ? '#5c6470' : '#e8eaee';
+        ctx.beginPath();
+        ctx.arc(x, y - 34, 13, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  function drawRoad() {
+    // 路肩
+    bandPath(ROAD_HALF + SHOULDER);
+    ctx.fillStyle = P.shoulder;
+    ctx.fill();
+
+    // 路肩の砂利
+    ctx.fillStyle = P.shoulderDot;
+    const gs = 46;
+    let k = Math.floor(state.distance / gs) - 1;
+    for (; ; k++) {
+      const w = k * gs;
+      const y = screenY(w);
+      if (y < -20) break;
+      if (y > H + 20) continue;
+      const cx = centerAtY(y);
+      for (let s = -1; s <= 1; s += 2) {
+        const off = ROAD_HALF + 6 + hash(k * (s > 0 ? 2.3 : 4.1)) * (SHOULDER - 10);
+        ctx.fillRect(cx + s * off, y, 3, 3);
+      }
+    }
+
+    // アスファルト
+    bandPath(ROAD_HALF);
+    ctx.fillStyle = P.road;
+    ctx.fill();
+
+    // 舗装の継ぎ目
+    ctx.strokeStyle = P.roadSeam;
+    ctx.lineWidth = 3;
+    const seam = 420;
+    let m = Math.floor(state.distance / seam) - 1;
+    for (; ; m++) {
+      const y = screenY(m * seam);
+      if (y < -10) break;
+      if (y > H + 10) continue;
+      const cx = centerAtY(y);
+      ctx.beginPath();
+      ctx.moveTo(cx - ROAD_HALF, y);
+      ctx.lineTo(cx + ROAD_HALF, y);
+      ctx.stroke();
+    }
+  }
+
+  function drawSkid() {
+    ctx.strokeStyle = P.skid;
+    ctx.lineWidth = TIRE_W;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    for (let i = 0; i < skidStrokes.length; i++) {
+      const pts = skidStrokes[i].pts;
+      if (pts.length < 2) continue;
+      ctx.beginPath();
+      let started = false;
+      for (let j = 0; j < pts.length; j++) {
+        const p = pts[j];
+        const y = screenY(p.w);
+        if (y < -60 || y > H + 60) { started = false; continue; }
+        const x = centerAtW(p.w) + p.dx;
+        if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ctx.lineCap = 'butt';
+  }
+
+  function drawLines() {
+    // 外側の白線
+    strokeAlong(-(ROAD_HALF - 9), 6, P.edge);
+    strokeAlong(ROAD_HALF - 9, 6, P.edge);
+
+    // センターライン（破線）
+    const period = 190, len = 105;
+    ctx.lineWidth = 9;
+    ctx.strokeStyle = P.center;
+    let k = Math.floor(state.distance / period) - 1;
+    for (; ; k++) {
+      const w0 = k * period, w1 = w0 + len;
+      const yBottom = screenY(w0), yTop = screenY(w1);
+      if (yBottom < -40) break;
+      if (yTop > H + 40) continue;
+      ctx.beginPath();
+      const steps = 5;
+      for (let i = 0; i <= steps; i++) {
+        const y = yTop + (yBottom - yTop) * (i / steps);
+        const x = centerAtY(y);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+  }
+
+  function drawSmoke() {
+    ctx.globalAlpha = 1;
+    for (let i = 0; i < smoke.length; i++) {
+      const p = smoke[i];
+      const y = screenY(p.w);
+      if (y < -100 || y > H + 100) continue;
+      const x = centerAtW(p.w) + p.dx;
+      const a = clamp(p.life / p.max, 0, 1) * P.smokeAlpha * (p.tint ? 0.8 : 1);
+      ctx.globalAlpha = a;
+      ctx.drawImage(smokeSprite, x - p.r, y - p.r, p.r * 2, p.r * 2);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawNitro() {
+    if (!state.nitroOn && sparks.length === 0) return;
+
+    // 火花
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < sparks.length; i++) {
+      const s = sparks[i];
+      const y = screenY(s.w);
+      const x = centerAtW(s.w) + s.dx;
+      const a = clamp(s.life / s.max, 0, 1);
+      ctx.globalAlpha = a;
+      ctx.fillStyle = a > 0.6 ? '#bff4ff' : '#3fd2f0';
+      ctx.fillRect(x - 2, y - 8, 4, 16);
+    }
+    ctx.globalAlpha = 1;
+
+    if (state.nitroOn) {
+      // 後方の炎
+      const baseY = CAR_Y + CAR_L * 0.48;
+      const flick = 0.75 + Math.random() * 0.35;
+      for (let s = -1; s <= 1; s += 2) {
+        const x = W / 2 + s * CAR_W * 0.22;
+        const g = ctx.createLinearGradient(x, baseY, x, baseY + 150 * flick);
+        g.addColorStop(0, 'rgba(210,250,255,.9)');
+        g.addColorStop(.35, 'rgba(70,215,245,.55)');
+        g.addColorStop(1, 'rgba(30,120,220,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(x - 22, baseY);
+        ctx.quadraticCurveTo(x, baseY + 170 * flick, x + 22, baseY);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // スピードライン
+      ctx.strokeStyle = 'rgba(255,255,255,.16)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      for (let i = 0; i < 16; i++) {
+        const x = hash(i * 7.7) * W;
+        const len = 70 + hash(i * 3.1) * 140;
+        const y = ((state.distance * 2.2 + hash(i * 11.3) * 3000) % (H + 400)) - 200;
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y + len);
+      }
+      ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function drawNight() {
+    // 全体を落とす
+    ctx.drawImage(vignette, 0, 0, W, H);
+
+    ctx.globalCompositeOperation = 'lighter';
+
+    // 街灯
+    const spacing = 900;
+    let k = Math.floor((state.distance - 300) / spacing);
+    for (; ; k++) {
+      const w = k * spacing;
+      const y = screenY(w);
+      if (y < -200) break;
+      if (y > H + 200) continue;
+      const x = centerAtY(y) + (ROAD_HALF + SHOULDER * 0.6);
+      const r = 210;
+      ctx.globalAlpha = 0.9;
+      ctx.drawImage(glowSprite, x - r, y - r, r * 2, r * 2);
+    }
+    ctx.globalAlpha = 1;
+
+    // ヘッドライト
+    const hw = W * 1.15, hh = hw * (720 / 560);
+    ctx.drawImage(headlight, W / 2 - hw / 2, CAR_Y - CAR_L * 0.45 - hh, hw, hh);
+
+    ctx.globalCompositeOperation = 'source-over';
+
+    // 街灯のポール
+    ctx.fillStyle = '#2a2f36';
+    const spacing2 = 900;
+    let m = Math.floor((state.distance - 300) / spacing2);
+    for (; ; m++) {
+      const y = screenY(m * spacing2);
+      if (y < -60) break;
+      if (y > H + 60) continue;
+      const x = centerAtY(y) + (ROAD_HALF + SHOULDER * 0.6);
+      ctx.fillRect(x - 4, y, 8, 26);
+    }
+  }
+
+  // 上から見たスポーツカー（ガイド兼、実物を置く目印）
+  function drawCarShape(x, y, L, Wd, alpha) {
+    const u = (fx, fy) => [fx * Wd, fy * L];
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.globalAlpha = alpha;
+
+    // タイヤ（前は細く、後ろは太く）
+    ctx.fillStyle = 'rgba(14,16,20,.92)';
+    [[-0.30, 0.15, 0.15], [0.31, 0.17, 0.17]].forEach((t) => {
+      const tw = t[1] * Wd, th = t[2] * L;
+      for (let sx = -1; sx <= 1; sx += 2) {
+        const x0 = sx > 0 ? 0.40 * Wd : -(0.40 * Wd + tw);
+        roundRect(x0, t[0] * L - th / 2, tw, th, Math.max(1.5, tw * 0.3));
+        ctx.fill();
+      }
+    });
+
+    // リアウイング
+    ctx.fillStyle = 'rgba(18,20,26,.9)';
+    roundRect(-0.48 * Wd, 0.48 * L, 0.96 * Wd, 0.065 * L, Math.max(1.5, L * 0.012));
+    ctx.fill();
+
+    // ボディ
+    ctx.beginPath();
+    ctx.moveTo(...u(0, -0.500));
+    ctx.bezierCurveTo(...u(0.14, -0.500), ...u(0.24, -0.478), ...u(0.30, -0.425));
+    ctx.bezierCurveTo(...u(0.38, -0.375), ...u(0.475, -0.345), ...u(0.48, -0.275));
+    ctx.bezierCurveTo(...u(0.485, -0.195), ...u(0.40, -0.130), ...u(0.40, -0.020));
+    ctx.bezierCurveTo(...u(0.40, 0.080), ...u(0.50, 0.130), ...u(0.50, 0.260));
+    ctx.bezierCurveTo(...u(0.50, 0.400), ...u(0.46, 0.500), ...u(0.34, 0.500));
+    ctx.lineTo(...u(-0.34, 0.500));
+    ctx.bezierCurveTo(...u(-0.46, 0.500), ...u(-0.50, 0.400), ...u(-0.50, 0.260));
+    ctx.bezierCurveTo(...u(-0.50, 0.130), ...u(-0.40, 0.080), ...u(-0.40, -0.020));
+    ctx.bezierCurveTo(...u(-0.40, -0.130), ...u(-0.485, -0.195), ...u(-0.48, -0.275));
+    ctx.bezierCurveTo(...u(-0.475, -0.345), ...u(-0.38, -0.375), ...u(-0.30, -0.425));
+    ctx.bezierCurveTo(...u(-0.24, -0.478), ...u(-0.14, -0.500), ...u(0, -0.500));
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,106,0,.55)';
+    ctx.fill();
+    ctx.lineWidth = Math.max(2, L * 0.014);
+    ctx.strokeStyle = 'rgba(255,255,255,.92)';
+    ctx.stroke();
+
+    // ドアミラー
+    ctx.fillStyle = 'rgba(255,106,0,.85)';
+    for (let sx = -1; sx <= 1; sx += 2) {
+      const x0 = sx > 0 ? 0.40 * Wd : -0.54 * Wd;
+      roundRect(x0, -0.075 * L, 0.14 * Wd, 0.045 * L, Math.max(1, L * 0.008));
+      ctx.fill();
+    }
+
+    // キャノピー
+    ctx.beginPath();
+    ctx.moveTo(...u(-0.17, 0.010));
+    ctx.lineTo(...u(0.17, 0.010));
+    ctx.lineTo(...u(0.25, 0.200));
+    ctx.lineTo(...u(-0.25, 0.200));
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(18,24,32,.8)';
+    ctx.fill();
+
+    // リアデッキのルーバー
+    ctx.fillStyle = 'rgba(18,20,26,.45)';
+    for (let k = 0; k < 3; k++) {
+      ctx.fillRect(-0.22 * Wd, (0.25 + k * 0.035) * L, 0.44 * Wd, 0.02 * L);
+    }
+
+    // センターストライプ
+    ctx.fillStyle = 'rgba(255,255,255,.5)';
+    ctx.fillRect(-0.085 * Wd, -0.42 * L, 0.05 * Wd, 0.36 * L);
+    ctx.fillRect(0.035 * Wd, -0.42 * L, 0.05 * Wd, 0.36 * L);
+
+    // ヘッドライトとテールランプ
+    ctx.fillStyle = state.night ? '#fff6d0' : 'rgba(255,240,200,.95)';
+    for (let sx = -1; sx <= 1; sx += 2) {
+      roundRect(sx > 0 ? 0.16 * Wd : -0.30 * Wd, -0.455 * L, 0.14 * Wd, 0.04 * L, Math.max(1, L * 0.008));
+      ctx.fill();
+    }
+    ctx.fillStyle = 'rgba(255,60,70,.9)';
+    roundRect(-0.26 * Wd, 0.44 * L, 0.52 * Wd, 0.035 * L, Math.max(1, L * 0.008));
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  function drawGuide() {
+    const show = state.guideAlways || state.guideTimer > 0;
+    if (!show) return;
+    const alpha = state.guideAlways ? 1 : clamp(state.guideTimer, 0, 1);
+
+    drawCarShape(W / 2, CAR_Y, CAR_L, CAR_W, alpha * 0.95);
+
+    // 置き場所がひと目で分かるように、最初だけ説明を出す
+    if (state.guideTimer > 0) {
+      const a = clamp(state.guideTimer, 0, 1);
+      ctx.save();
+      ctx.globalAlpha = a;
+      const label = 'ここに ミニカーを おいてね';
+      ctx.font = '600 15px -apple-system, "Hiragino Sans", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const tw = ctx.measureText(label).width + 24;
+      const ly = CAR_Y + CAR_L / 2 + 30;
+      ctx.fillStyle = 'rgba(0,0,0,.5)';
+      roundRect(W / 2 - tw / 2, ly - 17, tw, 34, 17);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.fillText(label, W / 2, ly);
+      ctx.restore();
+    }
+  }
+
+  // 画面タッチ中の向きを知らせる
+  function drawTouchHint() {
+    if (!state.touchSteer) return;
+    const dir = state.touchSteer;
+    ctx.save();
+    const g = ctx.createLinearGradient(dir < 0 ? 0 : W, 0, dir < 0 ? W * 0.45 : W * 0.55, 0);
+    g.addColorStop(0, 'rgba(255,255,255,.14)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(dir < 0 ? 0 : W * 0.55, 0, W * 0.45, H);
+
+    const x = dir < 0 ? W * 0.14 : W * 0.86, y = H * 0.8;
+    ctx.globalAlpha = 0.55;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.moveTo(x + dir * 30, y);
+    ctx.lineTo(x - dir * 18, y - 34);
+    ctx.lineTo(x - dir * 18, y + 34);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function render() {
+    computeEdges();
+    drawBackground();
+    drawScenery();
+    drawRoad();
+    drawSkid();
+    drawLines();
+    drawSmoke();
+    drawNitro();
+    if (state.night) drawNight();
+    drawGuide();
+    drawTouchHint();
+  }
+
+  // ── HUD ────────────────────────────────────────────
+  let hudAcc = 0;
+  function updateHud() {
+    $('speedVal').textContent = Math.round(state.speed * 0.155);
+    $('nitroFill').style.width = (state.nitroFuel * 100).toFixed(0) + '%';
+    $('padNitro').classList.toggle('empty', state.nitroLock);
+    if (state.showFps) $('fps').textContent = state.fps.toFixed(0) + 'fps';
+  }
+
+  // ── メインループ ───────────────────────────────────
+  let last = performance.now(), frames = 0, fpsAcc = 0;
+
+  function frame(t) {
+    requestAnimationFrame(frame);
+    let dt = (t - last) / 1000;
+    last = t;
+    if (dt > 0.05) dt = 0.05;
+    if (dt <= 0) return;
+
+    update(dt);
+    render();
+
+    frames++; fpsAcc += dt; hudAcc += dt;
+    if (fpsAcc >= 0.5) { state.fps = frames / fpsAcc; frames = 0; fpsAcc = 0; }
+    if (hudAcc >= 0.1) { hudAcc = 0; updateHud(); }
+  }
+
+  // ── 起動 ───────────────────────────────────────────
+  function init() {
+    try { boot(); } catch (err) { showError(err); }
+    requestAnimationFrame(frame);   // 初期化に失敗しても描画は続ける
+  }
+
+  function showError(err) {
+    const box = document.createElement('div');
+    box.style.cssText = 'position:fixed;left:12px;right:12px;top:80px;z-index:99;padding:12px 14px;' +
+      'background:#ff2d55;color:#fff;border-radius:12px;font-size:12px;line-height:1.5;white-space:pre-wrap';
+    box.textContent = '起動エラー: ' + (err && (err.message || err));
+    document.body.appendChild(box);
+  }
+
+  function boot() {
+    smokeSprite = makeSmokeSprite();
+    glowSprite = makeGlowSprite();
+    headlight = makeHeadlight();
+
+    applyCarSize();
+    resize();
+    bindUI();
+    setKids(true);
+    setNight(false);
+    $('carSizeVal').textContent = Math.round(CAR_L / PX_PER_MM) + '×' + Math.round(CAR_W / PX_PER_MM) + 'mm';
+    updateHud();
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('orientationchange', () => setTimeout(resize, 300));
+
+    // ホーム画面追加の案内（Safariで未インストールのときだけ）
+    try {
+      const standalone = window.navigator.standalone === true ||
+        (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      let seen = false;
+      try { seen = !!localStorage.getItem('installHintSeen'); } catch (_) { seen = false; }
+      if (isIOS && !standalone && !seen) {
+        $('install').hidden = false;
+        $('installClose').addEventListener('click', () => {
+          try { localStorage.setItem('installHintSeen', '1'); } catch (_) { }
+        });
+      }
+    } catch (_) { }
+
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+
+})();
+
+</script>
+<script src="../../back.js" data-home="../../index.html"></script>
+</body>
+</html>
