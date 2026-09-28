@@ -568,16 +568,23 @@ VEHICLES.push(
   {
     id: 'shirobai', name: 'しろバイ', say: 'しろバイ', color: '#2a2f38', image: '', group: 'emergency', sound: '',
     svg: svgBox(`${ROAD}
-  <circle cx="86" cy="112" r="26" fill="#2b2b2b"/><circle cx="86" cy="112" r="12" fill="#c9ced6"/>
-  <circle cx="240" cy="112" r="26" fill="#2b2b2b"/><circle cx="240" cy="112" r="12" fill="#c9ced6"/>
-  <path d="M86,112 L130,84 L200,84 L240,112" stroke="#8a9098" stroke-width="6" fill="none"/>
-  <path d="M104,76 L150,70 L206,70 C230,70 252,80 262,98 L240,104 L200,92 L120,94 Z" fill="#fbfbfb" stroke="rgba(0,0,0,.25)" stroke-width="2"/>
-  <path d="M228,56 L252,66 L262,98 L246,96 Z" fill="${SKY}" stroke="rgba(0,0,0,.2)" stroke-width="2"/>
-  <rect x="236" y="44" width="16" height="10" rx="3" fill="#ff2a2a"/>
-  <path d="M150,70 C150,48 160,40 176,40 L196,40 L204,70 Z" fill="#f2f2f2" stroke="rgba(0,0,0,.25)" stroke-width="2"/>
-  <circle cx="186" cy="26" r="15" fill="#fbfbfb" stroke="rgba(0,0,0,.25)" stroke-width="2"/><rect x="186" y="22" width="15" height="8" rx="3" fill="#2b3548"/>
-  <path d="M196,54 L228,62" stroke="#f2f2f2" stroke-width="9" stroke-linecap="round"/>
-  <path d="M160,70 L168,98 L186,100" stroke="#1f3a6b" stroke-width="10" fill="none" stroke-linecap="round"/>`)
+  <path d="M40,106 L146,112" stroke="#c9ced6" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="76" cy="110" r="28" fill="#2b2b2b"/><circle cx="76" cy="110" r="16" fill="#c9ced6"/><circle cx="76" cy="110" r="5" fill="#6b7280"/>
+  <circle cx="244" cy="110" r="28" fill="#2b2b2b"/><circle cx="244" cy="110" r="16" fill="#c9ced6"/><circle cx="244" cy="110" r="5" fill="#6b7280"/>
+  <path d="M76,110 L142,102" stroke="#6b7280" stroke-width="9" stroke-linecap="round"/>
+  <rect x="128" y="86" width="64" height="28" rx="8" fill="#4b5563"/>
+  <path d="M244,110 L222,62" stroke="#9aa1ab" stroke-width="8" stroke-linecap="round"/>
+  <path d="M222,94 C230,80 258,80 268,94" stroke="#fbfbfb" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M58,60 L58,32" stroke="#9aa1ab" stroke-width="3"/><rect x="51" y="22" width="14" height="12" rx="3" fill="#ff2a2a"/>
+  <path d="M214,58 L222,32 C238,32 248,44 252,64 Z" fill="#bfe3f5" stroke="rgba(0,0,0,.2)" stroke-width="2"/>
+  <rect x="44" y="60" width="52" height="36" rx="7" fill="#fbfbfb" stroke="rgba(0,0,0,.25)" stroke-width="2"/>
+  <rect x="50" y="66" width="12" height="8" rx="2" fill="#ff2a2a"/>
+  <path d="M96,80 L130,66 C150,56 186,54 206,62 C224,52 252,60 260,82 L250,96 L214,94 L198,88 L134,90 L100,92 Z" fill="#fbfbfb" stroke="rgba(0,0,0,.25)" stroke-width="2"/>
+  <path d="M96,78 C108,66 124,62 140,64 L136,72 L100,82 Z" fill="#2b2b2b"/>
+  <path d="M150,72 L196,70" stroke="#2f6fd0" stroke-width="4" stroke-linecap="round"/>
+  <path d="M208,60 L230,56" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
+  <rect x="246" y="66" width="14" height="9" rx="3" fill="#ff2a2a"/>
+  <circle cx="256" cy="84" r="5" fill="#fff6c8" stroke="#9aa1ab" stroke-width="2"/>`)
   },
   {
     id: 'hashigo', name: 'はしごしゃ', say: 'はしごしゃ', color: '#e60f1e', image: '', group: 'emergency', sound: '',
@@ -641,15 +648,16 @@ VEHICLES.push(
   {
     id: 'dump', name: 'ダンプカー', say: 'ダンプカー', color: '#e08a00', image: '', group: 'work', sound: '',
     svg: svgBox(`${ROAD}
-  <rect x="20" y="104" width="280" height="10" fill="#3d4450"/>
-  <g transform="rotate(-18 210 104)">
-    <path d="M40,40 C60,24 150,20 190,36 L190,40 Z" fill="#8b5a2b"/>
-    <path d="M30,40 L214,40 L206,104 L40,104 Z" fill="#f5a300" stroke="rgba(0,0,0,.2)" stroke-width="2"/>
-    <rect x="60" y="54" width="120" height="8" fill="#d98c00"/><rect x="60" y="76" width="120" height="8" fill="#d98c00"/>
-  </g>
-  <rect x="170" y="80" width="10" height="30" fill="#9aa1ab"/>
-  ${cab(222, '#f5a300')}
-  ${wheel(70, 122, 17)}${wheel(170, 122, 17)}${wheel(262, 122, 17)}`)
+  <rect x="18" y="104" width="282" height="9" fill="#3d4450"/>
+  <path d="M34,60 C62,34 150,30 196,58 Z" fill="#9a6a3a"/>
+  <circle cx="80" cy="46" r="7" fill="#8a5a2b"/><circle cx="130" cy="40" r="8" fill="#8a5a2b"/><circle cx="168" cy="48" r="6" fill="#8a5a2b"/>
+  <path d="M16,56 L212,56 L212,106 L30,106 C22,106 16,100 16,92 Z" fill="#f5a300" stroke="rgba(0,0,0,.22)" stroke-width="2"/>
+  <rect x="16" y="56" width="196" height="7" fill="#d98c00"/>
+  ${[56, 96, 136, 176].map((x) => `<rect x="${x}" y="63" width="6" height="43" fill="#d98c00"/>`).join('')}
+  <rect x="204" y="38" width="10" height="68" fill="#d98c00"/>
+  <path d="M204,38 L258,38 C262,38 264,40 264,44 L264,48 L204,48 Z" fill="#d98c00"/>
+  ${cab(216, '#f5a300')}
+  ${wheel(56, 122, 17)}${wheel(98, 122, 17)}${wheel(260, 122, 17)}`)
   },
   {
     id: 'crane', name: 'クレーンしゃ', say: 'クレーンしゃ', color: '#e0a000', image: '', group: 'work', sound: '',
