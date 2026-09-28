@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="のりもの">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="theme-color" content="#bfe8ff">
+<title>のりもの あてっこ</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- はじめの がめん -->
+<section id="screen-start" class="screen active">
+  <div class="start-title">
+    <span class="t1">のりもの</span>
+    <span class="t2">あてっこ</span>
+  </div>
+  <div class="parade" id="parade"></div>
+  <button id="btn-play" class="btn-play" aria-label="あそぶ">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M36,24 L78,50 L36,76 Z" fill="#fff" stroke="#fff" stroke-width="8" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="play-label">あそぶ</div>
+  <button id="btn-zukan" class="btn-zukan" aria-label="ずかん">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 6.5C10.3 5.3 8 4.8 5.5 4.8 4.4 4.8 3.4 5 2.5 5.3v13.4c.9-.3 1.9-.5 3-.5 2.5 0 4.8.5 6.5 1.8 1.7-1.3 4-1.8 6.5-1.8 1.1 0 2.1.2 3 .5V5.3c-.9-.3-1.9-.5-3-.5-2.5 0-4.8.5-6.5 1.7zm-1 11c-1.5-.8-3.4-1.1-5.5-1.1-.7 0-1.3 0-2 .1V6.6c.6-.1 1.3-.2 2-.2 2.1 0 4 .4 5.5 1.3z"/></svg>
+    <span>ずかん</span>
+  </button>
+  <button id="btn-settings" class="btn-hidden-corner" aria-label="せってい（ながおし）">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.4-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4L10.6 6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.4L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.4 2.5-1c.5.4 1.1.7 1.7 1l.4 2.7h4l.4-2.7c.6-.3 1.2-.6 1.7-1l2.5 1 2-3.4zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
+  </button>
+</section>
+
+<!-- ゲーム がめん -->
+<section id="screen-game" class="screen">
+  <div class="topbar">
+    <button id="btn-home" class="btn-small-faint" aria-label="おうち（ながおし）">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
+    </button>
+    <div id="progress" class="progress"></div>
+    <button id="btn-repeat" class="btn-speaker" aria-label="もういちど きく">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9zm12.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+    </button>
+  </div>
+  <button id="question" class="question" aria-live="polite">
+    <span id="qname" class="qname"></span><span class="qwa"> は</span><span class="qdore"> どれ？</span>
+  </button>
+  <div id="choices" class="choices"></div>
+  <div id="retry-bubble" class="retry-bubble">もういちど！</div>
+</section>
+
+<!-- ずかん がめん -->
+<section id="screen-zukan" class="screen">
+  <div class="zukan-head">
+    <button id="btn-zukan-back" class="btn-back" aria-label="もどる">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
+    </button>
+    <div class="zukan-title">ずかん</div>
+    <div class="zukan-spacer"></div>
+  </div>
+  <div id="zukan-list" class="zukan-list"></div>
+</section>
+
+<!-- おわりの がめん -->
+<section id="screen-end" class="screen">
+  <div class="end-star">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6l12.9 26.2 28.9 4.2-20.9 20.4 4.9 28.8L50 72 24.2 85.6l4.9-28.8L8.2 36.4l28.9-4.2z" fill="#ffd23f" stroke="#f5a800" stroke-width="4" stroke-linejoin="round"/><circle cx="38" cy="46" r="4" fill="#5a3b00"/><circle cx="62" cy="46" r="4" fill="#5a3b00"/><path d="M40 57q10 9 20 0" stroke="#5a3b00" stroke-width="4" fill="none" stroke-linecap="round"/></svg>
+  </div>
+  <div class="end-text">すごい！<br>ぜんぶ できたね！</div>
+  <div id="end-list" class="end-list"></div>
+  <button id="btn-again" class="btn-again" aria-label="もういっかい">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/></svg>
+    <span>もういっかい</span>
+  </button>
+  <button id="btn-end-home" class="btn-small-faint end-home" aria-label="はじめに もどる">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
+  </button>
+</section>
+
+<!-- せいかい の 表示 -->
+<div id="correct-pop" class="correct-pop">
+  <div class="cp-text">せいかい！</div>
+  <div id="cp-name" class="cp-name"></div>
+</div>
+
+<!-- 紙吹雪 -->
+<canvas id="fx"></canvas>
+
+<!-- 保護者向け せってい -->
+<div id="settings" class="settings" hidden>
+  <div class="settings-panel">
+    <h2>せってい（保護者の方へ）</h2>
+
+    <div class="set-row">
+      <div class="set-label">1回の問題の数</div>
+      <div class="seg" data-key="count">
+        <button data-val="3">3</button><button data-val="5">5</button><button data-val="8">8</button><button data-val="12">12</button>
+      </div>
+    </div>
+
+    <div class="set-row">
+      <div class="set-label">むずかしさ</div>
+      <div class="seg" data-key="level">
+        <button data-val="1">かんたん</button><button data-val="2">ふつう</button><button data-val="3">むずかしい</button>
+      </div>
+      <div class="set-hint">かんたん：2つから選ぶ（ちがう種類）／ふつう：3つから選ぶ／むずかしい：似た乗り物どうし</div>
+    </div>
+
+    <div class="set-row">
+      <div class="set-label">出てくる乗り物（タップで オン・オフ）</div>
+      <div id="set-vehicles" class="chips"></div>
+    </div>
+
+    <div class="set-row">
+      <div class="set-label">声の読み上げ</div>
+      <div class="seg" data-key="voice">
+        <button data-val="true">オン</button><button data-val="false">オフ</button>
+      </div>
+    </div>
+
+    <div class="set-row">
+      <div class="set-label">声の種類</div>
+      <select id="set-voice" class="set-select"></select>
+      <div class="set-hint">「拡張」「プレミアム」と付いた声がいちばん自然です。入っていない場合は、下の説明を見てください。</div>
+    </div>
+
+    <div class="set-row">
+      <div class="set-label">話す速さ</div>
+      <div class="seg" data-key="rate">
+        <button data-val="0.8">ゆっくり</button><button data-val="0.95">ふつう</button>
+      </div>
+    </div>
+
+    <div class="set-row">
+      <div class="set-label">効果音</div>
+      <div class="seg" data-key="sfx">
+        <button data-val="true">オン</button><button data-val="false">オフ</button>
+      </div>
+    </div>
+
+    <button id="btn-open-recorder" class="set-btn rec-open">🎙 声と音の録音（おうちの人の声・本物の音）</button>
+    <div class="set-hint">「はやぶさ」「は、どれ？」などを録音すると、iPhoneの読み上げの代わりに その声で問題を出します。</div>
+
+    <button id="btn-test-voice" class="set-btn">声と音のテスト</button>
+
+    <details class="set-howto">
+      <summary>もっと自然な声にするには（iPhone）</summary>
+      <ol>
+        <li>iPhoneの「設定」→「アクセシビリティ」→「読み上げコンテンツ」→「声」を開く</li>
+        <li>「日本語」を選び、「Kyoko」や「O-ren」を開く</li>
+        <li>「拡張」または「プレミアム」の声の ⬇ を押してダウンロード（Wi-Fi推奨）</li>
+        <li>このゲームを開き直し、上の「声の種類」でその声を選ぶ</li>
+      </ol>
+    </details>
+
+    <p class="set-note">
+      音が出ないときは、iPhoneの音量と、マナーモード（消音）スイッチを確認してください。<br>
+      お子さまが他の画面に移動しないようにするには、iPhoneの「アクセスガイド」機能が便利です。
+    </p>
+    <p class="set-note small">のりもの あてっこ Ver.3.2</p>
+
+    <button id="btn-close-settings" class="set-btn primary">とじる</button>
+  </div>
+</div>
+
+<!-- 声と音の録音（保護者向け） -->
+<div id="recorder" class="recorder" hidden>
+  <div class="rec-head">
+    <h2>声と音の録音</h2>
+    <button id="btn-rec-close" class="rec-close">とじる</button>
+  </div>
+  <p class="rec-note">
+    ● で録音開始、■ で止めます（声は5秒、音は10秒で自動で止まります）。録音はこのiPhoneの中だけに保存されます。<br>
+    <b>なまえ</b>：乗り物の名前をはっきり読んでください。「ことば」もそろうと、問題文がすべておうちの人の声になります。<br>
+    <b>おと</b>：駅や道で本物の音を録ると、正解したときや ずかんで流れます。
+  </p>
+  <div id="rec-list" class="rec-list"></div>
+</div>
+
+<script src="vehicles.js"></script>
+<script src="app.js"></script>
+<script src="back.js" data-home="index.html"></script>
+</body>
+</html>
