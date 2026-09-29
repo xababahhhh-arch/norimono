@@ -43,7 +43,7 @@
   .card svg{flex:none;width:96px;height:auto}
   .card > span:last-child{flex:1;min-width:0}
   .t,.s{display:block}
-  .t{font-size:24px;font-weight:800;line-height:1.25}
+  .t{font-size:24px;font-weight:800;line-height:1.25;word-break:keep-all;overflow-wrap:anywhere}
   .s{margin-top:6px;font-size:14px;font-weight:600;color:rgba(255,255,255,.72);line-height:1.45}
   .card.quiz{background:#1f5f9e;box-shadow:0 7px 0 #123f6c}
   .card.road{background:#a24400;box-shadow:0 7px 0 #6b2c00}
@@ -68,7 +68,7 @@
    ============================================================ */
 const GAMES = [
   { title:'のりもの あてっこ', sub:'のりものの なまえを あてよう', url:'atekko.html', art:'quiz', cls:'quiz' },
-  { title:'ミニカー ロード',   sub:'ミニカーを おいて はしらせよう', url:'games/minicar/index.html', art:'road', cls:'road' }
+  { title:'🚗 ミニカーロード', sub:'ミニカーを おいて はしらせよう', url:'games/minicar/index.html', art:'road', cls:'road' }
 ];
 
 const ART = {

@@ -667,3 +667,6 @@ svg { display: block; }
   #screen-start { flex-wrap: wrap; flex-direction: row; align-content: center; column-gap: 24px; }
   .start-title, .parade { width: 100%; }
 }
+
+/* ゲーム一覧へ もどる（back.js）は はじめの画面だけ */
+body:not(.on-start) #backToMenu { display: none !important; }

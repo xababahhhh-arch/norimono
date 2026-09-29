@@ -350,6 +350,8 @@
   function show(name) {
     document.querySelectorAll('.screen').forEach((s) => s.classList.remove('active'));
     $('#screen-' + name).classList.add('active');
+    // ゲーム一覧へ もどる「← もどる」（back.js）は、はじめの画面だけに出す（ほかの画面のボタンと重ならないように）
+    document.body.classList.toggle('on-start', name === 'start');
   }
 
   // 乗り物の絵：image があれば画像、なければ SVG イラスト
@@ -870,6 +872,7 @@
     });
   }
 
+  document.body.classList.toggle('on-start', !!document.querySelector('#screen-start.active'));
   startParade();
   clips.loadAll();
 })();
