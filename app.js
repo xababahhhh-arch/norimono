@@ -465,7 +465,8 @@
     }, 10000);
   }
 
-  const PRAISE = ['せいかい！', 'すごい！せいかい！', 'やったね！せいかい！', 'せいかい！よくできたね。'];
+  // 読み上げ用。「せいかい」は漢字にする（ひらがなだと「セ・イ・カ・イ」と カタコトに読まれるため）
+  const PRAISE = ['正解！', 'すごい！正解！', 'やったね！正解！'];
 
   function renderRound() {
     const round = game.rounds[game.idx];
@@ -523,7 +524,7 @@
       if (stars[game.idx]) stars[game.idx].classList.add('on');
 
       const praise = PRAISE[Math.floor(Math.random() * PRAISE.length)];
-      await Promise.all([wait(2400), talk(['phrase:ok', 'name:' + t.id], `${praise}${t.say}だね！`)]);
+      await Promise.all([wait(2400), talk(['phrase:ok', 'name:' + t.id], `${praise}${t.say}だね！${Math.random() < 0.35 ? 'よくできたね！' : ''}`)]);
       if (my !== token) return;
 
       // 乗り物の音を鳴らして、走っていく
@@ -721,7 +722,7 @@
   $('#btn-test-voice').addEventListener('click', () => {
     unlockAudio();
     sfx.correct();
-    talk(['phrase:ok', 'name:hayabusa'], 'せいかい！はやぶさだね！');
+    talk(['phrase:ok', 'name:hayabusa'], '正解！はやぶさだね！');
   });
 
   // ---------------- 声と音の録音（保護者用） ----------------

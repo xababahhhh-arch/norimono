@@ -15,7 +15,9 @@
  *   id    : 半角英字の名前（ほかと重ならないように）
  *   name  : 画面に表示する名前
  *   say   : iPhoneが読み上げる言葉。漢字のほうがアクセントが自然になりますが、
- *           「〜車」を「くるま」と読むなど まちがえる言葉は ひらがなにします（例: しょうぼうしゃ）。
+ *           辞書にない組み合わせで「〜車」を「くるま」と読むものは、ひらがな・カタカナにします
+ *           （例: ゴミしゅうしゅうしゃ、ハシゴシャ）。消防車・救急車のような ふつうの言葉は 漢字のままでOK。
+ *           ひらがなの「せいかい」「きゅうきゅう」は 伸ばさずに読まれるので 漢字にします。
  *           ただし ひらがなだけだと言葉の区切りをまちがえることがあります
  *           （例:「えのでん」→「え・の・で・ん」）。そのときは漢字やカタカナにします（例: 江ノ電、ゴヒャッ系）
  *   color : 問題文の名前の色
@@ -164,7 +166,7 @@ var VEHICLES = [
 </svg>`
   },
   {
-    id: 'shobosha', name: 'しょうぼうしゃ', say: 'しょうぼうしゃ', color: '#e60f1e', image: '', group: 'emergency', sound: '',
+    id: 'shobosha', name: 'しょうぼうしゃ', say: '消防車', color: '#e60f1e', image: '', group: 'emergency', sound: '',
     svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   ${ROAD}
   <rect x="14" y="62" width="212" height="58" rx="6" fill="#e60f1e"/>
@@ -187,7 +189,7 @@ var VEHICLES = [
 </svg>`
   },
   {
-    id: 'kyukyusha', name: 'きゅうきゅうしゃ', say: 'きゅうきゅうしゃ', color: '#e0303a', image: '', group: 'emergency', sound: '',
+    id: 'kyukyusha', name: 'きゅうきゅうしゃ', say: '救急車', color: '#e0303a', image: '', group: 'emergency', sound: '',
     svg: `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs><clipPath id="clip-kyukyusha"><path d="M16,48 C16,42 20,38 28,38 L214,38 C226,38 232,42 238,50 L262,80 L292,86 C302,88 306,94 306,104 L306,114 C306,119 302,122 296,122 L24,122 C19,122 16,118 16,112 Z"/></clipPath></defs>
   ${ROAD}
@@ -589,7 +591,7 @@ VEHICLES.push(
   <circle cx="256" cy="84" r="5" fill="#fff6c8" stroke="#9aa1ab" stroke-width="2"/>`)
   },
   {
-    id: 'hashigo', name: 'はしごしゃ', say: 'はしご車', color: '#e60f1e', image: '', group: 'emergency', sound: '',
+    id: 'hashigo', name: 'はしごしゃ', say: 'ハシゴシャ', color: '#e60f1e', image: '', group: 'emergency', sound: '',
     svg: svgBox(`${ROAD}
   <rect x="14" y="70" width="212" height="50" rx="6" fill="#e60f1e"/>
   <rect x="14" y="106" width="212" height="5" fill="#fff"/>

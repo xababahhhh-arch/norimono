@@ -154,8 +154,9 @@
         A.fx.burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 18);
       }
       // 「せいかい！」を言いおわったら、自動で つぎの問題へ（こえ なし でも 少し待ってから）
+      // 読み上げの「せいかい」は漢字にする（ひらがなだと「セ・イ・カ・イ」と カタコトに読まれるため）
       const my = token;
-      Promise.all([wait(1800), speak(`せいかい！${item.say}だね！`)])
+      Promise.all([wait(1800), speak(`正解！${item.say}だね！`)])
         .then(() => wait(500))
         .then(() => { if (my === token && state && state.phase === 'solved') next(); });
     } else {
