@@ -75,7 +75,7 @@ export function renderStep4(root, out) {
   const iframe = h('iframe', { title: 'HPページのプレビュー', sandbox: '', class: 'hp-frame' });
   iframe.srcdoc = out.page.html;
   root.append(h('section', { class: 'group', 'aria-labelledby': hpId }, h('h3', { id: hpId }, 'HPページのプレビュー'),
-    out.draft ? h('p', { class: 'st st-needs_review' }, '！ 下書きです。未確認の項目に［要確認］が付いています。') : h('p', { class: 'st st-confirmed' }, '✓ 確定版です。'),
+    out.draft ? h('p', { class: 'st st-needs_review' }, '！ 下書きです。未確認の項目に［要確認］が付いています。') : h('p', { class: 'st st-confirmed' }, '✓ 確認済みの内容で生成しました。まだ公開されていません（公開前に上長の承認が必要です）。'),
     ...out.page.warnings.map((w) => h('p', { class: 'st st-needs_review' }, `！ ${w}`)),
     iframe));
 
@@ -107,6 +107,6 @@ export function renderStep4(root, out) {
 /** STEP 5：コピー・書き出し */
 export function renderStep5(root, out) {
   root.replaceChildren();
-  if (out.draft) root.append(h('p', { class: 'st st-needs_review' }, '！ 下書きの出力です。ファイル名に「-draft」が付きます。公開用には STEP 4 で確定してください。'));
+  if (out.draft) root.append(h('p', { class: 'st st-needs_review' }, '！ 下書きの出力です。ファイル名に「-draft」が付きます。公開用には STEP 4 で「確認済みの内容で生成する」を押してください。'));
   for (const item of out.items) root.append(outputCard(item));
 }

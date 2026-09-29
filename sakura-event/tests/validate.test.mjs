@@ -54,6 +54,12 @@ test('必須項目を1つずつ確認すると確定できる', () => {
     }
   };
   confirmAll(ev);
+  // 販売・受付状況はチラシから決めないため、未設定のままでは確定できない
+  const before = canFinalize(ev);
+  assert.equal(before.ok, false);
+  assert.ok(before.blockers.some((b) => b.label === '販売・受付状況'));
+  ev.status.code = 'on_sale';
+  ev.meta.review_items.forEach((r) => { r.resolved = true; });
   assert.equal(canFinalize(ev).ok, true, JSON.stringify(canFinalize(ev).blockers));
 });
 

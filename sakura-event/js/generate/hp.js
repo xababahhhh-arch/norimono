@@ -137,11 +137,19 @@ export function generateHP(ev, opts = {}) {
   if (draft) parts.push('<p class="ev-draft" role="note">下書き：確認が済んでいない項目があります。このまま公開しないでください。</p>');
   parts.push(hx(H, 'ev-title', title ? `${esc(title)}${mark(ev.basic.title)}` : '<strong class="ev-review">タイトル：情報なし（要確認）</strong>'));
   if (has(ev.basic.subtitle)) parts.push(`<p class="ev-subtitle">${tl(ev.basic.subtitle)}</p>`);
+  // 出演者の一覧（ページ冒頭のお知らせ部分）
+  {
+    const ps = ev.performers.items.filter((p) => has(p.name));
+    if (ps.length && type !== 'recruitment') {
+      const word = ['workshop', 'lecture'].includes(type) ? '講師' : '出演';
+      parts.push(`<p class="ev-lead-performers">${word}：${ps.map((p) => `${esc(str(p.name))}${performerLabel(p) ? `（${esc(performerLabel(p))}）` : ''}${mark(p.name)}`).join('、')}</p>`);
+    }
+  }
 
   // 2. イベント状態
   {
-    const code = ev.status?.code ?? 'scheduled';
-    const lbl = statusLabel(ev.status);
+    const code = ev.status?.code ?? 'unset';
+    const lbl = code === 'unset' ? '販売・受付状況は未設定です（要確認）' : statusLabel(ev.status);
     const body = [];
     body.push(`<p class="ev-status-badge"><span aria-hidden="true">${esc(statusMark(code))}</span> ${esc(lbl)}</p>`);
     const perSession = ev.schedule.dates.items.filter((d) => d.status && STATUSES[d.status]);
@@ -309,10 +317,20 @@ export function generateHP(ev, opts = {}) {
   // 14. チケット発売日 / 申込
   const closed = CLOSED_STATUSES.includes(ev.status?.code);
   if (TYPE_SETS.TICKETED.includes(type)) {
-    parts.push(section('ev-sales', 'チケット発売日', dl([
-      ['先行発売', ev.tickets.presale], ['一般発売', ev.tickets.sales_start, dateEl], ['電話予約', ev.tickets.advance_phone_start, dateEl],
-      ['窓口', ev.tickets.boxoffice_start, dateEl], ['WEB', ev.tickets.online_start, dateEl],
-    ])));
+    const sched = (ev.tickets.sales_schedule?.items ?? []).filter((x) => has(x.date) || has(x.method));
+    if (sched.length) {
+      // 販売方法ごとに発売日時を並べる（チラシの販売方法の文言をそのまま使う）
+      parts.push(section('ev-sales', 'チケット発売日', `<ul class="ev-sales-schedule">${sched.map((x) => {
+        const iso = str(x.date);
+        const when = `${dateEl(x.date)}${has(x.time) ? ` ${timeEl(iso, str(x.time), str(x.time))}〜${mark(x.time)}` : ''}`;
+        return `<li>${esc(str(x.method) || '発売')}${mark(x.method)}：${when}${has(x.note) ? `（${esc(str(x.note))}）` : ''}</li>`;
+      }).join('')}</ul>`));
+    } else {
+      parts.push(section('ev-sales', 'チケット発売日', dl([
+        ['先行発売', ev.tickets.presale], ['一般発売', ev.tickets.sales_start, dateEl], ['電話予約', ev.tickets.advance_phone_start, dateEl],
+        ['窓口', ev.tickets.boxoffice_start, dateEl], ['WEB', ev.tickets.online_start, dateEl],
+      ])));
+    }
   }
   if (TYPE_SETS.PART.includes(type) || type === 'multi_event') {
     const p = ev.participation;
@@ -337,7 +355,8 @@ export function generateHP(ev, opts = {}) {
         if (has(c.hours)) segs.push(`受付時間 ${esc(str(c.hours))}`);
         if (has(c.url)) segs.push(link(str(c.url), `${str(c.name)}のチケット購入ページ`) + mark(c.url));
         if (has(c.detail)) segs.push(esc(str(c.detail)));
-        return `<li>${segs.join('　')}</li>`;
+        const notes = has(c.notes) ? `<ul class="ev-channel-notes">${lines(str(c.notes)).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>${mark(c.notes)}` : '';
+        return `<li>${segs.join('　')}${notes}</li>`;
       }).join('')}</ul>`;
     }
     const codes = ev.tickets.ticket_codes.items.filter((k) => has(k.code));

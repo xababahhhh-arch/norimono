@@ -102,7 +102,7 @@
   <!-- STEP 3 -->
   <section id="step-3" class="step" aria-labelledby="step-3-h" hidden>
     <h1 id="step-3-h">STEP 3　内容を確認・修正</h1>
-    <p class="lead">この画面ですること：左のチラシと右の情報を見比べて、正しければ「確認済みにする」を押します。間違いは直接直してください。必須の項目がすべて確認済みになると、確定版を作れます。</p>
+    <p class="lead">この画面ですること：左のチラシと右の情報を見比べて、正しければ「確認済みにする」を押します。間違いは直接直してください。必須の項目がすべて確認済みになり、販売・受付状況を設定し、「判断が必要な記載」に対応すると、生成できます。確信度の数値は表示しません。代わりに「抽出根拠」と「確認が必要な理由」を表示します。</p>
     <p class="legend-states">状態の見方：<span class="st st-confirmed">✓ 確認済み</span>　<span class="st st-needs_review">！ 要確認</span>　<span class="st st-missing">－ 情報なし</span></p>
     <div class="review">
       <section class="review-left" aria-labelledby="pv-h">
@@ -124,7 +124,7 @@
   <!-- STEP 4 -->
   <section id="step-4" class="step" aria-labelledby="step-4-h" hidden>
     <h1 id="step-4-h">STEP 4　HP/SNS生成</h1>
-    <p class="lead">この画面ですること：確認済みの event.json から、HP・SNS・代替テキスト・アクセシビリティ報告を作ります。すべて同じ event.json から作るので、内容は一致します。</p>
+    <p class="lead">この画面ですること：確認済みの event.json から、HP・SNS・代替テキスト・アクセシビリティ報告を作ります。すべて同じ event.json から作るので、内容は一致します。生成しても公開はされません（公開前に上長の承認が必要です）。</p>
     <div class="fld">
       <label for="page-url">HPページのURL（SNSの導線に使います）</label>
       <p id="page-url-help" class="help">まだ決まっていない場合は空欄のままにすると「［HPページのURL］」と表示されます。</p>
@@ -133,7 +133,7 @@
     <div id="gate-final" class="gate"></div>
     <div class="step-actions">
       <button type="button" id="gen-draft" class="btn-secondary">下書きとして生成</button>
-      <button type="button" id="gen-final" class="btn-primary">確定して生成</button>
+      <button type="button" id="gen-final" class="btn-primary">確認済みの内容で生成する（公開はしません）</button>
     </div>
     <div id="step4-output"></div>
     <div class="step-actions">
@@ -145,7 +145,11 @@
   <!-- STEP 5 -->
   <section id="step-5" class="step" aria-labelledby="step-5-h" hidden>
     <h1 id="step-5-h">STEP 5　コピー・書き出し</h1>
-    <p class="lead">この画面ですること：必要なものをコピーするか、ファイルとして保存します。event.json を保存しておくと、公開後の状況更新（完売・受付終了など）に使えます。</p>
+    <p class="lead">この画面ですること：必要なものをコピーするか、ファイルとして保存します。上長の承認と公開はこのシステムの外で行い、ここには記録だけを残します。event.json を保存しておくと、公開後の状況更新（完売・受付終了など）に使えます。</p>
+    <section class="group" aria-labelledby="workflow-h">
+      <h2 id="workflow-h" class="h-small">承認・公開の記録</h2>
+      <div id="workflow-panel"></div>
+    </section>
     <div id="step5-output"></div>
     <div class="step-actions">
       <button type="button" data-goto="4" class="btn-secondary">戻る：HP/SNS生成</button>

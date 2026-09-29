@@ -6,7 +6,7 @@ import { buildOutputs, renderStep4, renderStep5 } from './ui/outputs.js';
 import { extractPdf } from './extract/pdf.js';
 import { ocrImage } from './extract/ocr.js';
 import { ADAPTERS, runWithAdapter } from './ai/adapter.js';
-import { normalizeEvent, EVENT_TYPES } from './core/schema.js';
+import { normalizeEvent, EVENT_TYPES, WORKFLOW_STATES } from './core/schema.js';
 import { canFinalize, gateProgress } from './core/validate.js';
 import { reviewState } from './core/field.js';
 
@@ -42,7 +42,7 @@ function goto(step, { focus = true } = {}) {
   updateStepper();
   if (step === 3) renderStep3();
   if (step === 4) renderStep4Gate();
-  if (step === 5 && state.outputs) renderStep5($('step5-output'), state.outputs);
+  if (step === 5 && state.outputs) { renderWorkflow(); renderStep5($('step5-output'), state.outputs); }
   if (focus) {
     const hd = $(`step-${step}-h`);
     hd.setAttribute('tabindex', '-1');
@@ -240,8 +240,10 @@ $('analyze-btn').addEventListener('click', async () => {
       h('h2', { class: 'h-small' }, '解析の結果'),
       h('ul', {},
         h('li', {}, `取り出した項目：${count}件（すべて「要確認」です）`),
-        h('li', {}, `イベント種別の候補：${EVENT_TYPES[ev.event_type.value]}（確信度 ${ev.event_type.confidence}）　${cls?.reason ?? ''}　※STEP 3 で変更できます`),
-        h('li', {}, `日程：${ev.schedule.dates.items.length}件、出演者：${ev.performers.items.length}名、料金：${ev.pricing.prices.items.length}件`)),
+        h('li', {}, `イベント種別の候補：${EVENT_TYPES[ev.event_type.value]}（推定の根拠：${cls?.reason ?? 'なし'}）　※STEP 3 で変更できます`),
+        h('li', {}, `日程：${ev.schedule.dates.items.length}件、出演者：${ev.performers.items.length}名、料金：${ev.pricing.prices.items.length}件、販売方法ごとの発売日時：${ev.tickets.sales_schedule.items.length}件`),
+        h('li', {}, `判断が必要な記載：${ev.meta.review_items.length}件（STEP 3 の一番上に原文つきで表示します）`),
+        h('li', {}, '販売・受付状況はチラシからは決めません。STEP 3 で設定してください。')),
       ...[...notes, ...result.warnings].map((w) => h('p', { class: 'st st-needs_review' }, `！ ${w}`)),
       ...result.suggestions.map((s) => h('p', { class: 'st st-needs_review' }, `！ ${s.message}（販売・受付状況は STEP 3 で設定してください）`)),
     );
@@ -269,6 +271,12 @@ function onFormChange({ structural, focusPath }) {
     state.event.meta.finalized = false;
     state.event.meta.finalized_at = null;
   }
+  // 生成・承認の後に内容を変えたら、記録を取り消す（承認した内容と公開する内容を一致させるため）
+  const wf = state.event.meta.workflow;
+  if (wf && wf.state !== 'draft') {
+    state.event.meta.workflow = { state: 'draft', generated_at: null, approved_by: '', approved_at: null, published_at: null, published_url: '' };
+    announce('内容を変更したため、生成・承認の記録を取り消しました。もう一度生成し、承認を受けてください。');
+  }
   save();
   if (structural) form.render(focusPath);
   else form.refreshAll();
@@ -290,7 +298,7 @@ function renderStep4Gate() {
   const box = $('gate-final');
   const p = gateProgress(state.event);
   if (r.ok) {
-    box.replaceChildren(h('p', { class: 'st st-confirmed' }, `✓ 必須項目はすべて確認済みです（${p.done}/${p.total}）。「確定して生成」を押せます。`));
+    box.replaceChildren(h('p', { class: 'st st-confirmed' }, `✓ 必須項目はすべて確認済みです（${p.done}/${p.total}）。「確認済みの内容で生成する」を押せます。生成しても公開はされません。`));
   } else {
     box.replaceChildren(
       h('p', { class: 'st st-needs_review' }, `！ まだ確定できません。必須確認 ${p.total} 項目中 ${p.done} 項目が確認済みです。下書きとしてなら生成できます。`),
@@ -309,11 +317,15 @@ $('page-url').addEventListener('change', (e) => {
 });
 
 function generate(draft) {
+  if (!draft) {
+    state.event.meta.workflow = { state: 'generated', generated_at: new Date().toISOString(), approved_by: '', approved_at: null, published_at: null, published_url: '' };
+    save();
+  }
   state.outputs = buildOutputs(state.event, { draft });
   renderStep4($('step4-output'), state.outputs);
   $('to-step5').disabled = false;
   updateStepper();
-  announce(draft ? '下書きを生成しました。' : '確定版を生成しました。');
+  announce(draft ? '下書きを生成しました。' : '生成が完了しました。まだ公開されていません。公開前に上長の承認を受けてください。');
   $('step4-output').querySelector('h3')?.setAttribute('tabindex', '-1');
   $('step4-output').querySelector('h3')?.focus();
 }
@@ -332,8 +344,8 @@ $('gen-final').addEventListener('click', async () => {
   };
   walk(state.event);
   const ok = await confirmDialog(unconfirmed
-    ? `必須項目はすべて確認済みです。ただし、必須でない項目のうち ${unconfirmed} 件が「要確認」のままです。これらもHP・SNSに表示されます。確定して生成しますか？`
-    : '確定して生成します。よろしいですか？');
+    ? `必須項目はすべて確認済みです。ただし、必須でない項目のうち ${unconfirmed} 件が「要確認」のままです。これらもHP・SNSに表示されます。生成しますか？\n（生成しても公開はされません。公開前に上長の承認が必要です）`
+    : '確認済みの内容で生成します。よろしいですか？\n（生成しても公開はされません。公開前に上長の承認が必要です）');
   if (!ok) return;
   state.event.meta.finalized = true;
   state.event.meta.finalized_at = new Date().toISOString();
@@ -342,6 +354,78 @@ $('gen-final').addEventListener('click', async () => {
 });
 
 $('to-step5').addEventListener('click', () => goto(5));
+
+// ---- STEP 5：承認・公開の記録（このシステムは公開しない。記録だけを残す） ----
+
+function renderWorkflow() {
+  const box = $('workflow-panel');
+  const ev = state.event;
+  const wf = ev.meta.workflow ?? { state: 'draft' };
+  const draftOut = state.outputs?.draft;
+  const stateText = draftOut ? '下書き（確定前のため、承認・公開の対象ではありません）' : WORKFLOW_STATES[wf.state] ?? wf.state;
+  const rows = [
+    h('p', { class: `st ${wf.state === 'published' ? 'st-confirmed' : 'st-needs_review'}` }, `現在の状態：${stateText}`),
+    h('p', { class: 'help' }, 'このシステムはHP・SNSへの公開を行いません。生成が完了しても公開されたことにはなりません。上長の承認を受けてから、担当者がCMS・各SNSで公開し、ここに記録を残してください。'),
+  ];
+  if (!draftOut && wf.generated_at) rows.push(h('p', {}, `生成日時：${wf.generated_at}`));
+  if (!draftOut && wf.state === 'generated') {
+    const nId = 'wf-approver';
+    const dId = 'wf-approved-at';
+    const name = h('input', { id: nId, type: 'text', autocomplete: 'name' });
+    const date = h('input', { id: dId, type: 'text', placeholder: '例：2026-10-01' });
+    const err = h('p', { class: 'err', hidden: true });
+    rows.push(h('div', { class: 'fld' }, h('label', { for: nId }, '承認した人（上長）の名前'), name),
+      h('div', { class: 'fld' }, h('label', { for: dId }, '承認日'), date), err,
+      h('div', { class: 'fld-actions' }, h('button', {
+        type: 'button', class: 'btn-primary',
+        onclick: () => {
+          if (!name.value.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(date.value.trim())) {
+            err.textContent = 'エラー：承認した人の名前と承認日（例：2026-10-01）を入力してください。';
+            err.hidden = false;
+            name.focus();
+            return;
+          }
+          Object.assign(ev.meta.workflow, { state: 'approved', approved_by: name.value.trim(), approved_at: date.value.trim() });
+          afterWorkflowChange('承認を記録しました。公開は担当者がCMS・各SNSで行ってください。');
+        },
+      }, '承認を記録する')));
+  }
+  if (!draftOut && wf.state === 'approved') {
+    rows.push(h('p', {}, `承認：${wf.approved_by}（${wf.approved_at}）`));
+    const dId = 'wf-published-at';
+    const uId = 'wf-published-url';
+    const date = h('input', { id: dId, type: 'text', placeholder: '例：2026-10-02' });
+    const url = h('input', { id: uId, type: 'url', placeholder: 'https://' });
+    const err = h('p', { class: 'err', hidden: true });
+    rows.push(h('div', { class: 'fld' }, h('label', { for: dId }, '公開日（CMSで公開した日）'), date),
+      h('div', { class: 'fld' }, h('label', { for: uId }, '公開したページのURL'), url), err,
+      h('div', { class: 'fld-actions' }, h('button', {
+        type: 'button', class: 'btn-primary',
+        onclick: () => {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(date.value.trim())) {
+            err.textContent = 'エラー：公開日（例：2026-10-02）を入力してください。';
+            err.hidden = false;
+            date.focus();
+            return;
+          }
+          Object.assign(ev.meta.workflow, { state: 'published', published_at: date.value.trim(), published_url: url.value.trim() });
+          afterWorkflowChange('公開の記録を残しました。');
+        },
+      }, '公開を記録する')));
+  }
+  if (!draftOut && wf.state === 'published') {
+    rows.push(h('p', {}, `承認：${wf.approved_by}（${wf.approved_at}）　公開：${wf.published_at}${wf.published_url ? `　${wf.published_url}` : ''}`));
+  }
+  box.replaceChildren(...rows);
+}
+
+function afterWorkflowChange(msg) {
+  save();
+  state.outputs = buildOutputs(state.event, { draft: false }); // event.json の出力に記録を反映
+  renderWorkflow();
+  renderStep5($('step5-output'), state.outputs);
+  announce(msg);
+}
 
 // ---- 確認ダイアログ ------------------------------------------------------
 

@@ -2,7 +2,7 @@
 // スキーマ定義（GROUPS）から自動で作る。状態は記号＋文字＋色で示す（色だけに頼らない）。
 import { h, nextId, announce } from './dom.js';
 import { GROUPS, STATUSES, UPDATE_TYPES, pathOf, isVisibleFor, eventType, createListItem } from '../core/schema.js';
-import { getPath, setValue, confirmField, reviewState, REVIEW_LABELS, isLowConfidence, has, str } from '../core/field.js';
+import { getPath, setValue, confirmField, reviewState, REVIEW_LABELS, has, str } from '../core/field.js';
 import { weekdayCheck, formatIssues, gateChecks, gateProgress } from '../core/validate.js';
 import { weekdayOf, isIsoDate, todayIso } from '../core/dates.js';
 
@@ -22,16 +22,26 @@ export function createReviewForm(root, getEvent, onChange) {
     return t;
   }
 
+  // 確信度の数値は表示しない（正しさの保証ではないため）。出典・抽出根拠・確認が必要な理由を文章で示す。
   function sourceText(f) {
-    if (!f || f.value === null || f.value === '') return '';
-    if (f.origin === 'manual') return '入力：手入力（または修正済み）';
+    if (!f || (f.value === null && !f.source_text) || f.value === '') return '';
+    if (f.origin === 'manual') return '';
     const parts = [];
     if (f.source_file) parts.push(`出典：${f.source_file}`);
     if (f.source_page) parts.push(`${f.source_page}ページ`);
-    if (f.source_text) parts.push(`「${f.source_text}」`);
-    if (f.origin === 'inferred') parts.push('（推定）');
-    if (typeof f.confidence === 'number' && f.origin !== 'manual') parts.push(`確信度 ${f.confidence.toFixed(2)}`);
+    if (f.source_text) parts.push(`原文「${f.source_text}」`);
     return parts.join(' ');
+  }
+  function basisText(f) {
+    if (!f) return '';
+    if (f.origin === 'manual' && has(f)) return '抽出根拠：担当者が入力・修正した値';
+    return f.basis && (has(f) || f.reasons?.length) ? `抽出根拠：${f.basis}${f.origin === 'inferred' ? '（推定を含みます）' : ''}` : '';
+  }
+  function reasonsText(f) {
+    if (!f || f.confirmed) return '';
+    const rs = [...(f.reasons ?? [])];
+    if (!rs.length && has(f) && f.origin !== 'manual') rs.push('チラシから自動で取り出した値です。原文と照らし合わせてください');
+    return rs.length ? `確認が必要な理由：${rs.join('。')}` : '';
   }
 
   function fieldRow(def, path, ctx = {}) {
@@ -60,11 +70,14 @@ export function createReviewForm(root, getEvent, onChange) {
       });
       input.value = f.value ?? '';
     }
-    input.setAttribute('aria-describedby', [stId, errId, srcId, def.help ? helpId : null].filter(Boolean).join(' '));
+    const whyId = `${id}-why`;
+    input.setAttribute('aria-describedby', [stId, errId, whyId, srcId, def.help ? helpId : null].filter(Boolean).join(' '));
 
     const status = h('p', { id: stId, class: 'st' });
     const err = h('p', { id: errId, class: 'err' });
     const src = h('p', { id: srcId, class: 'src' });
+    const basis = h('p', { class: 'basis' });
+    const why = h('p', { class: 'why', id: `${id}-why` });
     const help = def.help ? h('p', { id: helpId, class: 'help' }, def.help) : null;
     const computed = h('p', { class: 'computed' });
     const btn = h('button', { type: 'button', class: 'btn-confirm' });
@@ -74,9 +87,13 @@ export function createReviewForm(root, getEvent, onChange) {
       const st = reviewState(cur);
       const lbl = REVIEW_LABELS[st];
       status.className = `st st-${st}`;
-      status.textContent = `${lbl.mark} ${lbl.label}${isLowConfidence(cur) ? '（確信度が低い値です。特に注意して確認してください）' : ''}`;
+      status.textContent = `${lbl.mark} ${lbl.label}`;
       src.textContent = sourceText(cur);
       src.hidden = !src.textContent;
+      basis.textContent = basisText(cur);
+      basis.hidden = !basis.textContent;
+      why.textContent = reasonsText(cur);
+      why.hidden = !why.textContent;
       btn.textContent = cur.confirmed ? '確認を取り消す' : has(cur) ? '確認済みにする' : '該当なしとして確認';
       // 必須でない空欄は確認不要（ボタンを出さない）
       btn.hidden = !def.required && !has(cur) && !cur.confirmed;
@@ -117,7 +134,7 @@ export function createReviewForm(root, getEvent, onChange) {
 
     refresh();
     return h('div', { class: `fld fld-${def.type}`, dataset: { path } },
-      label, help, input, computed, status, err, src, h('div', { class: 'fld-actions' }, btn));
+      label, help, input, computed, status, err, why, src, basis, h('div', { class: 'fld-actions' }, btn));
   }
 
   function listBlock(def, path, type) {
@@ -230,12 +247,40 @@ export function createReviewForm(root, getEvent, onChange) {
     return box;
   }
 
+  function reviewItemsBlock() {
+    const ev = getEvent();
+    const items = ev.meta?.review_items ?? [];
+    if (!items.length) return null;
+    const box = h('section', { class: 'group review-items', 'aria-labelledby': 'grp-review' },
+      h('h3', { id: 'grp-review' }, '判断が必要な記載（自動では項目に入れなかったもの）'),
+      h('p', { class: 'help' }, 'チラシの原文です。必要なら該当する項目に入力し、確認したら「対応済みにする」を押してください。「対応が必要」の記載が残っていると確定できません。'));
+    const ul = h('ul', { class: 'review-list' });
+    items.forEach((it) => {
+      const btn = h('button', { type: 'button', class: 'btn-confirm' }, it.resolved ? '未対応に戻す' : '対応済みにする');
+      btn.addEventListener('click', () => {
+        it.resolved = !it.resolved;
+        announce(`${it.topic}：${it.resolved ? '対応済みにしました' : '未対応に戻しました'}`);
+        onChange({ path: 'meta.review_items', structural: true });
+      });
+      ul.append(h('li', {},
+        h('p', {}, h('strong', {}, `${it.resolved ? '✓ 対応済み' : it.blocking ? '！ 対応が必要' : '－ 参考'}　${it.topic}`)),
+        h('blockquote', {}, `原文：${it.text}`, it.page ? `（${it.file ?? ''} ${it.page}ページ）` : ''),
+        h('p', { class: 'why' }, `理由：${it.reason}`),
+        h('div', { class: 'fld-actions' }, btn)));
+    });
+    box.append(ul);
+    inputs.set('meta.review_items', 'grp-review');
+    return box;
+  }
+
   function render(focusPath) {
     refreshers.clear();
     inputs.clear();
     const ev = getEvent();
     const type = eventType(ev);
     root.replaceChildren();
+    const rib = reviewItemsBlock();
+    if (rib) root.append(rib);
     for (const g of GROUPS) {
       if (!isVisibleFor(g, type)) continue;
       const gid = `grp-${g.id}`;
@@ -261,7 +306,7 @@ export function createReviewForm(root, getEvent, onChange) {
     const id = inputs.get(p);
     const el = id && document.getElementById(id);
     if (el) {
-      if (el.tagName === 'H4') el.setAttribute('tabindex', '-1');
+      if (/^H[1-6]$/.test(el.tagName)) el.setAttribute('tabindex', '-1');
       el.focus();
       el.scrollIntoView({ block: 'center' });
     }

@@ -86,10 +86,21 @@ function facts(ev, opts) {
       if (has(p.application_deadline)) sales = `申込締切 ${formatDateJa(str(p.application_deadline))}`;
       else if (has(p.application_start)) sales = `申込開始 ${formatDateJa(str(p.application_start))}`;
     } else if (has(ev.tickets.sales_start)) {
-      sales = code === 'scheduled' ? `一般発売 ${formatDateJa(str(ev.tickets.sales_start))}` : '';
+      sales = ['scheduled', 'unset'].includes(code) ? `一般発売 ${formatDateJa(str(ev.tickets.sales_start))}` : '';
     }
   }
-  const statusText = ['on_sale', 'registration_open'].includes(code) || code === 'scheduled' ? '' : statusLabel(ev.status);
+  // 販売方法ごとの発売日時（チラシの販売方法の文言と時刻をそのまま使う。販売状況は仮定しない）
+  const sched = (ev.tickets.sales_schedule?.items ?? []).filter((x) => isIsoDate(str(x.date)));
+  const showSales = !closed && ['scheduled', 'unset'].includes(code) && !TYPE_SETS.PART.includes(type);
+  const salesLong = showSales ? sched.map((x) => `${str(x.method) || '発売'}：${formatDateJa(str(x.date))}${has(x.time) ? ` ${str(x.time)}〜` : ''}`) : [];
+  const salesShort = showSales ? sched.map((x) => `${str(x.method).length && str(x.method).length <= 12 ? str(x.method) : '発売'} ${formatDateShort(str(x.date))}${has(x.time) ? `${str(x.time)}〜` : ''}`) : [];
+  if (salesLong.length) sales = '';
+  // 出演者（お知らせに必ず入れる。4名以上は3名＋「ほか」）
+  const pWord = ['workshop', 'lecture'].includes(type) ? '講師' : '出演';
+  const pNames = (withLabel) => performers.slice(0, 3).map((p) => (withLabel ? perfName(p) : str(p.name))).join('、') + (performers.length > 3 ? 'ほか' : '');
+  const performerLine = performers.length && type !== 'recruitment' ? `${pWord}：${pNames(true)}` : '';
+  const performerLineShort = performers.length && type !== 'recruitment' ? `${pWord}：${pNames(false)}` : '';
+  const statusText = ['on_sale', 'registration_open', 'scheduled', 'unset'].includes(code) ? '' : statusLabel(ev.status);
   const statusMsg = {
     sold_out: 'チケットは完売しました。', registration_closed: '受付は終了しました。', cancelled: 'この催しは中止になりました。',
     postponed: 'この催しは延期になりました。', finished: 'この催しは終了しました。', waiting_list: 'キャンセル待ちを受け付けています。', few_tickets: 'チケットは残りわずかです。',
@@ -117,7 +128,7 @@ function facts(ev, opts) {
 
   return {
     type, title, subtitle: str(ev.basic.subtitle), url, venue, venueShort, dateShort, dateLong, prices, priceSummary, performers, works, subs,
-    sales, closed, code, statusText, statusMsg, changeNote, age, tags: [...tags], instTags, nameTags, composerTags, sourceText,
+    sales, salesLong, salesShort, performerLine, performerLineShort, closed, code, statusText, statusMsg, changeNote, age, tags: [...tags], instTags, nameTags, composerTags, sourceText,
     catchphrase: str(ev.basic.catchphrase), description: str(ev.basic.description),
     seating: str(ev.pricing.seating_type), taxIncluded: str(ev.pricing.tax_included),
     hasDates: dateLong.length > 0,
@@ -159,12 +170,15 @@ function fitX(required, optional, tail) {
 
 function xA(f) {
   const head = `${f.statusText ? `【${f.statusText}】` : ''}${f.title}`;
-  const required = [head, `${f.dateShort}｜${f.venueShort}`];
+  const perf = f.performerLine && xLength(f.performerLine) <= 90 ? f.performerLine : f.performerLineShort;
+  const required = [head, perf, `${f.dateShort}｜${f.venueShort}`].filter(Boolean);
   const optional = [];
   if (f.closed) optional.push(f.statusMsg);
   else {
+    // 文字数が足りない場合は後ろから削る：発売日時 → 料金 → 年齢 の順に優先して残す
+    if (f.salesShort.length) optional.push(f.salesShort.join('／'));
+    else if (f.sales) optional.push(f.sales);
     if (f.priceSummary) optional.push(f.priceSummary);
-    if (f.sales) optional.push(f.sales);
     if (f.age && /0歳|未就学|歳/.test(f.age)) optional.push(f.age);
   }
   if (f.changeNote) required.splice(1, 0, f.changeNote);
@@ -188,6 +202,7 @@ function fbA(f, ev) {
       if (rows.length) out.push('■申込', ...rows);
     } else {
       const ch = ev.tickets.ticket_channels.items.filter((c) => has(c.name)).map((c) => `${str(c.name)}${has(c.phone) ? ` TEL ${str(c.phone)}` : ''}`);
+      if (f.salesLong.length) out.push('■発売', ...f.salesLong);
       const rows = [f.sales, ...ch].filter(Boolean);
       if (rows.length) out.push('■チケット', ...rows);
     }
@@ -204,6 +219,7 @@ function igA(f) {
   if (f.statusMsg) out.push(f.statusMsg, '');
   if (f.changeNote) out.push(f.changeNote, '');
   out.push(`「${f.title}」`, '');
+  if (f.performerLine) out.push(`🎵 ${f.performerLine}`, '');
   for (const d of f.dateLong) {
     out.push(`📅 ${d.date}`);
     for (const t of d.times) out.push(`　 ${t}`);
@@ -212,7 +228,8 @@ function igA(f) {
   if (f.prices.length) out.push(`🎫 ${f.priceSummary}`);
   if (f.age) out.push(`ℹ️ ${f.age}`);
   out.push('');
-  if (!f.closed && f.sales) out.push(f.sales, '');
+  if (f.salesLong.length) out.push('🗓 発売', ...f.salesLong.map((x) => `　${x}`), '');
+  else if (!f.closed && f.sales) out.push(f.sales, '');
   out.push('詳しくはプロフィールのリンクから', `（${f.url}）`, '', [...f.tags, ...f.instTags, ...f.nameTags].slice(0, 10).join(' '));
   return out.join('\n');
 }

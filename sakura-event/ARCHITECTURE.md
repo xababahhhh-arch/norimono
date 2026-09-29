@@ -106,7 +106,10 @@
 | 生成器は event.json の値を「組み立てる」だけで、新しい事実を作らない（テンプレート＋抽出文） | `generate/*.js` |
 | 値のない項目は「情報なし」または非表示。推測で埋めない | `generate/hp.js` |
 | 各値に出典（ファイル・ページ・元の文字列）と confidence を付与 | `extract/rules.js` |
-| confidence が 0.9 未満の値は自動で「要確認」 | `core/review.js` |
+| 抽出した値はすべて「要確認」。確信度の数値は表示せず、抽出根拠（`basis`）と確認が必要な理由（`reasons`）を表示 | `core/field.js`、`ui/form.js` |
+| 判断できない記載（開場・開演の対応、車椅子の文の種類など）は値にせず、原文つきの「判断が必要な記載」（`meta.review_items`）にする。対応するまで確定不可 | `extract/rules.js`、`core/validate.js` |
+| 販売・受付状況はチラシから決めない（初期値「未設定」、未設定では確定不可） | `core/schema.js`、`core/validate.js` |
+| 生成完了・上長承認・公開を別の状態として記録（システムは公開しない） | `app.js`、`meta.workflow` |
 | 年の省略された日付は年を推定するが confidence を下げ、推定したことを記録 | `extract/rules.js` |
 | 曜日は日付から再計算し、チラシの曜日表記と照合。不一致は「エラー：曜日が一致しません」 | `core/validate.js` |
 | 必須項目（タイトル・開催日・曜日・開場・開演・会場・出演者・料金・年齢制限・発売情報・電話番号・外部URL）が確認済みでないと確定不可 | `core/validate.js` |

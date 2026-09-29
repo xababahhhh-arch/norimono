@@ -107,6 +107,11 @@ textarea { min-height: 5rem; }
 .src { margin: .125rem 0; font-size: .875rem; overflow-wrap: anywhere; }
 .computed { margin: .125rem 0; font-size: .9375rem; }
 .computed:empty, .err:empty { display: none; }
+.basis { margin: .125rem 0; font-size: .875rem; }
+.why { margin: .125rem 0; font-size: .9375rem; font-weight: 700; color: var(--warn-text); }
+.review-list { list-style: none; padding: 0; }
+.review-list > li { border: 2px solid var(--line); border-radius: 6px; padding: .5rem 1rem; margin: .5rem 0; }
+.review-list blockquote { margin: .25rem 0; padding: .25rem .75rem; border-left: 6px solid var(--line); background: var(--muted-bg); overflow-wrap: anywhere; }
 .err { background: var(--err-bg); color: var(--err-text); border-left: 6px solid var(--err-text); padding: .5rem .75rem; margin: .25rem 0; white-space: pre-line; font-weight: 700; }
 
 button { font: inherit; }

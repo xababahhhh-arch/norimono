@@ -244,8 +244,12 @@ export function gateChecks(ev) {
 
   // チケット発売・申込
   if (TYPE_SETS.TICKETED.includes(type)) {
-    add('sales', 'チケット発売情報', 'tickets.sales_start', fieldCheck(ev.tickets.sales_start), stateText(ev.tickets.sales_start),
-      has(ev.tickets.sales_start) ? needConfirm : '発売日がない場合（入場無料・申込不要など）は、空欄のまま「確認済み」にしてください。');
+    const sched = ev.tickets.sales_schedule?.items ?? [];
+    const badSched = sched.filter((it) => ['method', 'date', 'time', 'note'].some((k) => has(it[k]) && !it[k].confirmed) || !has(it.method) || !has(it.date));
+    const salesOk = fieldCheck(ev.tickets.sales_start) && badSched.length === 0;
+    add('sales', 'チケット発売情報', 'tickets.sales_start', salesOk,
+      badSched.length ? `販売方法ごとの発売日時に未確認のものが${badSched.length}件あります（一般発売日：${stateText(ev.tickets.sales_start)}）` : stateText(ev.tickets.sales_start),
+      has(ev.tickets.sales_start) || sched.length ? '販売方法・発売日・発売時刻をチラシと照合し、「確認済みにする」を押してください。' : '発売日がない場合（入場無料・申込不要など）は、空欄のまま「確認済み」にしてください。');
   } else if (TYPE_SETS.PART.includes(type)) {
     const a = ev.participation.application_method;
     const b = ev.participation.application_start;
@@ -265,6 +269,19 @@ export function gateChecks(ev) {
   add('urls', '外部URL', urls[0]?.path ?? 'links', badUrls.length === 0,
     urls.length === 0 ? '外部URLはありません' : badUrls.length ? `未確認または形式が正しくないURLが${badUrls.length}件あります` : `確認済み（${urls.length}件）`,
     badUrls.length ? 'URLを実際に開いて行き先が正しいことを確認し、「確認済みにする」を押してください。' : '', urls.length === 0);
+
+  // 販売・受付状況（チラシからは決めない。担当者が設定する）
+  const code = ev.status?.code ?? 'unset';
+  add('status', '販売・受付状況', 'status', code !== 'unset',
+    code === 'unset' ? '未設定' : '設定済み',
+    code === 'unset' ? '窓口・販売システムで現在の販売・受付状況を確認し、「販売・受付状況」を選んでください（チラシからは判断しません）。' : '');
+
+  // 抽出器が判断できず、人の確認を求めた記載
+  const pendingReview = (ev.meta?.review_items ?? []).filter((r) => r.blocking && !r.resolved);
+  add('review_items', '判断が必要な記載', 'meta.review_items', pendingReview.length === 0,
+    pendingReview.length ? `未対応の記載が${pendingReview.length}件あります（${pendingReview.map((r) => r.topic).join('、')}）` : '対応済み',
+    pendingReview.length ? '「判断が必要な記載」の原文を確認し、必要な項目に入力してから「対応済みにする」を押してください。' : '',
+    (ev.meta?.review_items ?? []).filter((r) => r.blocking).length === 0);
 
   return out;
 }

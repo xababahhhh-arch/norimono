@@ -16,7 +16,9 @@
   "origin": "extracted",
   "confirmed": false,
   "confirmed_at": null,
-  "note": ""
+  "note": "",
+  "basis": "文字の大きさの情報がないため、最初の行をタイトルの候補にしました",
+  "reasons": ["タイトルかどうか、チラシで確認してください"]
 }
 ```
 
@@ -31,6 +33,10 @@
 | `confirmed` | boolean | 人が「確認済み」にしたか。**抽出器・AIは true にしない** |
 | `confirmed_at` | ISO日時 / null | 確認した日時 |
 | `note` | string | 確認時のメモ（例：「該当なし」「チラシ裏面で確認」） |
+| `basis` | string | **抽出根拠**。どの書き方・どの見出しから取り出したか（例：「「開演」の語と並んで書かれた時刻です」） |
+| `reasons` | string[] | **確認が必要な理由**（例：「年がチラシに書かれていないため推定しました」「見出しのない行から取り出したため…」）。値を取り出せなかった場合も、理由だけを持つことがある |
+
+> **確信度（confidence）は正しさの保証ではありません。** 実チラシのテスト（REAL_DATA_TEST_UNPLUGGED.md）で、誤った値に高い確信度が付くことがわかったため、画面には数値を表示せず、`basis` と `reasons` を文章で表示します。`confidence` は内部で候補の優先順位を決めるためだけに使います。
 
 ### 確認状態の表示（UI・報告書）
 
@@ -41,7 +47,7 @@
 | `confirmed === false` かつ値あり | 要確認 | ！ |
 | `confirmed === false` かつ値なし | 情報なし | － |
 
-- `confidence < 0.9` の値は「要確認」に加えて「確信度が低い」と文字で表示します。
+- 確認画面では、各項目に「出典（ファイル・ページ・原文）」「抽出根拠」「確認が必要な理由」を表示します（確信度の数値は表示しません）。
 - **確認後に値を変更すると `confirmed` は自動で false に戻ります。**
 
 ## 2. 繰り返し項目（List）
@@ -145,8 +151,13 @@
     "boxoffice_start": Field,                    // 窓口発売
     "online_start": Field,                       // WEB発売
     "presale": Field,                            // 先行発売の説明（原文）
+    "sales_schedule": { "items": [              // 販売方法ごとの発売日時（チラシの販売方法の文言をそのまま）
+      { "id": "ss1", "method": Field, "date": Field, "time": Field, "note": Field }
+      // 例：method「さくらプラザ先行電話予約」date「2026-08-15」time「14:00」
+    ], "none_confirmed": false },
     "ticket_channels": { "items": [
-      { "id": "t1", "name": Field, "detail": Field, "phone": Field, "url": Field, "hours": Field }
+      { "id": "t1", "name": Field, "detail": Field, "phone": Field, "url": Field, "hours": Field,
+        "notes": Field }                         // この取扱先だけの条件（例：「車椅子席の取扱いはございません」）
     ], "none_confirmed": false },
     "ticket_codes": { "items": [ { "id": "k1", "provider": Field, "code": Field } ], "none_confirmed": false },
     "payment_methods": Field,
@@ -197,6 +208,16 @@
     "extractor": "rules-1.0",
     "finalized": false,                          // 確認ゲート通過後に true
     "finalized_at": null,
+    "review_items": [                            // 抽出器が値として取り込まず、人の判断を求めた記載（原文つき）
+      { "id": "r1", "topic": "開場・開演の時刻", "text": "開場・開演 18:00／18:30", "page": 1, "file": "…",
+        "reason": "「開場」「開演」の語と時刻の組み合わせを自動で区別できませんでした…",
+        "blocking": true,                        // true：対応済みにするまで確定できない
+        "resolved": false, "resolution": "" }
+    ],
+    "workflow": {                                // 生成・承認・公開の記録（このシステムは公開しない）
+      "state": "draft",                          // draft → generated（承認待ち・未公開）→ approved（公開待ち）→ published
+      "generated_at": null, "approved_by": "", "approved_at": null, "published_at": null, "published_url": ""
+    },
     "page_url": "https://…"                      // 公開したHPページのURL（SNSの導線に使う。未入力なら「［HPページのURL］」と表示）
   }
 }
@@ -206,6 +227,7 @@
 
 | code | 標準ラベル | HPでの表示（記号＋文字） | 主な種別 |
 |---|---|---|---|
+| `unset` | 未設定 | ？ 販売・受付状況は未設定です（要確認） | 全般（初期値。**チラシからは決めない**。未設定のままでは確定できない） |
 | `scheduled` | 発売前 | ◇ 発売前 | 全般 |
 | `on_sale` | 発売中 | ● 発売中 | 公演 |
 | `few_tickets` | 残りわずか | ▲ 残りわずか | 公演 |
@@ -247,8 +269,10 @@ HPでは新しい順に「更新履歴」として表示し、出演者変更・
 | 料金 | `pricing.prices`（各 `category` `amount` または `label`） | 無料は amount 0 |
 | （参考）曲目 | `program.works` | 必須確認ではないが、SNS「C」はここが空だと生成しない |
 | 年齢制限 | `pricing.age_requirement` | |
-| チケット発売情報 | `tickets.sales_start`（WS・講座・募集は `participation.application_start` / `application_method`） | |
+| チケット発売情報 | `tickets.sales_start` と `tickets.sales_schedule` の各行（WS・講座・募集は `participation.application_start` / `application_method`） | |
 | 電話番号 | `organization.phone` | 形式チェックあり |
+| 販売・受付状況 | `status.code` | `unset`（未設定）のままでは確定できない。窓口・販売システムで確認して設定する |
+| 判断が必要な記載 | `meta.review_items`（`blocking: true`） | 原文を確認して「対応済み」にするまで確定できない |
 | 外部URL | 値のある URL 項目すべて（`links` `ticket_channels[].url` `participation.application_url` `media.video`） | `http(s)://` のみ |
 
 ## 7. fixture の簡略表記
@@ -262,3 +286,9 @@ HPでは新しい順に「更新履歴」として表示し、出演者変更・
 
 - 生成器は空の項目について、**推測で埋めず**、HPでは原則として見出しごと非表示にします。
 - ただし必須セクション（日時・会場・料金・問い合わせ）が空の場合は、下書きプレビューで「情報なし（要確認）」と表示し、確定をブロックします。
+
+## 9. 生成・承認・公開の区別
+
+- 「確認済みの内容で生成する」を押すと `meta.workflow.state` が `generated`（生成済み・上長の承認待ち・未公開）になります。**生成しても公開されたことにはなりません。**
+- 上長の承認後、STEP 5 で承認者と承認日を記録すると `approved`、担当者が CMS・各SNS で公開した後に公開日とURLを記録すると `published` になります。このシステム自体は公開を行いません。
+- 生成・承認の後に内容を変更すると、記録は `draft` に戻ります（承認した内容と公開する内容を一致させるため）。

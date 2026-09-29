@@ -12,7 +12,18 @@ export function field(value = null, src = {}) {
     confirmed: src.confirmed ?? false,
     confirmed_at: src.confirmed_at ?? null,
     note: src.note ?? '',
+    // 抽出根拠（どの書き方・どの見出しから取り出したか）と、確認が必要な理由。
+    // 確信度（confidence）は内部の優先順位にだけ使い、正しさの保証として表示しない。
+    basis: src.basis ?? '',
+    reasons: Array.isArray(src.reasons) ? [...src.reasons] : [],
   };
+}
+
+/** 確認が必要な理由を追加する（重複は追加しない） */
+export function addReason(f, reason) {
+  if (!isField(f) || !reason) return;
+  if (!Array.isArray(f.reasons)) f.reasons = [];
+  if (!f.reasons.includes(reason)) f.reasons.push(reason);
 }
 
 export function list(items = []) {
@@ -63,6 +74,7 @@ export const REVIEW_LABELS = {
 
 export const LOW_CONFIDENCE = 0.9;
 
+/** @deprecated 確信度の数値で「低い」と表示しない方針（REAL_DATA_TEST_UNPLUGGED.md）。互換のため残す。 */
 export function isLowConfidence(f) {
   return isField(f) && has(f) && typeof f.confidence === 'number' && f.confidence < LOW_CONFIDENCE && !f.confirmed;
 }
@@ -76,6 +88,8 @@ export function setValue(f, value, now = new Date().toISOString()) {
   f.confidence = 1;
   f.confirmed = false;
   f.confirmed_at = null;
+  f.basis = '担当者が入力・修正した値';
+  f.reasons = [];
   f._edited_at = now;
   return true;
 }

@@ -16,6 +16,8 @@ export const EVENT_TYPES = {
 };
 
 export const STATUSES = {
+  // 販売・受付状況はチラシからは決めない。担当者が窓口の状況を確認して設定するまで「未設定」。
+  unset: { label: '未設定', mark: '？' },
   scheduled: { label: '発売前', mark: '◇' },
   on_sale: { label: '発売中', mark: '●' },
   few_tickets: { label: '残りわずか', mark: '▲' },
@@ -186,6 +188,12 @@ export const GROUPS = [
     id: 'tickets', base: 'tickets', label: 'チケット', types: TICKETED,
     fields: [
       f('sales_start', '一般発売日', { type: 'date', required: true }),
+      l('sales_schedule', '発売日時（販売方法ごと）', [
+        f('method', '販売方法（原文）', { required: true, help: '例：さくらプラザ先行電話予約' }),
+        f('date', '発売日', { type: 'date', required: true }),
+        f('time', '発売時刻', { type: 'time', help: '例：10:00（チラシに時刻がなければ空欄）' }),
+        f('note', '補足'),
+      ], { itemLabel: '発売' }),
       f('presale', '先行発売'),
       f('advance_phone_start', '電話予約開始', { type: 'date' }),
       f('boxoffice_start', '窓口発売', { type: 'date' }),
@@ -196,6 +204,7 @@ export const GROUPS = [
         f('phone', '電話', { type: 'tel' }),
         f('url', 'URL', { type: 'url' }),
         f('hours', '受付時間'),
+        f('notes', 'この取扱先だけの注記', { type: 'textarea', help: '例：車椅子席の取扱いはございません（取扱先ごとの条件）' }),
       ], { itemLabel: '取扱先' }),
       l('ticket_codes', 'プレイガイドのコード', [
         f('provider', 'プレイガイド'),
@@ -277,11 +286,15 @@ export function createEmptyEvent(now = new Date().toISOString()) {
   const ev = {
     schema_version: SCHEMA_VERSION,
     event_id: '',
-    status: { code: 'scheduled', label: '', updated_at: null },
+    status: { code: 'unset', label: '', updated_at: null },
     updates: { items: [] },
     meta: {
       created_at: now, updated_at: now, source_files: [],
       extractor: null, finalized: false, finalized_at: null,
+      // 抽出器が値として取り込まず、人の判断を求めた記載（原文つき）
+      review_items: [],
+      // 生成・承認・公開の記録。生成完了＝公開ではない。
+      workflow: { state: 'draft', generated_at: null, approved_by: '', approved_at: null, published_at: null, published_url: '' },
     },
   };
   for (const g of GROUPS) {
@@ -358,7 +371,7 @@ export function normalizeEvent(input, opts = {}) {
   ev.event_id = src.event_id ?? '';
   if (src.status) {
     ev.status = {
-      code: STATUSES[src.status.code] ? src.status.code : 'scheduled',
+      code: STATUSES[src.status.code] ? src.status.code : 'unset',
       label: src.status.label ?? '',
       updated_at: src.status.updated_at ?? null,
     };
@@ -370,10 +383,22 @@ export function normalizeEvent(input, opts = {}) {
     type: UPDATE_TYPES[u.type] ? u.type : 'notice',
     text: u.text ?? '',
   }));
-  if (src.meta) Object.assign(ev.meta, src.meta);
+  if (src.meta) {
+    const { review_items: ri, workflow: wf, ...rest } = src.meta;
+    Object.assign(ev.meta, rest);
+    ev.meta.review_items = Array.isArray(ri) ? ri.map((x, i) => ({ id: x.id ?? `r${i + 1}`, topic: x.topic ?? '', text: x.text ?? '', page: x.page ?? null, file: x.file ?? null, reason: x.reason ?? '', blocking: !!x.blocking, resolved: !!x.resolved, resolution: x.resolution ?? '' })) : [];
+    ev.meta.workflow = { ...ev.meta.workflow, ...(wf ?? {}) };
+  }
   if (!EVENT_TYPES[ev.event_type.value]) ev.event_type.value = 'performance';
   return ev;
 }
+
+export const WORKFLOW_STATES = {
+  draft: '下書き（未生成）',
+  generated: '生成済み（上長の承認待ち・未公開）',
+  approved: '承認済み（公開待ち）',
+  published: '公開済み',
+};
 
 export function statusLabel(status) {
   if (!status) return '';

@@ -19,7 +19,7 @@ export function generateText(ev, opts = {}) {
   if (draft) out.push('※下書き：確認が済んでいない項目があります。このまま公開しないでください。', '');
   out.push(str(ev.basic.title) || 'タイトル：情報なし（要確認）');
   if (has(ev.basic.subtitle)) out.push(str(ev.basic.subtitle));
-  out.push('', `販売・受付状況：${statusLabel(ev.status)}`);
+  out.push('', `販売・受付状況：${ev.status?.code === 'unset' ? '未設定（要確認）' : statusLabel(ev.status)}`);
   for (const dd of ev.schedule.dates.items) {
     if (dd.status && STATUSES[dd.status]) out.push(`・${d(str(dd.date))}${has(dd.start_time) ? ` ${str(dd.start_time)}の回` : ''}：${STATUSES[dd.status].label}`);
   }
@@ -93,10 +93,13 @@ export function generateText(ev, opts = {}) {
   sec('注意事項', lines(str(ev.notes)).map((x) => `※${x.replace(/^[※*・]\s*/, '')}`));
 
   if (TYPE_SETS.TICKETED.includes(type)) {
-    sec('チケット発売日', [
-      kv('先行発売', ev.tickets.presale), kv('一般発売', ev.tickets.sales_start, d), kv('電話予約', ev.tickets.advance_phone_start, d),
-      kv('窓口', ev.tickets.boxoffice_start, d), kv('WEB', ev.tickets.online_start, d),
-    ]);
+    const sched = (ev.tickets.sales_schedule?.items ?? []).filter((x) => has(x.date) || has(x.method));
+    sec('チケット発売日', sched.length
+      ? sched.map((x) => `${str(x.method) || '発売'}：${d(str(x.date))}${has(x.time) ? ` ${str(x.time)}〜` : ''}${has(x.note) ? `（${str(x.note)}）` : ''}`)
+      : [
+        kv('先行発売', ev.tickets.presale), kv('一般発売', ev.tickets.sales_start, d), kv('電話予約', ev.tickets.advance_phone_start, d),
+        kv('窓口', ev.tickets.boxoffice_start, d), kv('WEB', ev.tickets.online_start, d),
+      ]);
   }
   if (TYPE_SETS.PART.includes(type) || type === 'multi_event') {
     const p = ev.participation;
@@ -107,7 +110,10 @@ export function generateText(ev, opts = {}) {
   }
   if (TYPE_SETS.TICKETED.includes(type)) {
     sec('チケット取扱', [
-      ...ev.tickets.ticket_channels.items.filter((c) => has(c.name)).map((c) => [str(c.name), has(c.phone) ? `TEL ${str(c.phone)}` : '', has(c.hours) ? `（${str(c.hours)}）` : '', str(c.url)].filter(Boolean).join(' ')),
+      ...ev.tickets.ticket_channels.items.filter((c) => has(c.name)).flatMap((c) => [
+        [str(c.name), str(c.detail), has(c.phone) ? `TEL ${str(c.phone)}` : '', has(c.hours) ? `（${str(c.hours)}）` : '', str(c.url)].filter(Boolean).join(' '),
+        ...lines(str(c.notes)).map((x) => `　・${x}`),
+      ]),
       ...ev.tickets.ticket_codes.items.filter((k) => has(k.code)).map((k) => `${str(k.provider)}：${str(k.code)}`),
       kv('支払方法', ev.tickets.payment_methods), kv('手数料', ev.tickets.fees), ...lines(str(ev.tickets.ticket_notes)),
     ]);
