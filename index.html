@@ -4,111 +4,89 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>のりもの あそび</title>
-<meta name="theme-color" content="#123a5e">
+<meta name="theme-color" content="#bfe8ff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="のりもの あそび">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/menu-180.png">
 <link rel="icon" href="icons/menu-192.png">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
   body{
-    background:radial-gradient(120% 90% at 50% 0%,#1d5686 0%,#123a5e 60%,#0d2942 100%);
-    color:#fff;
-    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
-    -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
-    overflow:hidden;
+    position:fixed;inset:0;
+    background:linear-gradient(180deg,#bfe8ff 0%,#e3f5ff 45%,#fff4cf 100%);
+    color:#3a3350;
+    font-family:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+    -webkit-user-select:none;user-select:none;
+    -webkit-touch-callout:none;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
   }
   .wrap{
     height:100%;
-    padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 18px);
-    display:flex;flex-direction:column;gap:14px;
+    padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.5vh;
   }
   h1{
-    font-size:26px;font-weight:800;letter-spacing:.06em;text-align:center;
-    text-shadow:0 2px 0 rgba(0,0,0,.35);
+    font-size:clamp(34px,10vw,56px);font-weight:800;color:#ff6b4a;
+    text-shadow:0 4px 0 #fff;text-align:center;
   }
-  .list{flex:1;display:flex;flex-direction:column;gap:14px;min-height:0}
-  .card{
-    flex:1;display:flex;align-items:center;gap:16px;
-    padding:16px 18px;border-radius:26px;border:0;
-    background:#1b4c79;color:#fff;text-align:left;text-decoration:none;
-    box-shadow:0 7px 0 rgba(0,0,0,.35);
-    transition:transform .06s linear,box-shadow .06s linear;
+  .list{display:flex;flex-direction:column;gap:18px;width:min(100%,440px)}
+  .tile{
+    display:flex;align-items:center;gap:18px;
+    min-height:112px;padding:16px 24px;
+    border-radius:32px;border:5px solid var(--line);
+    background:#fff;text-decoration:none;
+    box-shadow:0 8px 0 rgba(0,0,0,.08),0 12px 24px rgba(0,70,130,.12);
   }
-  .card:active{transform:translateY(6px);box-shadow:0 1px 0 rgba(0,0,0,.35)}
-  .card svg{flex:none;width:96px;height:auto}
-  .card > span:last-child{flex:1;min-width:0}
-  .t,.s{display:block}
-  .t{font-size:24px;font-weight:800;line-height:1.25;word-break:keep-all;overflow-wrap:anywhere}
-  .s{margin-top:6px;font-size:14px;font-weight:600;color:rgba(255,255,255,.72);line-height:1.45}
-  .card.quiz{background:#1f5f9e;box-shadow:0 7px 0 #123f6c}
-  .card.nakama{background:#2e7d4f;box-shadow:0 7px 0 #1b5233}
-  .card.road{background:#a24400;box-shadow:0 7px 0 #6b2c00}
-  .foot{text-align:center;font-size:12px;color:rgba(255,255,255,.45)}
-  @media (max-height:600px){ .card svg{width:76px} .t{font-size:20px} }
+  .tile:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(0,0,0,.08)}
+  .tile:focus-visible{outline:4px solid #2f6fd0;outline-offset:3px}
+  .emoji{font-size:clamp(46px,14vw,70px);line-height:1;flex:none}
+  .label{
+    font-size:clamp(28px,8.6vw,44px);font-weight:800;color:var(--ink);
+    white-space:nowrap;
+  }
+  /* 長い名前（ミニカーロード など）は 少し小さくして 1行に収める */
+  .label.long{font-size:clamp(21px,7vw,40px)}
+  @media (max-height:640px){
+    .tile{min-height:92px;padding:10px 20px}
+    .wrap{gap:2.5vh}
+  }
+  @media (min-width:760px){
+    .list{flex-direction:row;width:min(100%,960px)}
+    .tile{flex:1;flex-direction:column;justify-content:center;min-height:240px;text-align:center}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>のりもの あそび</h1>
-  <div class="list" id="list"></div>
-  <p class="foot">あそびたい ほうを えらんでね</p>
+  <h1>なにで あそぶ？</h1>
+  <nav class="list" id="list" aria-label="ゲーム"></nav>
 </div>
 
 <script>
 /* ============================================================
    ゲームを ふやすとき は、この GAMES に 1つ 足すだけ。
-     title : 画面に出す名前
-     sub   : 説明の1行
+     label : 画面に出す名前（ひらがな・カタカナ）
+     emoji : 名前の左に出す絵
      url   : ゲームの場所（games/○○/index.html）
-     art   : 絵の種類（'quiz' / 'nakama' / 'road'。新しい絵は ART に足す）
+     color : わくの色 と 文字の色
+     say   : 読み上げ用の名前（スクリーンリーダー向け）
    ============================================================ */
 const GAMES = [
-  { title:'のりもの あてっこ', sub:'のりものの なまえを あてよう', url:'atekko.html', art:'quiz', cls:'quiz' },
-  { title:'🧠 なかまわけ',     sub:'おなじ なかまを さがそう',       url:'games/nakamawake/index.html', art:'nakama', cls:'nakama' },
-  { title:'🚗 ミニカーロード', sub:'ミニカーを おいて はしらせよう', url:'games/minicar/index.html', art:'road', cls:'road' }
+  { label:'のりもの',       emoji:'🚄', url:'atekko.html',                 color:['#ffb36b','#f06a1c'], say:'のりもの あてっこ' },
+  { label:'なかまわけ',     emoji:'🧩', url:'games/nakamawake/index.html', color:['#9cc8f2','#2f6fd0'], say:'なかまわけ' },
+  { label:'ミニカーロード', emoji:'🚗', url:'games/minicar/index.html',   color:['#8fd6a6','#1f8a4c'], say:'ミニカーロード' }
 ];
 
-const ART = {
-  quiz: `<svg viewBox="0 0 120 120" aria-hidden="true">
-    <rect x="16" y="34" width="62" height="54" rx="14" fill="#ffd23f"/>
-    <rect x="24" y="44" width="46" height="20" rx="7" fill="#123a5e"/>
-    <circle cx="32" cy="92" r="11" fill="#0e1620"/><circle cx="62" cy="92" r="11" fill="#0e1620"/>
-    <circle cx="88" cy="38" r="26" fill="#ffffff"/>
-    <text x="88" y="52" text-anchor="middle" font-size="38" font-weight="800" fill="#1f5f9e">?</text>
-  </svg>`,
-  nakama: `<svg viewBox="0 0 120 120" aria-hidden="true">
-    <rect x="8" y="14" width="104" height="92" rx="20" fill="#ffffff"/>
-    <circle cx="36" cy="44" r="14" fill="#ff6b4a"/><circle cx="84" cy="44" r="14" fill="#ff6b4a"/>
-    <rect x="22" y="70" width="28" height="24" rx="6" fill="#2f8be0"/>
-    <path d="M84 68 L100 94 L68 94 Z" fill="#36c275"/>
-    <path d="M52 44 H68" stroke="#b9c3d0" stroke-width="5" stroke-linecap="round"/>
-  </svg>`,
-  road: `<svg viewBox="0 0 120 120" aria-hidden="true">
-    <path d="M38 8 L82 8 L96 112 L24 112 Z" fill="#4e535b"/>
-    <g fill="#ffcf33">
-      <rect x="56" y="12" width="8" height="18"/><rect x="56" y="40" width="8" height="18"/>
-      <rect x="56" y="68" width="8" height="18"/><rect x="56" y="96" width="8" height="16"/>
-    </g>
-    <g transform="translate(60,62)">
-      <rect x="-30" y="-20" width="12" height="18" rx="4" fill="#0e1620"/>
-      <rect x="18" y="-20" width="12" height="18" rx="4" fill="#0e1620"/>
-      <rect x="-30" y="6" width="12" height="20" rx="4" fill="#0e1620"/>
-      <rect x="18" y="6" width="12" height="20" rx="4" fill="#0e1620"/>
-      <path d="M0 -36 C12 -36 22 -26 22 -12 C22 4 24 16 18 30 L-18 30 C-24 16 -22 4 -22 -12 C-22 -26 -12 -36 0 -36 Z" fill="#ff6a00" stroke="#fff" stroke-width="3"/>
-      <path d="M-11 -2 L11 -2 L15 16 L-15 16 Z" fill="#16202c"/>
-    </g>
-  </svg>`
-};
-
 document.getElementById('list').innerHTML = GAMES.map((g) => `
-  <a class="card ${g.cls || ''}" href="${g.url}">
-    ${ART[g.art] || ''}
-    <span><span class="t">${g.title}</span><span class="s">${g.sub}</span></span>
+  <a class="tile" href="${g.url}" aria-label="${g.say}で あそぶ" style="--line:${g.color[0]};--ink:${g.color[1]}">
+    <span class="emoji" aria-hidden="true">${g.emoji}</span>
+    <span class="label${g.label.length >= 6 ? ' long' : ''}">${g.label}</span>
   </a>`).join('');
 
 if ('serviceWorker' in navigator) {

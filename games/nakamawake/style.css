@@ -377,6 +377,7 @@ svg { display: block; }
   .nk-choices.n3 .nk-badge { right: auto; left: 10px; top: 6px; }
   .nk-foot { min-height: 64px; }
   .nk-feedback { white-space: nowrap; }
+  .nk-feedback.retry { white-space: normal; }
   .nk-next { padding: 10px 18px; }
   .nk-preview { display: none; }
 }

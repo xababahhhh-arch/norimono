@@ -81,7 +81,7 @@
   function begin() {
     A.unlockAudio(); // iPhone：この タップのあとから 読み上げできる
     stopAll();
-    state = { rounds: buildRounds(), idx: 0, phase: 'answer', readyAt: 0, nextAt: 0 };
+    state = { rounds: buildRounds(), idx: 0, phase: 'answer', readyAt: 0 };
     renderProgress();
     A.show('nk-game');
     renderQuestion();
@@ -108,7 +108,6 @@
     $('#nk-question').textContent = r.q.text;
     $('#nk-feedback').textContent = '';
     $('#nk-feedback').className = 'nk-feedback';
-    $('#nk-next').hidden = true;
     $('#nk-listen').hidden = !(A.speech.ok && A.settings.voice);
 
     const box = $('#nk-choices');
@@ -154,24 +153,26 @@
         const rect = btn.getBoundingClientRect();
         A.fx.burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 18);
       }
-      speak(`せいかい！${item.say}だね！`);
-      state.nextAt = Date.now() + 700; // 連打で「つぎへ」まで押されないように
-      const nb = $('#nk-next');
-      nb.hidden = false;
-      nb.setAttribute('aria-label', state.idx + 1 >= ROUNDS ? 'つぎへ（おわり）' : 'つぎへ');
+      // 「せいかい！」を言いおわったら、自動で つぎの問題へ（こえ なし でも 少し待ってから）
+      const my = token;
+      Promise.all([wait(1800), speak(`せいかい！${item.say}だね！`)])
+        .then(() => wait(500))
+        .then(() => { if (my === token && state && state.phase === 'solved') next(); });
     } else {
       btn.classList.add('is-wrong');
       btn.setAttribute('aria-disabled', 'true');
-      btn.setAttribute('aria-label', NAKAMA_ITEMS[id].name + '。ちがったね');
-      fb.textContent = 'もういちど やってみよう';
+      // おしたものの 名前を おしえてから、もういちど
+      const wrong = NAKAMA_ITEMS[id];
+      btn.setAttribute('aria-label', wrong.name + '。ちがったね');
+      fb.innerHTML = `それは ${wrong.name} だよ。<br>もういちど やってみよう`;
       fb.className = 'nk-feedback retry';
       A.sfx.retry();
-      speak('もう一度、やってみよう！');
+      speak(`それは、${wrong.say}だよ。もう一度、やってみよう！`);
     }
   }
 
   function next() {
-    if (!state || state.phase !== 'solved' || Date.now() < state.nextAt) return;
+    if (!state || state.phase !== 'solved') return;
     state.phase = 'moving';
     A.sfx.pop();
     state.idx++;
@@ -207,7 +208,6 @@
   $('#nk-end-home').addEventListener('click', goTop);
   $('#nk-begin').addEventListener('click', begin);
   $('#nk-again').addEventListener('click', begin);
-  $('#nk-next').addEventListener('click', next);
   $('#nk-listen').addEventListener('click', () => {
     if (!state || (state.phase !== 'answer' && state.phase !== 'solved')) return;
     speak(state.rounds[state.idx].q.say);
