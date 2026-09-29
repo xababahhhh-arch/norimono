@@ -1,0 +1,20 @@
+{
+ "files": [
+  {
+   "name": "unplugged.pdf",
+   "type": "application/pdf",
+   "pages": [
+    {
+     "page": 1,
+     "text": "",
+     "lines": []
+    },
+    {
+     "page": 2,
+     "text": "",
+     "lines": []
+    }
+   ]
+  }
+ ]
+}

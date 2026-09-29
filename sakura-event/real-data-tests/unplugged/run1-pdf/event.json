@@ -1,0 +1,786 @@
+{
+  "schema_version": "1.0",
+  "event_id": "",
+  "status": {
+    "code": "scheduled",
+    "label": "",
+    "updated_at": null
+  },
+  "updates": {
+    "items": []
+  },
+  "meta": {
+    "created_at": "2026-09-29T00:00:00+09:00",
+    "updated_at": "2026-09-29T00:00:00+09:00",
+    "source_files": [
+      {
+        "name": "unplugged.pdf",
+        "type": "application/pdf",
+        "pages": 2
+      }
+    ],
+    "extractor": "rules-1.0",
+    "finalized": false,
+    "finalized_at": null
+  },
+  "event_type": {
+    "value": "performance",
+    "source_file": null,
+    "source_page": null,
+    "source_text": null,
+    "confidence": 0,
+    "origin": "inferred",
+    "confirmed": false,
+    "confirmed_at": null,
+    "note": ""
+  },
+  "genre": {
+    "value": null,
+    "source_file": null,
+    "source_page": null,
+    "source_text": null,
+    "confidence": null,
+    "origin": null,
+    "confirmed": false,
+    "confirmed_at": null,
+    "note": ""
+  },
+  "basic": {
+    "title": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "subtitle": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "catchphrase": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "description": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "schedule": {
+    "dates": {
+      "items": [],
+      "none_confirmed": false
+    },
+    "start_date": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "end_date": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "duration": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "intermission": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "open_hours": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "closed_days": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "schedule_notes": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "venue": {
+    "venue": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "room": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "floor": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "performers": {
+    "items": [],
+    "none_confirmed": false
+  },
+  "program": {
+    "works": {
+      "items": [],
+      "none_confirmed": false
+    },
+    "notes": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "sub_events": {
+    "items": [],
+    "none_confirmed": false
+  },
+  "pricing": {
+    "seating_type": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "prices": {
+      "items": [],
+      "none_confirmed": false
+    },
+    "tax_included": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "age_requirement": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "lap_seating": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "student_requirements": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "price_notes": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "participation": {
+    "target_age": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "capacity": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "participation_fee": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "eligibility": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "belongings": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "application_method": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "application_url": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "application_start": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "application_deadline": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "lottery": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "notification_date": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "tickets": {
+    "sales_start": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "presale": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "advance_phone_start": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "boxoffice_start": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "online_start": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "ticket_channels": {
+      "items": [],
+      "none_confirmed": false
+    },
+    "ticket_codes": {
+      "items": [],
+      "none_confirmed": false
+    },
+    "payment_methods": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "fees": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "ticket_notes": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "accessibility": {
+    "wheelchair": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "accessible_toilet": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "stroller": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "childcare": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "hearing_support": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "age_accessibility": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "accessibility_notes": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "notes": {
+    "value": null,
+    "source_file": null,
+    "source_page": null,
+    "source_text": null,
+    "confidence": null,
+    "origin": null,
+    "confirmed": false,
+    "confirmed_at": null,
+    "note": ""
+  },
+  "organization": {
+    "organizer": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "co_organizer": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "supporter": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "sponsor": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "grant": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "cooperation": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "contact": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "phone": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "email": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "contact_hours": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "links": {
+    "items": [],
+    "none_confirmed": false
+  },
+  "media": {
+    "flyer": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "flyer_front": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "flyer_back": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "images": {
+      "items": [],
+      "none_confirmed": false
+    },
+    "video": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  }
+}

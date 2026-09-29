@@ -1,0 +1,1895 @@
+{
+  "schema_version": "1.0",
+  "event_id": "2026-10-17-v0mn",
+  "status": {
+    "code": "scheduled",
+    "label": "",
+    "updated_at": null
+  },
+  "updates": {
+    "items": []
+  },
+  "meta": {
+    "created_at": "2026-09-29T00:00:00+09:00",
+    "updated_at": "2026-09-29T00:00:00+09:00",
+    "source_files": [
+      {
+        "name": "貼り付けた文字",
+        "type": "text/plain",
+        "pages": 1
+      }
+    ],
+    "extractor": "rules-1.0",
+    "finalized": false,
+    "finalized_at": null
+  },
+  "event_type": {
+    "value": "performance",
+    "source_file": null,
+    "source_page": null,
+    "source_text": "手がかり：開演、開場、公演、ライブ、全席指定、曲目、ジャズ",
+    "confidence": 0.95,
+    "origin": "inferred",
+    "confirmed": false,
+    "confirmed_at": null,
+    "note": ""
+  },
+  "genre": {
+    "value": "ジャズ",
+    "source_file": "貼り付けた文字",
+    "source_page": 1,
+    "source_text": "ジャズでつながる横浜の街！",
+    "confidence": 0.6,
+    "origin": "extracted",
+    "confirmed": false,
+    "confirmed_at": null,
+    "note": ""
+  },
+  "basic": {
+    "title": {
+      "value": "UNPLUGGED",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "UNPLUGGED",
+      "confidence": 0.45,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": "最初の行から推定しました。"
+    },
+    "subtitle": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "catchphrase": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "description": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "schedule": {
+    "dates": {
+      "items": [
+        {
+          "id": "d1",
+          "date": {
+            "value": "2026-10-17",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "2026年10月17日（土）／18:30開演（18:00開場）",
+            "confidence": 0.9,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "weekday_on_flyer": {
+            "value": "土",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "2026年10月17日（土）／18:30開演（18:00開場）",
+            "confidence": 0.95,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "session_label": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "doors_open": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "start_time": {
+            "value": "18:00",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "2026年10月17日（土）／18:30開演（18:00開場）",
+            "confidence": 0.9,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "end_time": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "status": null
+        },
+        {
+          "id": "d2",
+          "date": {
+            "value": "2026-08-16",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "その他プレイガイド：8月16日（日） 9:00〜",
+            "confidence": 0.6,
+            "origin": "inferred",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": "年はチラシに書かれていないため推定しました"
+          },
+          "weekday_on_flyer": {
+            "value": "日",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "その他プレイガイド：8月16日（日） 9:00〜",
+            "confidence": 0.95,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "session_label": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "doors_open": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "start_time": {
+            "value": "09:00",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "その他プレイガイド：8月16日（日） 9:00〜",
+            "confidence": 0.9,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "end_time": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "status": null
+        },
+        {
+          "id": "d3",
+          "date": {
+            "value": "2026-08-16",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "その他プレイガイド：8月16日（日） 9:00〜",
+            "confidence": 0.6,
+            "origin": "inferred",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": "年はチラシに書かれていないため推定しました"
+          },
+          "weekday_on_flyer": {
+            "value": "日",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "その他プレイガイド：8月16日（日） 9:00〜",
+            "confidence": 0.95,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "session_label": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "doors_open": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "start_time": {
+            "value": "09:00",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "TEL：045-866-2501(9:00〜21:00)",
+            "confidence": 0.9,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "end_time": {
+            "value": "21:00",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "TEL：045-866-2501(9:00〜21:00)",
+            "confidence": 0.9,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "status": null
+        }
+      ],
+      "none_confirmed": false
+    },
+    "start_date": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "end_date": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "duration": {
+      "value": "約10分",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "●横浜⇒戸塚　JR東海道本線　約10分",
+      "confidence": 0.7,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "intermission": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "open_hours": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "closed_days": {
+      "value": "原則第2火曜日・8月12日(水)\n主 催:戸塚区民文化センターさくらプラザ\n(指定管理者 アートプレックス戸塚株式会社/運営 株式会社共立)\n共 催:横濱JAZZ PROMENADE 実行委員会\n協 力:MALLORY PORK STEAK(戸塚区総合庁舎店)\n原則第2火曜日・8月12日(水)\nさくらプラザオンライン窓口\n●一般・学生券のみ取扱い\nhttps://totsuka.hall-info.jp/onlineticket.html\n※横浜市民券、車椅子席の取扱いはございません。※ご予約後、セブン-イレブン店頭にてチケットをお受け取りください。(クレジットカード決済を選択された場合、チケット受け取りは決済後、すぐに発券が可能となります。)\n※お支払いは、Webからお申込の際にクレジットカード決済(VISA/Master Cardのみ)、またはチケット受け取り時にセブン-イレブン店頭でお支払いの、どちらかをお選びいただけます。※ご予約前に「GETTIIS」への会員登録(無料)が必要となります。※セブン-イレブンへの発券手数料(385円※税込)がかかります。\nローソンチケット 要Lコード:31736\n●一般・学生券のみ取扱い\nhttps://l-tike.com/order/?gLcode=31736(PC、スマートフォン用)\nお近くのローソン・ミニストップのLoppi(ロッピー)でも直接チケットの購入が可能です。※会員登録は不要です。※座席選択不可\nカンフェティチケット\n●一般・学生券のみ取扱い\nTEL:050-3092-0051(平日10時〜17時)\n※払込票番号を予約時にお伝えしますのでメモをご用意ください。※お電話でのご予約の場合、会員登録は不要です。(カンフェティポイントは付きません。)※予約有効期間内に、払込票番号をお近くのセブン-イレブンのレジまでお持ちの上、お支払いください。※座席選択不可",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "休館日：原則第2火曜日・8月12日（水）",
+      "confidence": 0.8,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "schedule_notes": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "venue": {
+    "venue": {
+      "value": "戸塚区民文化センター さくらプラザ・ホール",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "戸塚区民文化センター さくらプラザ・ホール",
+      "confidence": 0.6,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "room": {
+      "value": "ホール",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "戸塚区民文化センター さくらプラザ・ホール",
+      "confidence": 0.7,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "floor": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "performers": {
+    "items": [],
+    "none_confirmed": false
+  },
+  "program": {
+    "works": {
+      "items": [
+        {
+          "id": "w1",
+          "composer": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "work": {
+            "value": "戸塚区民文化センター さくらプラザ",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "戸塚区民文化センター さくらプラザ",
+            "confidence": 0.5,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "section": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "notes": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "w2",
+          "composer": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "work": {
+            "value": "チケット発売情報",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "チケット発売情報",
+            "confidence": 0.5,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "section": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "notes": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "w3",
+          "composer": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "work": {
+            "value": "さくらプラザ先行電話予約 2026年8月15日(土) 14:00〜",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "さくらプラザ先行電話予約　2026年8月15日（土） 14:00〜",
+            "confidence": 0.5,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "section": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "notes": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "w4",
+          "composer": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "work": {
+            "value": "チケット引換・発売・さくらプラザ窓口・オンライン窓口・",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "チケット引換・発売・さくらプラザ窓口・オンライン窓口・",
+            "confidence": 0.5,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "section": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "notes": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "w5",
+          "composer": {
+            "value": "その他プレイガイド",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "その他プレイガイド：8月16日（日） 9:00〜",
+            "confidence": 0.75,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "work": {
+            "value": "8月16日(日) 9:00〜",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "その他プレイガイド：8月16日（日） 9:00〜",
+            "confidence": 0.75,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "section": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "notes": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        }
+      ],
+      "none_confirmed": false
+    },
+    "notes": {
+      "value": "書き下ろし新作を発表予定\n最新情報は公式ウェブサイトをご確認ください。",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "PROGRAM",
+      "confidence": 0.7,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "sub_events": {
+    "items": [],
+    "none_confirmed": false
+  },
+  "pricing": {
+    "seating_type": {
+      "value": "全席指定",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "全席指定　一般 3,000円／横浜市民 2,500円／EX（補助席・見切れ席）1,500円／学生 1,000円",
+      "confidence": 0.85,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "prices": {
+      "items": [
+        {
+          "id": "c1",
+          "category": {
+            "value": "一般",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "全席指定　一般 3,000円／横浜市民 2,500円／EX（補助席・見切れ席）1,500円／学生 1,000円",
+            "confidence": 0.7,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "amount": {
+            "value": 3000,
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "全席指定　一般 3,000円／横浜市民 2,500円／EX（補助席・見切れ席）1,500円／学生 1,000円",
+            "confidence": 0.85,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "label": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "note": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "c2",
+          "category": {
+            "value": "横浜市民",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "全席指定　一般 3,000円／横浜市民 2,500円／EX（補助席・見切れ席）1,500円／学生 1,000円",
+            "confidence": 0.7,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "amount": {
+            "value": 2500,
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "全席指定　一般 3,000円／横浜市民 2,500円／EX（補助席・見切れ席）1,500円／学生 1,000円",
+            "confidence": 0.85,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "label": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "note": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "c3",
+          "category": {
+            "value": "EX(補助席・見切れ席)",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "全席指定　一般 3,000円／横浜市民 2,500円／EX（補助席・見切れ席）1,500円／学生 1,000円",
+            "confidence": 0.7,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "amount": {
+            "value": 1500,
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "全席指定　一般 3,000円／横浜市民 2,500円／EX（補助席・見切れ席）1,500円／学生 1,000円",
+            "confidence": 0.85,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "label": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "note": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "c4",
+          "category": {
+            "value": "学生",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "全席指定　一般 3,000円／横浜市民 2,500円／EX（補助席・見切れ席）1,500円／学生 1,000円",
+            "confidence": 0.7,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "amount": {
+            "value": 1000,
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "全席指定　一般 3,000円／横浜市民 2,500円／EX（補助席・見切れ席）1,500円／学生 1,000円",
+            "confidence": 0.85,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "label": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "note": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "c5",
+          "category": {
+            "value": "歳以下は当日券が",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "■22歳以下は当日券が500円",
+            "confidence": 0.7,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "amount": {
+            "value": 500,
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "■22歳以下は当日券が500円",
+            "confidence": 0.85,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "label": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "note": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        }
+      ],
+      "none_confirmed": false
+    },
+    "tax_included": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "age_requirement": {
+      "value": "未就学児入場不可",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "※未就学児入場不可。※学生券は公演当日に学生証を必ずご持参ください。",
+      "confidence": 0.85,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "lap_seating": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "student_requirements": {
+      "value": "チケットは総額表示です。※学生券は公演当日に学生証を必ずご持参ください。",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "※チケットは総額表示です。※学生券は公演当日に学生証を必ずご持参ください。",
+      "confidence": 0.7,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "price_notes": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "participation": {
+    "target_age": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "capacity": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "participation_fee": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "eligibility": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "belongings": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "application_method": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "application_url": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "application_start": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "application_deadline": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "lottery": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "notification_date": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "tickets": {
+    "sales_start": {
+      "value": "2026-08-16",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "チケット引換・発売・さくらプラザ窓口・オンライン窓口・その他プレイガイド：8月16日（日） 9:00〜",
+      "confidence": 0.6,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "presale": {
+      "value": "さくらプラザ先行電話予約 2026年8月15日(土) 14:00〜",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "さくらプラザ先行電話予約　2026年8月15日（土） 14:00〜",
+      "confidence": 0.7,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "advance_phone_start": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "boxoffice_start": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "online_start": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "ticket_channels": {
+      "items": [
+        {
+          "id": "t1",
+          "name": {
+            "value": "その他プレイガイド:8月16日(日) 9:00〜",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "その他プレイガイド：8月16日（日） 9:00〜",
+            "confidence": 0.55,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "detail": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "phone": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "url": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "hours": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "t2",
+          "name": {
+            "value": "戸塚区民文化センターさくらプラザ ●全券種取扱い",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "戸塚区民文化センターさくらプラザ　●全券種取扱い",
+            "confidence": 0.7,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "detail": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "phone": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "url": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "hours": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "t3",
+          "name": {
+            "value": "（取扱先名 要確認）",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "TEL：045-866-2501(9:00〜21:00)",
+            "confidence": 0.7,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "detail": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "phone": {
+            "value": "045-866-2501",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "TEL：045-866-2501(9:00〜21:00)",
+            "confidence": 0.85,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "url": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "hours": {
+            "value": "9:00〜21:00",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "TEL：045-866-2501(9:00〜21:00)",
+            "confidence": 0.7,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "t4",
+          "name": {
+            "value": "さくらプラザオンライン窓口",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "さくらプラザオンライン窓口",
+            "confidence": 0.55,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "detail": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "phone": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "url": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "hours": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "t5",
+          "name": {
+            "value": "ローソンチケット 要",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "ローソンチケット　要Lコード：31736",
+            "confidence": 0.55,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "detail": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "phone": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "url": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "hours": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        },
+        {
+          "id": "t6",
+          "name": {
+            "value": "カンフェティチケット",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "カンフェティチケット",
+            "confidence": 0.55,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "detail": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "phone": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "url": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "hours": {
+            "value": null,
+            "source_file": null,
+            "source_page": null,
+            "source_text": null,
+            "confidence": null,
+            "origin": null,
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        }
+      ],
+      "none_confirmed": false
+    },
+    "ticket_codes": {
+      "items": [
+        {
+          "id": "k1",
+          "provider": {
+            "value": "ローソンチケット",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "ローソンチケット　要Lコード：31736",
+            "confidence": 0.8,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          },
+          "code": {
+            "value": "Lコード 31736",
+            "source_file": "貼り付けた文字",
+            "source_page": 1,
+            "source_text": "ローソンチケット　要Lコード：31736",
+            "confidence": 0.85,
+            "origin": "extracted",
+            "confirmed": false,
+            "confirmed_at": null,
+            "note": ""
+          }
+        }
+      ],
+      "none_confirmed": false
+    },
+    "payment_methods": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "fees": {
+      "value": "※お支払いは、Webからお申込の際にクレジットカード決済(VISA/Master Cardのみ)、またはチケット受け取り時にセブン-イレブン店頭でお支払いの、どちらかをお選びいただけます。※ご予約前に「GETTIIS」への会員登録(無料)が必要となります。※セブン-イレブンへの発券手数料(385円※税込)がかかります。",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "※お支払いは、Webからお申込の際にクレジットカード決済（VISA/Master Cardのみ）、またはチケット受け取り時にセブン-イレブン店頭でお支払いの、どちらかをお選びいただけます。※ご予約前に「GETTIIS」への会員登録（無料）が必要となります。※セブン-イレブンへの発券手数料（385円※税込）がかかります。",
+      "confidence": 0.6,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "ticket_notes": {
+      "value": "払込票番号を予約時にお伝えしますのでメモをご用意ください。※お電話でのご予約の場合、会員登録は不要です。(カンフェティポイントは付きません。)※予約有効期間内に、払込票番号をお近くのセブン-イレブンのレジまでお持ちの上、お支払いください。※座席選択不可",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "※払込票番号を予約時にお伝えしますのでメモをご用意ください。※お電話でのご予約の場合、会員登録は不要です。（カンフェティポイントは付きません。）※予約有効期間内に、払込票番号をお近くのセブン-イレブンのレジまでお持ちの上、お支払いください。※座席選択不可",
+      "confidence": 0.6,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "accessibility": {
+    "wheelchair": {
+      "value": "横浜市民券、車椅子席の取扱いはございません。※ご予約後、セブン-イレブン店頭にてチケットをお受け取りください。(クレジットカード決済を選択された場合、チケット受け取りは決済後、すぐに発券が可能となります。)",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "※横浜市民券、車椅子席の取扱いはございません。※ご予約後、セブン-イレブン店頭にてチケットをお受け取りください。（クレジットカード決済を選択された場合、チケット受け取りは決済後、すぐに発券が可能となります。）",
+      "confidence": 0.7,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "accessible_toilet": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "stroller": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "childcare": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "hearing_support": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "age_accessibility": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "accessibility_notes": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "notes": {
+    "value": "※未就学児入場不可。※学生券は公演当日に学生証を必ずご持参ください。\n※車椅子席をお求めの際はチケットご予約の際にお知らせください。※ご提示いただいた個人情報は主催者が管理し、本公演に関する目的以外には使用いたしません。公演終了後は破棄いたします。※予定販売枚数に達し次第、販売を終了します。あらかじめご了承ください。※チケットご購入後の交換・返金はいたしかねます。あらかじめご了承ください。※曲目・曲順は予告なく変更となる場合がございます。※本公演は、映像収録および写真撮影用のカメラで客席後方より舞台上を撮影いたします。その際にご来場のお客様の様子が映りこむ場合がございます。収録されたデータは広報や動画配信等に使用される可能性がございますので、あらかじめご了承ください。※二次元バーコードはCookieを使用しています。アクセス解析は匿名で収集されており、個人を特定するものではありません。この機能はCookieを無効にすることで、Cookieを用いた収集を拒否することができますので、お使いのデバイスのブラウザの設定をご確認ください。\n音楽家・渋谷慶一郎(ピアノ)と、音楽家・文筆家の菊地成孔(サクソフォン)による、スペシャルライブ。それぞれの楽曲を演奏するほか、時には二人によるセッションも交えながら、ピアノとサックスが呼応する濃密な音楽世界をお届けします。この編成での共演は2017年以来、9年ぶり。二人の感性が響き合う特別な一夜を、どうぞお見逃しなく。\n渋谷慶一郎(ピアノ)\nKEIICHIRO SHIBUYA\n音楽家。東京藝術大学作曲科卒業。作品は先鋭的な電子音楽作品からピアノソロ、オペラ、映画音楽、サウンドインスタレーションまで多岐にわたり、東京・パリを拠点に活動を行なう。2012年にボーカロイド・オペラ『THE END』を発表し、パリ・シャトレ座公演を皮切りに世界中で巡回。2018年以降はアンドロイド・オペラの制作を本格化し、『Scary Beauty』『MIRROR』を国内外で発表。2025年にはサントリーホールにて「アンドロイド・オペラ『MIRROR』-Deconstruction and Rebirth-解体と再生-」を上演し、2026年5月に大阪・フェスティバルホールにて再演。これまでにパリ・オペラ座、シャトレ座、ドバイ万博、新国立劇場、サントリーホールなど国内外の劇場を中心に作品を発表。これまでに数多くの映画音楽も手掛け、「ミッドナイトスワン」では第75回毎日映画コンクール音楽賞、第30回日本映画批評家大賞映画音楽賞を受賞。最近ではNHK100周年を記念した大型ドキュメンタリーシリーズ、NHKスペシャル「臨界世界 ON THE EDGE」のメインテーマ含め全編の音楽を担当。\n人間とテクノロジー、生と死の境界を作品を通して問いかけている。\n菊地 成孔(サクソフォン)\nNARUYOSHI KIKUCHI\n1963年生まれの音楽家/文筆家/大学講師。音楽家としてはソングライティング/アレンジ/バンドリーダー/プロデュースをこなすサクソフォン奏者/シンガー/キーボーディスト/ラッパーであり、文筆家としてはエッセイスト&批評家であり、映画やテレビの劇伴も多い。「菊地成孔とペペトルメントアスカラール」「ラディカルな意志のスタイルズ」「菊地成孔クインテット」リーダー。2021年、自らの生徒と共に、ギルド「新音楽制作工房」を立ち上げ、テレビドラマ「岸部露伴は動かない」劇場用映画「岸部露伴 ルーヴルへ行く」(2023)「岸部露伴は動かない懺悔室」(2025)などの劇伴を担当。2025年8月、新音楽制作工房名義の1stアルバム「未来のコドモたちの食べ物」(ビュロー菊地レーベル)をリリース。\nさくらプラザ ホール 座席表\nジャズでつながる横浜の街!\nジャズプロ・サテライト\n戸塚区民文化センター さくらプラザ\nTEL:045-866-2501 FAX:045-866-2502\nMail:event@totsuka.hall-info.jp\n〒244-0003横浜市戸塚区戸塚町16-17 戸塚区総合庁舎4F\n●JR・横浜市営地下鉄「戸塚」駅西口徒歩2分\n●横浜⇒戸塚 JR東海道本線 約10分\n●東京⇒戸塚 JR東海道本線 約40分\n●新宿⇒戸塚 JR湘南新宿ライン快速 約40分\n●駐車場(有料)\n※駐車台数に限りがございます。公共の交通機関をご利用ください。\n払込票番号を予約時にお伝えしますのでメモをご用意ください。※お電話でのご予約の場合、会員登録は不要です。(カンフェティポイントは付きません。)※予約有効期間内に、払込票番号をお近くのセブン-イレブンのレジまでお持ちの上、お支払いください。※座席選択不可\n駐車台数に限りがございます。公共の交通機関をご利用ください。\n一部除外公演有り。座席選択不可。",
+    "source_file": "貼り付けた文字",
+    "source_page": 1,
+    "source_text": "※払込票番号を予約時にお伝えしますのでメモをご用意ください。※お電話でのご予約の場合、会員登録は不要です。（カンフェティポイントは付きません。）※予約有効期間内に、払込票番号をお近くのセブン-イレブンのレジまでお持ちの上、お支払いください。※座席選択不可",
+    "confidence": 0.7,
+    "origin": "extracted",
+    "confirmed": false,
+    "confirmed_at": null,
+    "note": ""
+  },
+  "organization": {
+    "organizer": {
+      "value": "戸塚区民文化センターさくらプラザ(指定管理者 アートプレックス戸塚株式会社/運営 株式会社共立)",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "主催：戸塚区民文化センターさくらプラザ（指定管理者 アートプレックス戸塚株式会社／運営 株式会社共立）",
+      "confidence": 0.85,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "co_organizer": {
+      "value": "横濱JAZZ PROMENADE 実行委員会",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "共催：横濱JAZZ PROMENADE 実行委員会　協力：MALLORY PORK STEAK（戸塚区総合庁舎店）　企画・制作：石田 佑季・近藤 喬之",
+      "confidence": 0.85,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "supporter": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "sponsor": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "grant": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "cooperation": {
+      "value": "MALLORY PORK STEAK(戸塚区総合庁舎店) 企画・制作:石田 佑季・近藤 喬之",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "共催：横濱JAZZ PROMENADE 実行委員会　協力：MALLORY PORK STEAK（戸塚区総合庁舎店）　企画・制作：石田 佑季・近藤 喬之",
+      "confidence": 0.85,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "contact": {
+      "value": "戸塚区民文化センターさくらプラザ",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "問合せ：戸塚区民文化センターさくらプラザ",
+      "confidence": 0.75,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "phone": {
+      "value": "045-866-2501",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "電　話：045-866-2501(9:00〜21:00)",
+      "confidence": 0.9,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "email": {
+      "value": "event@totsuka.hall-info.jp",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "Mail：event@totsuka.hall-info.jp",
+      "confidence": 0.6,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "contact_hours": {
+      "value": "9:00〜21:00)",
+      "source_file": "貼り付けた文字",
+      "source_page": 1,
+      "source_text": "電　話：045-866-2501(9:00〜21:00)",
+      "confidence": 0.6,
+      "origin": "extracted",
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  },
+  "links": {
+    "items": [
+      {
+        "id": "l1",
+        "label": {
+          "value": null,
+          "source_file": "貼り付けた文字",
+          "source_page": 1,
+          "source_text": "https://totsuka.hall-info.jp/onlineticket.html",
+          "confidence": 0.4,
+          "origin": "extracted",
+          "confirmed": false,
+          "confirmed_at": null,
+          "note": "リンクの説明は行き先がわかる文にしてください（「こちら」は不可）。"
+        },
+        "url": {
+          "value": "https://totsuka.hall-info.jp/onlineticket.html",
+          "source_file": "貼り付けた文字",
+          "source_page": 1,
+          "source_text": "https://totsuka.hall-info.jp/onlineticket.html",
+          "confidence": 0.85,
+          "origin": "extracted",
+          "confirmed": false,
+          "confirmed_at": null,
+          "note": ""
+        }
+      },
+      {
+        "id": "l2",
+        "label": {
+          "value": "、スマートフォン用)",
+          "source_file": "貼り付けた文字",
+          "source_page": 1,
+          "source_text": "https://l-tike.com/order/?gLcode=31736（PC、スマートフォン用）",
+          "confidence": 0.4,
+          "origin": "extracted",
+          "confirmed": false,
+          "confirmed_at": null,
+          "note": "リンクの説明は行き先がわかる文にしてください（「こちら」は不可）。"
+        },
+        "url": {
+          "value": "https://l-tike.com/order/?gLcode=31736(PC",
+          "source_file": "貼り付けた文字",
+          "source_page": 1,
+          "source_text": "https://l-tike.com/order/?gLcode=31736（PC、スマートフォン用）",
+          "confidence": 0.85,
+          "origin": "extracted",
+          "confirmed": false,
+          "confirmed_at": null,
+          "note": ""
+        }
+      }
+    ],
+    "none_confirmed": false
+  },
+  "media": {
+    "flyer": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "flyer_front": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "flyer_back": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    },
+    "images": {
+      "items": [],
+      "none_confirmed": false
+    },
+    "video": {
+      "value": null,
+      "source_file": null,
+      "source_page": null,
+      "source_text": null,
+      "confidence": null,
+      "origin": null,
+      "confirmed": false,
+      "confirmed_at": null,
+      "note": ""
+    }
+  }
+}
