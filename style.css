@@ -667,3 +667,373 @@ svg { display: block; }
   #screen-start { flex-wrap: wrap; flex-direction: row; align-content: center; column-gap: 24px; }
   .start-title, .parade { width: 100%; }
 }
+
+/* ================================================================
+   ホーム（あそぶ ゲームを えらぶ）
+   ================================================================ */
+
+#screen-home {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4vh;
+}
+.home-title {
+  margin: 0;
+  font-size: clamp(34px, 10vw, 56px);
+  font-weight: 800;
+  color: #ff6b4a;
+  text-shadow: 0 4px 0 #fff;
+}
+.home-tiles {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: min(100%, 420px);
+}
+.home-tile {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 26px;
+  border-radius: 32px;
+  background: #fff;
+  box-shadow: 0 8px 0 rgba(0, 0, 0, .08), 0 12px 24px rgba(0, 70, 130, .12);
+  min-height: 120px;
+}
+.home-tile:active { transform: translateY(5px); box-shadow: 0 3px 0 rgba(0, 0, 0, .08); }
+.tile-emoji { font-size: clamp(46px, 14vw, 76px); line-height: 1; }
+.tile-label { font-size: clamp(28px, 8.6vw, 46px); font-weight: 800; }
+/* 日本語を 単語の途中で折り返さない（スペースの所で折り返す） */
+.home-title, .tile-label, .nk-title, .nk-sub, .nk-question, .nk-feedback, .nk-end-title, .nk-name { word-break: keep-all; overflow-wrap: anywhere; }
+.tile-nori { border: 5px solid #ffb36b; }
+.tile-nori .tile-label { color: #f06a1c; }
+.tile-nakama { border: 5px solid #9cc8f2; }
+.tile-nakama .tile-label { color: #2f6fd0; }
+@media (min-width: 700px) {
+  .home-tiles { flex-direction: row; width: min(100%, 760px); }
+  .home-tile { flex: 1; flex-direction: column; justify-content: center; min-height: 240px; }
+}
+
+/* 画面の左上に置く「ホームへ」 */
+.btn-corner-top {
+  position: absolute;
+  left: 12px;
+  top: calc(var(--safe-top) + 10px);
+  z-index: 2;
+}
+
+/* ================================================================
+   なかまわけ
+   ================================================================ */
+
+.nk button:focus-visible, .home-tile:focus-visible, .btn-corner-top:focus-visible {
+  outline: 4px solid #2f6fd0;
+  outline-offset: 3px;
+}
+
+/* ---- はじめの画面 ---- */
+#screen-nk-start {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.2vh;
+  text-align: center;
+}
+.nk-title {
+  margin: 0;
+  font-size: clamp(38px, 11vw, 60px);
+  font-weight: 800;
+  color: #2f6fd0;
+  text-shadow: 0 4px 0 #fff;
+}
+.nk-sub { margin: 0; font-size: clamp(20px, 5.5vw, 28px); font-weight: 800; color: #5a5470; }
+.nk-preview { display: flex; gap: 8px; width: min(100%, 460px); }
+.nk-prev-item { flex: 1; background: #fff; border-radius: 18px; padding: 4px; aspect-ratio: 2 / 1; box-shadow: 0 4px 0 rgba(0, 0, 0, .06); }
+.nk-prev-item svg, .nk-prev-item img { width: 100%; height: 100%; object-fit: contain; }
+.nk-options { display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(100%, 420px); }
+.nk-seg { display: flex; gap: 10px; width: 100%; }
+.nk-seg-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 8px;
+  border-radius: 22px;
+  background: #fff;
+  border: 4px solid #d5dde8;
+  font-size: clamp(24px, 7vw, 32px);
+  font-weight: 800;
+  color: #6b6580;
+}
+.nk-dots { font-size: .6em; letter-spacing: 4px; color: #b9c3d0; }
+.nk-seg-btn[aria-pressed="true"] { border-color: #2f6fd0; color: #2f6fd0; background: #eef6ff; }
+.nk-seg-btn[aria-pressed="true"] .nk-dots { color: #2f6fd0; }
+.nk-seg-btn[aria-pressed="true"]::before { content: "✓ "; font-size: .7em; }
+.nk-voice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: #fff;
+  border: 3px solid #d5dde8;
+  font-size: clamp(20px, 5.5vw, 26px);
+  font-weight: 800;
+  color: #5a5470;
+}
+.nk-voice[aria-pressed="false"] { background: #f1f2f5; color: #8a8599; }
+.nk-voice:disabled { opacity: .6; }
+.nk-begin {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ff8a3d;
+  color: #fff;
+  font-size: clamp(30px, 9vw, 44px);
+  font-weight: 800;
+  padding: 18px 44px;
+  border-radius: 999px;
+  box-shadow: 0 8px 0 #d85a12;
+}
+.nk-begin svg { width: 1.1em; height: 1.1em; }
+.nk-begin:active { transform: translateY(5px); box-shadow: 0 3px 0 #d85a12; }
+
+/* ---- ゲーム画面 ---- */
+#screen-nk-game { flex-direction: column; gap: 10px; }
+#screen-nk-game > * { width: 100%; max-width: 980px; margin-left: auto; margin-right: auto; }
+@media (min-width: 700px) and (max-aspect-ratio: 1/1) {
+  #screen-nk-game > * { max-width: 680px; }
+}
+.nk-top { display: flex; align-items: center; justify-content: space-between; flex: none; }
+.nk-top .btn-back { flex: none; }
+.nk-top-spacer { width: 56px; flex: none; }
+.nk-progress { display: flex; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.nk-pdot {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 3px solid #d5dde8;
+  color: #9aa3b5;
+  font-weight: 800;
+  font-size: 18px;
+}
+.nk-pdot.now { border-color: #2f6fd0; color: #2f6fd0; transform: scale(1.12); }
+.nk-pdot.done { background: #ffd23f; border-color: #f5a800; color: #7a5200; }
+
+.nk-qbox {
+  flex: none;
+  background: #fff;
+  border-radius: 26px;
+  padding: 12px 14px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, .06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.nk-question {
+  margin: 0;
+  font-size: clamp(26px, 7.6vw, 42px);
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: center;
+}
+.nk-listen {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: #eef6ff;
+  color: #2f6fd0;
+  font-size: clamp(17px, 4.6vw, 22px);
+  font-weight: 800;
+  min-height: 48px;
+}
+.nk-listen svg { width: 26px; height: 26px; }
+.nk-listen[hidden] { display: none; }
+
+.nk-choices { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+.nk-choice {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 10px 8px;
+  background: #fff;
+  border-radius: 28px;
+  border: 5px solid transparent;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, .07), 0 10px 22px rgba(0, 70, 130, .12);
+  transition: opacity .3s, transform .15s;
+  overflow: hidden;
+}
+.nk-choice:active { transform: scale(.97); }
+.nk-pic { flex: 1; min-height: 44px; width: 100%; display: flex; align-items: center; justify-content: center; }
+.nk-pic svg, .nk-pic img { width: 100%; height: 100%; max-height: 100%; object-fit: contain; pointer-events: none; }
+.nk-name { font-size: clamp(20px, 5.8vw, 28px); font-weight: 800; color: #3a3350; }
+.nk-badge {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: clamp(16px, 4.4vw, 22px);
+  font-weight: 800;
+  display: none;
+}
+/* せいかい：色に加えて「◎ せいかい」の文字と太いわくで伝える */
+.nk-choice.is-correct { border-color: #f5a800; box-shadow: 0 0 0 4px #ffd23f, 0 10px 22px rgba(0, 70, 130, .12); animation: nk-pop .6s ease-out; }
+.nk-choice.is-correct .nk-badge { display: block; background: #fff4c2; color: #7a5200; border: 2px solid #f5a800; }
+.nk-choice.is-other { opacity: .35; }
+/* まちがい：赤や×は使わず、うすく・点線にして「もういちど」 */
+.nk-choice.is-wrong { opacity: .4; border-style: dashed; border-color: #c9ced6; animation: nk-sway .5s ease-in-out; }
+@keyframes nk-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+@keyframes nk-sway {
+  0%, 100% { transform: translateX(0); }
+  30% { transform: translateX(-6px); }
+  60% { transform: translateX(6px); }
+}
+
+.nk-foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 76px;
+  padding-bottom: 2px;
+}
+.nk-feedback {
+  margin: 0;
+  min-width: 0;
+  font-size: clamp(19px, 5.8vw, 32px);
+  font-weight: 800;
+  text-align: center;
+}
+.nk-feedback.ok { color: #d9480f; }
+.nk-feedback.ok::before { content: "◎ "; }
+.nk-feedback.retry { color: #5a5470; }
+.nk-next {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #36c275;
+  color: #fff;
+  font-size: clamp(26px, 7.6vw, 36px);
+  font-weight: 800;
+  padding: 12px 24px;
+  flex: none;
+  border-radius: 999px;
+  box-shadow: 0 7px 0 #229a58;
+  min-height: 64px;
+}
+.nk-next svg { width: 1em; height: 1em; }
+.nk-next:active { transform: translateY(4px); box-shadow: 0 3px 0 #229a58; }
+.nk-next[hidden] { display: none; }
+
+/* ---- おわりの画面 ---- */
+#screen-nk-end {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4vh;
+  text-align: center;
+}
+.nk-end-title {
+  margin: 0;
+  font-size: clamp(36px, 11vw, 60px);
+  font-weight: 800;
+  color: #ff6b4a;
+  text-shadow: 0 4px 0 #fff;
+}
+.nk-stamps { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 520px; }
+.nk-stamp {
+  width: clamp(80px, 25vw, 110px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 5px solid var(--c);
+  background: #fff;
+  color: var(--c);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-8deg);
+  animation: nk-stamp .45s ease-out backwards;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, .06);
+}
+.nk-stamp-ic { font-size: clamp(34px, 10vw, 46px); line-height: 1; }
+.nk-stamp-tx { font-size: clamp(14px, 4vw, 18px); font-weight: 800; }
+@keyframes nk-stamp {
+  from { opacity: 0; transform: scale(1.6) rotate(-8deg); }
+  to { opacity: 1; transform: scale(1) rotate(-8deg); }
+}
+.nk-end-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+.nk-again, .nk-gohome {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(24px, 7vw, 34px);
+  font-weight: 800;
+  padding: 16px 28px;
+  border-radius: 999px;
+  min-height: 64px;
+}
+.nk-again { background: #36c275; color: #fff; box-shadow: 0 7px 0 #229a58; }
+.nk-gohome { background: #fff; color: #f06a1c; box-shadow: 0 7px 0 rgba(0, 0, 0, .1); }
+.nk-again svg, .nk-gohome svg { width: 1.2em; height: 1.2em; }
+.nk-again:active, .nk-gohome:active { transform: translateY(4px); }
+
+/* ---- たての短いスマホ（iPhone SE など）：つめて表示 ---- */
+@media (max-width: 699px) and (max-height: 740px) {
+  #screen-nk-game { gap: 8px; }
+  .nk-qbox { flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 8px 10px; gap: 4px 10px; }
+  .nk-question { font-size: clamp(22px, 6.6vw, 34px); }
+  .nk-listen { padding: 4px 14px; min-height: 44px; }
+  .nk-pdot { width: 34px; height: 34px; font-size: 16px; }
+  .nk-choice { border-radius: 22px; }
+  /* 3つのときは 絵と名前を 横にならべて、絵を大きく */
+  .nk-choices.n3 .nk-choice { flex-direction: row; gap: 8px; padding: 4px 12px; }
+  .nk-choices.n3 .nk-pic { flex: 1; min-width: 0; height: 100%; }
+  .nk-choices.n3 .nk-name { flex: none; font-size: clamp(15px, 4.6vw, 22px); white-space: nowrap; }
+  .nk-choices.n3 .nk-badge { right: auto; left: 10px; top: 6px; }
+  .nk-foot { min-height: 64px; }
+  .nk-feedback { white-space: nowrap; }
+  .nk-next { padding: 10px 18px; }
+  .nk-preview { display: none; }
+}
+
+/* ---- 横長のタブレット・パソコン：選択肢を横にならべる ---- */
+@media (min-width: 700px) and (min-aspect-ratio: 1/1) {
+  .nk-choices { flex-direction: row; }
+  .nk-choice { max-height: 460px; align-self: center; height: 100%; }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .nk-choices { flex-direction: row; }
+  .nk-qbox { flex-direction: row; justify-content: center; padding: 6px 12px; }
+  .nk-question { font-size: clamp(20px, 5vh, 30px); }
+  .nk-preview { display: none; }
+  .nk-foot { min-height: 56px; }
+}
+
+/* ---- 動きを減らす設定の端末では アニメーションしない ---- */
+@media (prefers-reduced-motion: reduce) {
+  .nk *, .nk, #screen-home * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .nk-pdot.now { transform: none; }
+}

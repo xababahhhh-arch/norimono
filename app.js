@@ -590,6 +590,17 @@
     show('start');
   }
 
+  // ホーム（あそぶ ゲームを えらぶ画面）へ
+  function goTop() {
+    token++;
+    if (game) clearTimeout(game.idleTimer);
+    game = null;
+    speech.stop();
+    clips.stop();
+    fx.clear();
+    show('home');
+  }
+
   // ---------------- ずかん ----------------
   function openZukan() {
     token++;
@@ -843,6 +854,8 @@
   $('#btn-end-home').addEventListener('click', goHome);
   $('#btn-zukan').addEventListener('click', () => { unlockAudio(); sfx.pop(); openZukan(); });
   $('#btn-zukan-back').addEventListener('click', goHome);
+  $('#btn-go-nori').addEventListener('click', () => { unlockAudio(); sfx.pop(); goHome(); });
+  $('#btn-top').addEventListener('click', goTop);
 
   // ---------------- 誤操作の防止 ----------------
   document.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -869,6 +882,12 @@
       navigator.serviceWorker.register('sw.js').then((r) => r.update()).catch(() => { });
     });
   }
+
+  // ほかのゲーム（なかまわけ など）と共有する部品
+  window.NoriApp = {
+    settings, saveSettings, speech, sfx, fx, art, show, shuffle, unlockAudio, goTop,
+    stopAudio() { speech.stop(); clips.stop(); }
+  };
 
   startParade();
   clips.loadAll();

@@ -1,12 +1,14 @@
 /* オフラインで遊べるようにするための仕組み（Service Worker）
  * ファイルを更新したら、下の CACHE の番号（v1 → v2 …）を上げると確実に反映されます。 */
-const CACHE = 'norimono-v5';
+const CACHE = 'norimono-v6';
 const FILES = [
   './',
   './index.html',
   './style.css',
   './app.js',
   './vehicles.js',
+  './nakama-data.js',
+  './nakamawake.js',
   './manifest.webmanifest',
   './icons/icon-180.png',
   './icons/icon-192.png',
