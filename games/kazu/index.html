@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="でんしゃに のせよう">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="theme-color" content="#bfe8ff">
+<title>でんしゃに のせよう</title>
+<link rel="apple-touch-icon" href="../../icons/menu-180.png">
+<link rel="icon" type="image/png" href="../../icons/menu-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- はじめの がめん（左上は 共通の「🏠 もどる」） -->
+<section id="screen-kz-start" class="screen kz active" aria-labelledby="kz-title">
+  <h1 id="kz-title" class="kz-title"><span aria-hidden="true">🚃</span> でんしゃに のせよう</h1>
+  <p class="kz-sub">どうぶつを かぞえて のせよう</p>
+  <div class="kz-preview" id="kz-preview" aria-hidden="true"></div>
+  <div class="kz-options">
+    <div class="kz-seg" role="group" aria-label="かずの はんい">
+      <button id="kz-r3" class="kz-seg-btn" aria-pressed="true" aria-label="1から 3まで">1〜3</button>
+      <button id="kz-r5" class="kz-seg-btn" aria-pressed="false" aria-label="1から 5まで">1〜5</button>
+    </div>
+    <button id="kz-voice" class="kz-voice" aria-pressed="true">
+      <span class="kz-voice-icon" aria-hidden="true">🔊</span><span class="kz-voice-text">こえ あり</span>
+    </button>
+  </div>
+  <button id="kz-begin" class="kz-begin" aria-label="はじめる">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+    <span>はじめる</span>
+  </button>
+</section>
+
+<!-- ゲーム がめん -->
+<section id="screen-kz-game" class="screen kz" aria-label="でんしゃに のせよう">
+  <div class="kz-top">
+    <ol id="kz-progress" class="kz-progress" aria-label="えき"></ol>
+  </div>
+
+  <div class="kz-reqbox">
+    <h2 id="kz-req" class="kz-req" aria-live="polite"></h2>
+    <button id="kz-listen" class="kz-listen" aria-label="もういちど きく">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9zm12.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+      <span>もういちど きく</span>
+    </button>
+  </div>
+
+  <div id="kz-station" class="kz-station">
+    <div id="kz-train" class="kz-train">
+      <div class="kz-car">
+        <div id="kz-seats" class="kz-seats" role="img"></div>
+        <span class="kz-bogie b1" aria-hidden="true"></span><span class="kz-bogie b2" aria-hidden="true"></span>
+      </div>
+      <div id="kz-head" class="kz-head" aria-hidden="true"></div>
+    </div>
+    <div class="kz-rail" aria-hidden="true"></div>
+  </div>
+
+  <div id="kz-count" class="kz-count" role="status" aria-label="いま 0ひき">
+    <span class="kz-count-label" aria-hidden="true">いま</span>
+    <span id="kz-count-num" class="kz-count-num" aria-hidden="true">0</span>
+    <span class="kz-count-label" aria-hidden="true">ひき</span>
+  </div>
+
+  <div id="kz-platform" class="kz-platform">
+    <div id="kz-animals" class="kz-animals"></div>
+    <div id="kz-go" class="kz-go" hidden>
+      <p id="kz-msg" class="kz-msg" role="status"></p>
+      <button id="kz-depart" class="kz-depart" aria-label="しゅっぱつ">
+        <span aria-hidden="true">🚃</span><span>しゅっぱつ！</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- おわりの がめん -->
+<section id="screen-kz-end" class="screen kz" aria-labelledby="kz-end-title">
+  <h2 id="kz-end-title" class="kz-end-title">すごい！<br>ぜんぶ のせられたね！</h2>
+  <div id="kz-stamps" class="kz-stamps" role="img" aria-label="スタンプ 5こ"></div>
+  <div class="kz-end-buttons">
+    <button id="kz-again" class="kz-again" aria-label="もういちど あそぶ">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/></svg>
+      <span>もういちど</span>
+    </button>
+    <a id="kz-tolist" class="kz-tolist" href="../../index.html" aria-label="ゲームの いちらんへ もどる">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
+      <span>ゲームの いちらんへ</span>
+    </a>
+  </div>
+</section>
+
+<!-- 紙吹雪 -->
+<canvas id="fx"></canvas>
+
+<script src="../../vehicles.js"></script>
+<script src="../common/core.js"></script>
+<script src="kazu.js"></script>
+<script src="../../back.js" data-home="../../index.html"></script>
+</body>
+</html>

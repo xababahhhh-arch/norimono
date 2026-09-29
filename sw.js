@@ -1,7 +1,7 @@
 /* のりもの あそび（ゲーム集）のオフライン用。
    ゲームを足したら CORE に1行足すと、最初からオフラインで遊べる。
    ネットにつながっているときは いつも最新を使うので、更新はすぐ反映される。 */
-const CACHE = 'norimono-hub-v8';
+const CACHE = 'norimono-hub-v9';
 const CORE = [
   './',
   './index.html',
@@ -16,10 +16,13 @@ const CORE = [
   './vehicles.js',
   './games/nakamawake/index.html',
   './games/nakamawake/style.css',
-  './games/nakamawake/core.js',
+  './games/common/core.js',
   './games/nakamawake/nakama-data.js',
   './games/nakamawake/nakamawake.js',
-  './games/minicar/index.html'
+  './games/minicar/index.html',
+  './games/kazu/index.html',
+  './games/kazu/style.css',
+  './games/kazu/kazu.js'
 ];
 
 self.addEventListener('install', (e) => {

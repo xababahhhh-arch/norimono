@@ -1,0 +1,359 @@
+/* かずあそび「でんしゃに のせよう」 — ほかのゲームと同じ やさしい色・大きな絵・丸いボタン */
+
+:root {
+  --bg-top: #bfe8ff;
+  --bg-bottom: #fff4cf;
+  --ink: #3a3350;
+  --font: "Hiragino Maru Gothic ProN", "ヒラギノ丸ゴ ProN", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --jr: #80c241;       /* 山手線の みどり */
+  --car: #d5d9df;      /* ぎんいろの 車体 */
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; }
+body {
+  position: fixed;
+  inset: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--bg-top) 0%, #e3f5ff 45%, var(--bg-bottom) 100%);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+button { font-family: inherit; color: inherit; border: none; background: none; padding: 0; cursor: pointer; touch-action: manipulation; }
+svg { display: block; }
+.kz button:focus-visible, .kz a:focus-visible { outline: 4px solid #2f6fd0; outline-offset: 3px; }
+[hidden] { display: none !important; }
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  padding: calc(var(--safe-top) + 10px) 14px calc(var(--safe-bottom) + 12px);
+}
+.screen.active { display: flex; }
+
+#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 15; }
+
+/* ---------- はじめの画面 ---------- */
+#screen-kz-start, #screen-kz-end {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.2vh;
+  text-align: center;
+  padding-top: var(--nm-back-h, 80px); /* 左上は 共通の「🏠 もどる」 */
+}
+.kz-title {
+  margin: 0;
+  font-size: clamp(30px, 9vw, 54px);
+  font-weight: 800;
+  color: #1f8a4c;
+  text-shadow: 0 4px 0 #fff;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.kz-sub { margin: 0; font-size: clamp(18px, 5.2vw, 26px); font-weight: 800; color: #5a5470; word-break: keep-all; }
+.kz-preview { display: flex; align-items: flex-end; justify-content: center; gap: 8px; }
+.kz-prev-faces { display: flex; gap: 4px; }
+.kz-prev-faces span { width: clamp(52px, 15vw, 72px); height: clamp(52px, 15vw, 72px); }
+.kz-prev-faces svg, .kz-prev-head svg { width: 100%; height: 100%; }
+.kz-prev-head { width: clamp(44px, 12vw, 60px); height: clamp(80px, 22vw, 110px); }
+.kz-options { display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(100%, 420px); }
+.kz-seg { display: flex; gap: 10px; width: 100%; }
+.kz-seg-btn {
+  flex: 1;
+  min-height: 64px;
+  border-radius: 22px;
+  background: #fff;
+  border: 4px solid #d5dde8;
+  font-size: clamp(26px, 7.5vw, 34px);
+  font-weight: 800;
+  color: #6b6580;
+}
+.kz-seg-btn[aria-pressed="true"] { border-color: #1f8a4c; color: #1f8a4c; background: #eefaf2; }
+.kz-seg-btn[aria-pressed="true"]::before { content: "✓ "; font-size: .7em; }
+.kz-voice {
+  display: flex; align-items: center; gap: 8px;
+  min-height: 52px; padding: 8px 22px;
+  border-radius: 999px; background: #fff; border: 3px solid #d5dde8;
+  font-size: clamp(20px, 5.5vw, 26px); font-weight: 800; color: #5a5470;
+}
+.kz-voice[aria-pressed="false"] { background: #f1f2f5; color: #8a8599; }
+.kz-voice:disabled { opacity: .6; }
+.kz-begin {
+  display: flex; align-items: center; gap: 10px;
+  background: #ff8a3d; color: #fff;
+  font-size: clamp(30px, 9vw, 44px); font-weight: 800;
+  padding: 18px 44px; border-radius: 999px;
+  box-shadow: 0 8px 0 #d85a12;
+}
+.kz-begin svg { width: 1.1em; height: 1.1em; }
+.kz-begin:active { transform: translateY(5px); box-shadow: 0 3px 0 #d85a12; }
+
+/* ---------- ゲーム画面 ---------- */
+#screen-kz-game {
+  flex-direction: column;
+  gap: 8px;
+}
+#screen-kz-game > * { width: 100%; max-width: 760px; margin-left: auto; margin-right: auto; }
+.kz-top {
+  display: flex; align-items: center; justify-content: center; flex: none;
+  min-height: 52px; padding-left: calc(var(--nm-back-w, 140px) - 14px); /* 左上は 共通の「🏠 もどる」 */
+}
+.kz-progress { display: flex; gap: 6px; list-style: none; margin: 0 auto; padding: 0; }
+.kz-pdot {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: #fff; border: 3px solid #d5dde8; color: #9aa3b5;
+  font-weight: 800; font-size: 16px;
+}
+.kz-pdot.now { border-color: #1f8a4c; color: #1f8a4c; }
+.kz-pdot.done { background: #ffd23f; border-color: #f5a800; color: #7a5200; }
+
+.kz-reqbox {
+  flex: none;
+  background: #fff;
+  border-radius: 24px;
+  padding: 10px 12px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, .06);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 10px;
+}
+.kz-req {
+  margin: 0;
+  font-size: clamp(24px, 7.2vw, 40px);
+  font-weight: 800;
+  text-align: center;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.kz-listen {
+  display: flex; align-items: center; gap: 6px;
+  min-height: 44px; padding: 4px 16px;
+  border-radius: 999px; background: #eef6ff; color: #2f6fd0;
+  font-size: clamp(15px, 4.2vw, 20px); font-weight: 800;
+}
+.kz-listen svg { width: 24px; height: 24px; }
+
+/* 駅と電車 */
+.kz-station {
+  flex: none;
+  position: relative;
+  height: clamp(130px, 25vh, 230px);
+  overflow: hidden;
+}
+.kz-train {
+  position: absolute;
+  left: 0; right: 0; bottom: 14px; top: 0;
+  display: flex; align-items: stretch;
+  transition: transform .9s cubic-bezier(.2, .8, .3, 1), opacity .3s;
+}
+.kz-train.arriving { animation: kz-arrive .9s cubic-bezier(.2, .8, .3, 1); }
+.kz-train.departing { animation: kz-depart 1.5s cubic-bezier(.6, 0, .9, .6) forwards; }
+@keyframes kz-arrive { from { transform: translateX(-110%); } to { transform: translateX(0); } }
+@keyframes kz-depart { 0% { transform: translateX(0); } 12% { transform: translateX(-2%); } 100% { transform: translateX(115%); } }
+.kz-car {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  margin-top: 6%;
+  border-radius: 14px 0 0 14px;
+  background:
+    linear-gradient(var(--jr), var(--jr)) 0 6% / 100% 7% no-repeat,
+    linear-gradient(var(--jr), var(--jr)) 0 78% / 100% 7% no-repeat,
+    var(--car);
+  border: 2px solid rgba(0, 0, 0, .15);
+  border-right: none;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+.kz-head { flex: none; height: 100%; margin-top: 0; }
+.kz-head svg { height: 100%; width: auto; }
+.kz-bogie { position: absolute; bottom: -12px; width: 22%; height: 10px; border-radius: 5px; background: #3d4450; }
+.kz-bogie.b1 { left: 10%; } .kz-bogie.b2 { right: 12%; }
+.kz-rail { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; border-radius: 3px; background: #9aa1ab; }
+
+/* 窓＝せき。目標の数だけ ならぶ。あいている席は うすい どうぶつ＋点線 */
+.kz-seats {
+  flex: 1;
+  min-width: 0;
+  height: 70%;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 120px); /* 窓は 横に ならぶ。5つでも 画面に収まる */
+  justify-content: space-evenly;
+  gap: 6px;
+}
+.kz-seat {
+  height: 100%;
+  min-width: 0;
+  border-radius: 12px;
+  background: #cfe8f8;
+  border: 3px dashed #7aa7c7;
+  display: grid; place-items: center;
+  overflow: hidden;
+}
+.kz-seat { position: relative; overflow: hidden; }
+.kz-seat .kz-face { position: absolute; inset: 4%; opacity: .18; filter: grayscale(1); }
+.kz-seat.on { background: #eaf6ff; border: 3px solid #2f4a6b; }
+.kz-seat.on .kz-face { opacity: 1; filter: none; animation: kz-pop .35s ease-out; }
+.kz-face svg { width: 100%; height: 100%; }
+@keyframes kz-pop { 0% { transform: scale(.6); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+
+/* いま なんびき */
+.kz-count {
+  flex: none;
+  display: flex; align-items: baseline; justify-content: center; gap: 8px;
+  font-weight: 800; color: #1f8a4c;
+}
+.kz-count-label { font-size: clamp(22px, 6.4vw, 32px); }
+.kz-count-num {
+  font-size: clamp(52px, 15vw, 80px);
+  line-height: 1;
+  min-width: 1.2em;
+  text-align: center;
+  color: #ff6b4a;
+  text-shadow: 0 4px 0 #fff;
+}
+.kz-count-num.pop { animation: kz-pop .35s ease-out; }
+
+/* ホーム（どうぶつが まっている） */
+.kz-platform {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  border-radius: 24px;
+  background: #e9e4d8;
+  border-top: 10px solid #ffd23f; /* 点字ブロックの 黄色い線 */
+  padding: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.kz-animals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: 480px;
+}
+.kz-animals[data-count="1"], .kz-animals[data-count="2"], .kz-animals[data-count="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.kz-animal {
+  aspect-ratio: 1;
+  min-width: 64px;
+  min-height: 64px;
+  max-height: 120px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, .1);
+  display: grid; place-items: center;
+  padding: 6px;
+}
+.kz-animal .kz-face { width: 100%; height: 100%; }
+.kz-animal:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0, 0, 0, .1); }
+.kz-animal.gone { visibility: hidden; }
+.kz-platform.done .kz-animals { display: none; }
+
+.kz-fly {
+  position: fixed; z-index: 30; pointer-events: none;
+  transform-origin: 0 0;
+  transition: transform .45s cubic-bezier(.3, .7, .4, 1);
+}
+
+.kz-go { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.kz-msg { margin: 0; font-size: clamp(26px, 8vw, 40px); font-weight: 800; color: #ff6b4a; text-shadow: 0 3px 0 #fff; }
+.kz-depart {
+  display: flex; align-items: center; gap: 10px;
+  white-space: nowrap;
+  min-height: 80px; padding: 14px 34px;
+  border-radius: 999px;
+  background: #36c275; color: #fff;
+  font-size: clamp(28px, 8.4vw, 44px); font-weight: 800;
+  box-shadow: 0 8px 0 #229a58;
+}
+.kz-depart:active { transform: translateY(5px); box-shadow: 0 3px 0 #229a58; }
+
+/* ---------- おわりの画面 ---------- */
+.kz-end-title { margin: 0; font-size: clamp(30px, 9vw, 54px); font-weight: 800; color: #ff6b4a; text-shadow: 0 4px 0 #fff; word-break: keep-all; }
+.kz-stamps { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 520px; }
+.kz-stamp {
+  width: clamp(76px, 24vw, 104px); aspect-ratio: 1;
+  border-radius: 50%; border: 5px solid #36c275; background: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transform: rotate(-8deg);
+  animation: kz-stamp .45s ease-out backwards;
+}
+.kz-stamp .kz-face { width: 58%; height: 58%; }
+.kz-stamp b { font-size: clamp(14px, 4vw, 18px); color: #1f8a4c; }
+@keyframes kz-stamp { from { opacity: 0; transform: scale(1.6) rotate(-8deg); } to { opacity: 1; transform: scale(1) rotate(-8deg); } }
+.kz-end-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+.kz-again, .kz-tolist {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 64px; padding: 14px 26px;
+  border-radius: 999px;
+  font-size: clamp(22px, 6.4vw, 30px); font-weight: 800;
+  text-decoration: none;
+}
+.kz-again { background: #36c275; color: #fff; box-shadow: 0 7px 0 #229a58; }
+.kz-tolist { background: #fff; color: #f06a1c; box-shadow: 0 7px 0 rgba(0, 0, 0, .1); }
+.kz-again svg, .kz-tolist svg { width: 1.2em; height: 1.2em; }
+
+/* ---------- 画面が低いスマホ（iPhone SE など） ---------- */
+@media (max-height: 700px) and (orientation: portrait) {
+  #screen-kz-game { gap: 6px; }
+  .kz-reqbox { padding: 6px 10px; }
+  .kz-station { height: 128px; }
+  .kz-count-num { font-size: 48px; }
+  .kz-animals { gap: 8px; }
+}
+@media (max-width: 360px) {
+  .kz-pdot { width: 28px; height: 28px; font-size: 14px; }
+  .kz-progress { gap: 4px; }
+  .kz-top { justify-content: flex-start; }
+}
+
+/* ---------- 横画面：左に 電車、右に ホーム ---------- */
+@media (orientation: landscape) and (max-height: 600px) {
+  #screen-kz-game {
+    display: none;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas: "top plat" "req plat" "station plat" "count plat";
+    column-gap: 12px;
+    padding-left: calc(env(safe-area-inset-left, 0px) + 14px);
+    padding-right: calc(env(safe-area-inset-right, 0px) + 14px);
+  }
+  #screen-kz-game.active { display: grid; }
+  #screen-kz-game > * { max-width: none; margin: 0; }
+  .kz-top { grid-area: top; justify-content: flex-start; }
+  .kz-reqbox { grid-area: req; padding: 4px 10px; }
+  .kz-req { font-size: clamp(20px, 5.4vh, 30px); }
+  .kz-station { grid-area: station; height: auto; min-height: 96px; }
+  .kz-count { grid-area: count; }
+  .kz-count-num { font-size: 44px; }
+  .kz-count-label { font-size: 22px; }
+  .kz-platform { grid-area: plat; min-width: 0; }
+  .kz-msg { font-size: clamp(22px, 8vh, 36px); }
+  .kz-depart { font-size: clamp(24px, 8.5vh, 38px); padding: 12px 24px; min-height: 72px; max-width: 100%; }
+  .kz-title { font-size: clamp(26px, 9vh, 40px); white-space: nowrap; }
+  .kz-sub { font-size: clamp(16px, 5.4vh, 22px); }
+  .kz-options { flex-direction: row; justify-content: center; width: min(100%, 560px); }
+  .kz-seg { flex: 1; }
+  .kz-seg-btn { min-height: 56px; font-size: clamp(22px, 8vh, 30px); }
+  .kz-voice { font-size: clamp(18px, 6vh, 22px); min-height: 56px; white-space: nowrap; }
+  .kz-begin { font-size: clamp(26px, 9vh, 38px); padding: 12px 40px; }
+  #screen-kz-start, #screen-kz-end { padding-top: calc(var(--safe-top) + 10px); padding-left: var(--nm-back-w, 140px); gap: 1.6vh; }
+  .kz-preview { display: none; }
+  .kz-stamp { width: clamp(60px, 17vh, 84px); height: clamp(60px, 17vh, 84px); }
+  .kz-end-title { font-size: clamp(26px, 8vh, 40px); }
+}
+
+/* ---------- 動きを減らす設定：移動は 短い切りかえに ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .kz *, .kz { animation: none !important; transition: none !important; }
+  .kz-train.departing { opacity: 0; }
+}
