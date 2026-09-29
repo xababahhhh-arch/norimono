@@ -1,6 +1,7 @@
 /* のりもの あそび（ゲーム集）のオフライン用。
-   ゲームを足したら CORE に1行足すと、最初からオフラインで遊べる。 */
-const CACHE = 'norimono-hub-v5';
+   ゲームを足したら CORE に1行足すと、最初からオフラインで遊べる。
+   ネットにつながっているときは いつも最新を使うので、更新はすぐ反映される。 */
+const CACHE = 'norimono-hub-v6';
 const CORE = [
   './',
   './index.html',
@@ -38,16 +39,23 @@ self.addEventListener('activate', (e) => {
   );
 });
 
+// ネットにつながっていれば いつも最新を出し、その内容を保存しておく。
+// つながらないとき（オフライン）だけ、保存しておいた内容を出す。
+// （保存を先に出すと、新しい版に しても 1回目は古い画面が出てしまうため）
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  if (new URL(e.request.url).origin !== self.location.origin) return;
   e.respondWith(
-    caches.match(e.request, { ignoreSearch: true }).then((hit) => {
-      if (hit) return hit;
-      return fetch(e.request).then((res) => {
+    fetch(e.request).then((res) => {
+      if (res && res.ok) {
         const copy = res.clone();
         caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => { });
-        return res;
-      }).catch(() => caches.match('./index.html'));
-    })
+      }
+      return res;
+    }).catch(() =>
+      caches.match(e.request, { ignoreSearch: true })
+        .then((hit) => hit || (e.request.mode === 'navigate' ? caches.match('./index.html') : undefined))
+        .then((hit) => hit || Response.error())
+    )
   );
 });
