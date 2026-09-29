@@ -32,7 +32,8 @@ for (const q of NAKAMA_QUESTIONS) {
   if (seen.has(q.id)) errors.push(`${name}: id が重なっています`);
   seen.add(q.id);
   if (!q.text || !q.say) errors.push(`${name}: text と say が必要です`);
-  if (!q.answers || !q.answers.length) errors.push(`${name}: answers が必要です`);
+  if (!q.group) errors.push(`${name}: group（分類のなかま）が必要です`);
+  if (!q.answers || q.answers.length < 2) errors.push(`${name}: answers は2つ以上 必要です（毎回 同じ絵にならないように）`);
   if (!q.wrongs || q.wrongs.length < 2) errors.push(`${name}: wrongs は2つ以上 必要です（3たく用）`);
   for (const id of (q.answers || []).concat(q.wrongs || [])) {
     if (!NAKAMA_ITEMS[id]) errors.push(`${name}: 絵 ${id} がありません`);
@@ -48,9 +49,11 @@ for (const q of NAKAMA_QUESTIONS) {
   }
 }
 if (NAKAMA_QUESTIONS.length < 5) errors.push('問題は5つ以上 必要です（1回5問・重複なし）');
+const groups = new Set(NAKAMA_QUESTIONS.map((q) => q.group));
+if (groups.size < 3) errors.push('group（分類のなかま）は3つ以上あると、1回のプレイで いろいろな問題が出ます');
 
 if (errors.length) {
   console.error('NG: ' + errors.length + ' 件\n' + errors.map((e) => ' - ' + e).join('\n'));
   process.exit(1);
 }
-console.log(`OK: 問題 ${NAKAMA_QUESTIONS.length} こ / 絵 ${Object.keys(NAKAMA_ITEMS).length} こ。どの問題も正解は1つです。`);
+console.log(`OK: 問題 ${NAKAMA_QUESTIONS.length} こ（分類 ${groups.size} しゅるい）/ 絵 ${Object.keys(NAKAMA_ITEMS).length} こ。どの問題も正解は1つです。`);

@@ -39,10 +39,8 @@
 
 <!-- ゲーム がめん -->
 <section id="screen-game" class="screen">
+  <!-- 左上は 共通の「🏠 もどる」（back.js）の場所 -->
   <div class="topbar">
-    <button id="btn-home" class="btn-small-faint" aria-label="おうち（ながおし）">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
-    </button>
     <div id="progress" class="progress"></div>
     <button id="btn-repeat" class="btn-speaker" aria-label="もういちど きく">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9zm12.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
@@ -57,12 +55,12 @@
 
 <!-- ずかん がめん -->
 <section id="screen-zukan" class="screen">
+  <!-- 左上は 共通の「🏠 もどる」。ずかんを とじる（のりもの の はじめの画面へ）は 右上 -->
   <div class="zukan-head">
-    <button id="btn-zukan-back" class="btn-back" aria-label="もどる">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
-    </button>
     <div class="zukan-title">ずかん</div>
-    <div class="zukan-spacer"></div>
+    <button id="btn-zukan-close" class="btn-close-pill" aria-label="ずかんを とじる">
+      <span aria-hidden="true">✕</span><span>とじる</span>
+    </button>
   </div>
   <div id="zukan-list" class="zukan-list"></div>
 </section>
@@ -77,9 +75,6 @@
   <button id="btn-again" class="btn-again" aria-label="もういっかい">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/></svg>
     <span>もういっかい</span>
-  </button>
-  <button id="btn-end-home" class="btn-small-faint end-home" aria-label="はじめに もどる">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
   </button>
 </section>
 

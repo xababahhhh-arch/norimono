@@ -171,9 +171,12 @@ svg { display: block; }
 @media (min-width: 700px) and (max-aspect-ratio: 1/1) {
   #screen-nk-game > * { max-width: 680px; }
 }
-.nk-top { display: flex; align-items: center; justify-content: space-between; flex: none; }
-.nk-top .btn-back { flex: none; }
-.nk-top-spacer { width: 56px; flex: none; }
+.nk-top {
+  display: flex; align-items: center; justify-content: center; flex: none;
+  /* 左上は 共通の「🏠 もどる」の場所 */
+  min-height: 52px; padding-left: calc(var(--nm-back-w, 140px) - 14px);
+}
+#screen-nk-start, #screen-nk-end { padding-top: var(--nm-back-h, 80px); }
 .nk-progress { display: flex; gap: 8px; list-style: none; margin: 0; padding: 0; }
 .nk-pdot {
   width: 38px;
@@ -402,4 +405,25 @@ svg { display: block; }
     transition: none !important;
   }
   .nk-pdot.now { transform: none; }
+}
+
+/* ---- 共通の「🏠 もどる」と重ならないように（せまい画面・横画面） ---- */
+.nk-progress { margin: 0 auto; }
+@media (max-width: 380px) {
+  .nk-top { justify-content: flex-start; }
+  .nk-progress { gap: 4px; margin: 0; }
+  .nk-pdot { width: 28px; height: 28px; font-size: 14px; }
+  .nk-pdot.now { transform: none; }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  #screen-nk-start, #screen-nk-end {
+    padding-top: calc(var(--safe-top) + 10px);
+    padding-left: var(--nm-back-w, 140px);
+    padding-right: 16px;
+  }
+  #screen-nk-end { gap: 2vh; }
+  .nk-end-title { font-size: clamp(26px, 8vh, 40px); }
+  .nk-stamp { width: clamp(60px, 17vh, 84px); height: clamp(60px, 17vh, 84px); }
+  .nk-stamp-ic { font-size: clamp(22px, 7vh, 32px); }
+  .nk-stamp-tx { font-size: 12px; white-space: nowrap; }
 }

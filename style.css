@@ -668,5 +668,31 @@ svg { display: block; }
   .start-title, .parade { width: 100%; }
 }
 
-/* ゲーム一覧へ もどる（back.js）は はじめの画面だけ */
-body:not(.on-start) #backToMenu { display: none !important; }
+/* ---------- 共通の「🏠 もどる」（back.js・左上）の場所を あけておく ---------- */
+#screen-start, #screen-end { padding-top: var(--nm-back-h, 80px); }
+#screen-game .topbar { min-height: 52px; padding-left: calc(var(--nm-back-w, 140px) - 14px); }
+#screen-game .progress .pstar { width: 26px; height: 26px; }
+#screen-game .progress.many .pstar { width: 20px; height: 20px; }
+.zukan-head { min-height: 52px; padding-left: calc(var(--nm-back-w, 140px) - 14px); gap: 8px; }
+.zukan-title { flex: 1; text-align: center; }
+.btn-close-pill {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 48px;
+  height: 52px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #fff;
+  color: #2f8be0;
+  border: 3px solid #9cc8f2;
+  font-size: 18px;
+  font-weight: 800;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, .08);
+}
+.btn-close-pill:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0, 0, 0, .08); }
+@media (orientation: landscape) and (max-height: 540px) {
+  #screen-start { padding-top: calc(var(--safe-top) + 10px); padding-left: var(--nm-back-w, 140px); }
+  #screen-end { padding-top: calc(var(--safe-top) + 10px); }
+}

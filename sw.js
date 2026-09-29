@@ -1,7 +1,7 @@
 /* のりもの あそび（ゲーム集）のオフライン用。
    ゲームを足したら CORE に1行足すと、最初からオフラインで遊べる。
    ネットにつながっているときは いつも最新を使うので、更新はすぐ反映される。 */
-const CACHE = 'norimono-hub-v7';
+const CACHE = 'norimono-hub-v8';
 const CORE = [
   './',
   './index.html',

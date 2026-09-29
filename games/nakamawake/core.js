@@ -263,7 +263,15 @@
   document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
   // アプリを閉じたら声を止める
   document.addEventListener('visibilitychange', () => { if (document.hidden) speech.stop(); });
-  window.addEventListener('pagehide', () => speech.stop());
+  // ゲームの一覧へ もどるとき：読み上げ・効果音・紙吹雪を止める
+  function leave() {
+    speech.stop();
+    fx.clear();
+    if (sfx.ctx && sfx.ctx.state === 'running') sfx.ctx.suspend().catch(() => { });
+    audioReady = false; // もどってきたら、次のタップで 音を もう一度 用意する
+  }
+  document.addEventListener('norimono:leave', leave);
+  window.addEventListener('pagehide', leave);
 
   window.NoriApp = {
     root: ROOT, settings, saveSettings, speech, sfx, fx, art, show, shuffle, unlockAudio, goTop, stopAudio

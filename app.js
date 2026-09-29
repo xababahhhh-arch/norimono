@@ -350,8 +350,6 @@
   function show(name) {
     document.querySelectorAll('.screen').forEach((s) => s.classList.remove('active'));
     $('#screen-' + name).classList.add('active');
-    // ゲーム一覧へ もどる「← もどる」（back.js）は、はじめの画面だけに出す（ほかの画面のボタンと重ならないように）
-    document.body.classList.toggle('on-start', name === 'start');
   }
 
   // 乗り物の絵：image があれば画像、なければ SVG イラスト
@@ -842,10 +840,8 @@
   $('#btn-repeat').addEventListener('click', () => { unlockAudio(); if (game && !game.locked) askQuestion(); });
   $('#question').addEventListener('click', () => { unlockAudio(); if (game && !game.locked) askQuestion(); });
   longPress($('#btn-settings'), 1200, openSettings);
-  longPress($('#btn-home'), 1200, goHome);
-  $('#btn-end-home').addEventListener('click', goHome);
   $('#btn-zukan').addEventListener('click', () => { unlockAudio(); sfx.pop(); openZukan(); });
-  $('#btn-zukan-back').addEventListener('click', goHome);
+  $('#btn-zukan-close').addEventListener('click', goHome);
 
   // ---------------- 誤操作の防止 ----------------
   document.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -857,6 +853,23 @@
 
   // アプリを閉じたら声を止める
   document.addEventListener('visibilitychange', () => { if (document.hidden) speech.stop(); });
+
+  // ゲームの一覧へ もどるとき（共通の「🏠 もどる」・ページを はなれる）：
+  // 読み上げ・録音の声・効果音・タイマー・紙吹雪を すべて止める
+  function leave() {
+    token++;
+    if (game) clearTimeout(game.idleTimer);
+    speech.stop();
+    clips.stop();
+    fx.clear();
+    stopRec();
+    if (sfx.ctx && sfx.ctx.state === 'running') sfx.ctx.suspend().catch(() => { });
+    audioReady = false; // もどってきたら、次のタップで 音を もう一度 用意する
+  }
+  document.addEventListener('norimono:leave', leave);
+  window.addEventListener('pagehide', leave);
+  // 「もどる」で このページに もどってきたとき（ページが保存されていた場合）は はじめの画面から
+  window.addEventListener('pageshow', (e) => { if (e.persisted) goHome(); });
 
   // ---------------- オフライン対応 ----------------
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
@@ -873,7 +886,6 @@
     });
   }
 
-  document.body.classList.toggle('on-start', !!document.querySelector('#screen-start.active'));
   startParade();
   clips.loadAll();
 })();

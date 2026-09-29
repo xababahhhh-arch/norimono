@@ -60,7 +60,8 @@ body{position:fixed;inset:0;width:100%;height:100%}
 /* ── 上部の計器 ───────────────────────────── */
 .hud{
   position:fixed;
-  top:calc(env(safe-area-inset-top,0px) + 56px);
+  /* 左上の 共通「🏠 もどる」（back.js）の 下に出す */
+  top:var(--nm-back-h, calc(env(safe-area-inset-top,0px) + 70px));
   left:calc(env(safe-area-inset-left,0px) + 12px);
   right:calc(env(safe-area-inset-right,0px) + 12px);
   display:flex;align-items:flex-start;justify-content:space-between;
@@ -110,7 +111,7 @@ body{position:fixed;inset:0;width:100%;height:100%}
 .icon.on{background:var(--flame);border-color:var(--flame);color:#150a00}
 
 .fps{
-  position:fixed;top:calc(env(safe-area-inset-top,0px) + 62px);left:calc(env(safe-area-inset-left,0px) + 14px);
+  position:fixed;top:calc(var(--nm-back-h, 70px) + 62px);left:calc(env(safe-area-inset-left,0px) + 14px);
   font-size:11px;color:var(--ink-dim);font-variant-numeric:tabular-nums;
 }
 
@@ -179,7 +180,7 @@ input[type=range]::-webkit-slider-thumb{
 
 /* ── 設定シート ───────────────────────────── */
 .sheet{
-  /* 設定を開いているあいだは「← もどる」（z-index:9999）よりも上に出す */
+  /* 設定を開いているあいだは 共通の「🏠 もどる」（z-index:40）よりも上に出す */
   position:fixed;inset:0;z-index:10000;
   background:rgba(5,7,10,.6);
   display:flex;align-items:flex-end;
@@ -278,9 +279,9 @@ body.kids .bottom-row{grid-template-columns:1fr}
 @media (orientation:landscape) and (max-height:560px){
   .hud{
     top:calc(env(safe-area-inset-top,0px) + 8px);
-    left:calc(env(safe-area-inset-left,0px) + 110px);
+    left:var(--nm-back-w, calc(env(safe-area-inset-left,0px) + 140px));
   }
-  .fps{top:calc(env(safe-area-inset-top,0px) + 14px);left:calc(env(safe-area-inset-left,0px) + 112px)}
+  .fps{top:calc(env(safe-area-inset-top,0px) + 66px);left:var(--nm-back-w, 140px)}
   .controls{gap:6px}
   .cruise{padding:2px 12px}
   .pad{height:56px;font-size:18px}
@@ -1221,10 +1222,11 @@ body.kids .bottom-row{grid-template-columns:1fr}
   window.addEventListener('pagehide', sleep);
   window.addEventListener('pageshow', (e) => { if (e.persisted) wake(); });
   window.addEventListener('blur', releaseAll);
-  // 「← もどる」（back.js）を押したら、ページを離れる前に すぐ止める
+  // 共通の「🏠 もどる」（back.js）を押したら、ページを離れる前に すぐ止める
   document.addEventListener('click', (e) => {
     if (e.target && e.target.closest && e.target.closest('#backToMenu')) sleep();
   }, true);
+  document.addEventListener('norimono:leave', sleep);
 
 
   // ── 更新 ───────────────────────────────────────────
@@ -1882,7 +1884,7 @@ body.kids .bottom-row{grid-template-columns:1fr}
     box.style.cssText = 'position:fixed;left:12px;right:12px;top:80px;z-index:99;padding:12px 14px;' +
       'background:#ff2d55;color:#fff;border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap';
     box.textContent = 'ミニカーロードを はじめられませんでした。\n' + (err && (err.message || err)) +
-      '\n左上の「← もどる」で ゲームの一覧に もどれます。';
+      '\n左上の「🏠 もどる」で ゲームの一覧に もどれます。';
     document.body.appendChild(box);
   }
 

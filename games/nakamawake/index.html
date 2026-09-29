@@ -18,9 +18,6 @@
 
 <!-- なかまわけ：はじめの がめん -->
 <section id="screen-nk-start" class="screen nk active" aria-labelledby="nk-title">
-  <button id="nk-start-home" class="btn-back btn-corner-top" aria-label="ゲームの いちらんへ もどる">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
-  </button>
   <h1 id="nk-title" class="nk-title"><span aria-hidden="true">🧩</span> なかまわけ</h1>
   <p class="nk-sub">おなじ なかまを さがそう</p>
   <div class="nk-preview" id="nk-preview" aria-hidden="true"></div>
@@ -45,12 +42,9 @@
 
 <!-- なかまわけ：ゲーム がめん -->
 <section id="screen-nk-game" class="screen nk" aria-label="なかまわけ">
+  <!-- 左上は 共通の「🏠 もどる」（back.js）の場所 -->
   <div class="nk-top">
-    <button id="nk-home" class="btn-back" aria-label="ゲームの いちらんへ もどる">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
-    </button>
     <ol id="nk-progress" class="nk-progress" aria-label="しんこう"></ol>
-    <div class="nk-top-spacer"></div>
   </div>
   <div class="nk-qbox">
     <h2 id="nk-question" class="nk-question"></h2>
@@ -67,16 +61,12 @@
 
 <!-- なかまわけ：おわりの がめん -->
 <section id="screen-nk-end" class="screen nk" aria-labelledby="nk-end-title">
-  <h2 id="nk-end-title" class="nk-end-title">ぜんぶ<br>できたね！</h2>
+  <h2 id="nk-end-title" class="nk-end-title">すごい！<br>ぜんぶ できたね！</h2>
   <div id="nk-stamps" class="nk-stamps" role="img" aria-label="スタンプ 5こ"></div>
   <div class="nk-end-buttons">
     <button id="nk-again" class="nk-again" aria-label="もういちど あそぶ">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/></svg>
       <span>もういちど</span>
-    </button>
-    <button id="nk-end-home" class="nk-gohome" aria-label="ゲームの いちらんへ もどる">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
-      <span>ホームへ</span>
     </button>
   </div>
 </section>
@@ -88,5 +78,6 @@
 <script src="nakama-data.js"></script>
 <script src="core.js"></script>
 <script src="nakamawake.js"></script>
+<script src="../../back.js" data-home="../../index.html"></script>
 </body>
 </html>

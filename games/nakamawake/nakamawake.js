@@ -70,10 +70,23 @@
 
   // ---------------- 問題づくり ----------------
   function buildRounds() {
-    const qs = A.shuffle(NAKAMA_QUESTIONS).slice(0, ROUNDS); // 同じ問題は出さない
-    return qs.map((q) => {
-      const answer = A.shuffle(q.answers)[0];
-      const wrongs = A.shuffle(q.wrongs).slice(0, nk.choices - 1);
+    // 同じ問題は出さない。できるだけ ちがう分類（group）から 1問ずつ えらぶ
+    const pool = A.shuffle(NAKAMA_QUESTIONS);
+    const qs = [];
+    const usedGroups = new Set();
+    pool.forEach((q) => {
+      if (qs.length < ROUNDS && !usedGroups.has(q.group)) { qs.push(q); usedGroups.add(q.group); }
+    });
+    pool.forEach((q) => { if (qs.length < ROUNDS && qs.indexOf(q) < 0) qs.push(q); });
+
+    // 正解の絵も 毎回かわるように、このプレイで まだ出ていない絵を なるべく使う
+    const seen = new Set();
+    const fresh = (ids) => { const f = ids.filter((id) => !seen.has(id)); return f.length ? f : ids; };
+    return A.shuffle(qs).map((q) => {
+      const answer = A.shuffle(fresh(q.answers))[0];
+      const w = A.shuffle(q.wrongs);
+      const wrongs = w.filter((id) => !seen.has(id)).concat(w.filter((id) => seen.has(id))).slice(0, nk.choices - 1);
+      [answer].concat(wrongs).forEach((id) => seen.add(id));
       return { q, answer, options: A.shuffle([answer].concat(wrongs)) }; // 正解の場所もランダム
     });
   }
@@ -146,7 +159,7 @@
         c.setAttribute('aria-disabled', 'true');
         if (c !== btn) c.classList.add('is-other');
       });
-      fb.textContent = 'せいかい！';
+      fb.textContent = `せいかい！ ${item.name} だね！`; // 読み上げと 同じ言葉
       fb.className = 'nk-feedback ok';
       A.sfx.correct();
       if (!reduceMotion.matches) {
@@ -197,16 +210,18 @@
     wait(300).then(() => { if (my === token) speak('すごい！全部できたね！'); });
   }
 
-  function goTop() {
+  // ---------------- ゲームの一覧へ もどるとき ----------------
+  // 共通の「🏠 もどる」（back.js）を押した・ページを はなれた：読み上げ・自動で次へ進むタイマー・紙吹雪を止める
+  function leave() {
     stopAll();
     state = null;
-    A.goTop(); // ゲーム一覧へ
   }
+  document.addEventListener('norimono:leave', leave);
+  window.addEventListener('pagehide', leave);
+  // 「もどる」で このページに もどってきたとき（ページが保存されていた場合）は はじめの画面から
+  window.addEventListener('pageshow', (e) => { if (e.persisted) openStart(); });
 
   // ---------------- ボタン ----------------
-  $('#nk-start-home').addEventListener('click', goTop);
-  $('#nk-home').addEventListener('click', goTop);
-  $('#nk-end-home').addEventListener('click', goTop);
   $('#nk-begin').addEventListener('click', begin);
   $('#nk-again').addEventListener('click', begin);
   $('#nk-listen').addEventListener('click', () => {
