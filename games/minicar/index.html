@@ -353,9 +353,23 @@ body.kids .bottom-row{grid-template-columns:1fr}
       </div>
     </div>
 
+    <div class="field">
+      <span>はしる音</span>
+      <div class="seg" id="engineSeg" role="group" aria-label="はしる音">
+        <button type="button" data-v="sports" class="on" aria-pressed="true">スポーツカー</button>
+        <button type="button" data-v="sedan" aria-pressed="false">じょうようしゃ</button>
+        <button type="button" data-v="ambulance" aria-pressed="false">きゅうきゅうしゃ</button>
+      </div>
+    </div>
+
     <label class="field row">
       <span>エンジン音<br><small>サイレンの音とは別です。すべての音は 右上の 🔊 で消せます</small></span>
       <input type="checkbox" id="engineOn" checked>
+    </label>
+
+    <label class="field row">
+      <span>だんだん はやくなる<br><small>道からはみ出さずに走ると、スピードが少しずつ上がります。はみ出す・とまる で もとのスピードに もどります</small></span>
+      <input type="checkbox" id="autoAccel" checked>
     </label>
 
     <label class="field">
@@ -481,6 +495,8 @@ body.kids .bottom-row{grid-template-columns:1fr}
     showFps: false,
     keepAwake: true,
     paused: false,
+    autoAccel: true,   // ぶつからなければ だんだん速くなる
+    boost: 0,          // そのために 上乗せしている スピード（0〜）
     fps: 60
   };
 
@@ -607,6 +623,13 @@ body.kids .bottom-row{grid-template-columns:1fr}
     let ctx = null, master = null, engineBus = null, sirenBus = null, ready = false;
     let muted = false, engineOn = true;
     let eng = null, noiseGain = null, whineGain = null;
+    // はしる音の種類（音の高さ・明るさ・大きさ・ゴロゴロ感）
+    const ENGINE = {
+      sports:    { wave: 'sawtooth', sub: 'square', base: 34, range: 104, cut: 320, cutR: 2400, q: 5, g: 0.045, gR: 0.115, noise: 0.05,  chug: 0 },     // 高く、パワフル
+      sedan:     { wave: 'triangle', sub: 'sine',   base: 28, range: 50,  cut: 240, cutR: 900,  q: 1.5, g: 0.06, gR: 0.07, noise: 0.03, chug: 0 },     // 低めで静か、なめらか
+      ambulance: { wave: 'sawtooth', sub: 'square', base: 20, range: 40,  cut: 170, cutR: 650,  q: 7, g: 0.07, gR: 0.08, noise: 0.035, chug: 0.035 } // ワゴン車のディーゼル（低いゴロゴロ）
+    };
+    let engineType = 'sports';
     const siren = { osc: null, gain: null, timer: null, next: 0, type: 'ambulance', on: false, melIdx: 0 };
     const extra = new Set();   // 予約済みのチャイム・ベル（止めるときに まとめて止める）
 
@@ -674,7 +697,20 @@ body.kids .bottom-row{grid-template-columns:1fr}
       whineGain = ctx.createGain(); whineGain.gain.value = 0;
       w.connect(whineGain); whineGain.connect(engineBus); w.start();
 
-      eng = { o1, o2, o3, filter, gain, whine: w };
+      // ディーゼルの「ゴロゴロ」：音量を細かくゆらす
+      const lfo = ctx.createOscillator(); lfo.type = 'square'; lfo.frequency.value = 12;
+      const lfoGain = ctx.createGain(); lfoGain.gain.value = 0;
+      lfo.connect(lfoGain); lfoGain.connect(gain.gain); lfo.start();
+
+      eng = { o1, o2, o3, filter, gain, whine: w, lfo, lfoGain };
+      applyEngineType();
+    }
+
+    function applyEngineType() {
+      const E = ENGINE[engineType];
+      eng.o1.type = E.wave; eng.o2.type = E.wave; eng.o3.type = E.sub;
+      eng.filter.Q.setTargetAtTime(E.q, ctx.currentTime, 0.05);
+      eng.lfoGain.gain.setTargetAtTime(E.chug, ctx.currentTime, 0.05);
     }
 
     function buildSiren() {
@@ -808,6 +844,12 @@ body.kids .bottom-row{grid-template-columns:1fr}
         engineOn = on;
         if (ready) engineBus.gain.setTargetAtTime(on ? 1 : 0, ctx.currentTime, 0.05);
       },
+      setEngineType: function (t) {
+        if (!ENGINE[t]) return;
+        engineType = t;
+        if (ready) applyEngineType();
+      },
+      engineType: function () { return engineType; },
       setSirenType: function (t) {
         siren.type = t;
         if (siren.on) { setSiren(false); setSiren(true); }
@@ -820,13 +862,15 @@ body.kids .bottom-row{grid-template-columns:1fr}
       update: function (norm, nitroOn) {
         if (!ready || ctx.state !== 'running') return;
         const t = ctx.currentTime;
-        const f = 34 + norm * 104;                       // アイドリング〜全開
+        const E = ENGINE[engineType];
+        const f = E.base + norm * E.range;               // アイドリング〜全開
         eng.o1.frequency.setTargetAtTime(f, t, 0.08);
         eng.o2.frequency.setTargetAtTime(f * 1.005, t, 0.08);
         eng.o3.frequency.setTargetAtTime(f * 0.5, t, 0.08);
-        eng.filter.frequency.setTargetAtTime(320 + norm * 2400 + (nitroOn ? 900 : 0), t, 0.1);
-        eng.gain.gain.setTargetAtTime(0.045 + norm * 0.115, t, 0.12);
-        noiseGain.gain.setTargetAtTime(norm * norm * 0.05, t, 0.15);
+        eng.lfo.frequency.setTargetAtTime(f * 0.5, t, 0.1);
+        eng.filter.frequency.setTargetAtTime(E.cut + norm * E.cutR + (nitroOn ? 900 : 0), t, 0.1);
+        eng.gain.gain.setTargetAtTime(E.g + norm * E.gR, t, 0.12);
+        noiseGain.gain.setTargetAtTime(norm * norm * E.noise, t, 0.15);
         eng.whine.frequency.setTargetAtTime(700 + norm * 900, t, 0.1);
         whineGain.gain.setTargetAtTime(nitroOn ? 0.035 : 0, t, 0.08);
       },
@@ -1041,7 +1085,7 @@ body.kids .bottom-row{grid-template-columns:1fr}
 
     $('btnReset').addEventListener('click', () => {
       state.distance = 0; state.speed = 0; state.lateral = 0; state.steer = 0;
-      state.nitroFuel = 1; state.nitroLock = false;
+      state.nitroFuel = 1; state.nitroLock = false; state.boost = 0;
       skidStrokes = []; activeSkid = null; smoke = []; sparks = [];
       resetRoad();
       SND.setSiren(false);
@@ -1065,6 +1109,26 @@ body.kids .bottom-row{grid-template-columns:1fr}
 
     // エンジン音だけのオン・オフ（サイレンや全体の消音とは別）
     $('engineOn').addEventListener('change', (e) => { kick(); SND.setEngine(e.target.checked); });
+
+    // はしる音の種類
+    $('engineSeg').addEventListener('click', (e) => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      kick();
+      Array.prototype.forEach.call($('engineSeg').querySelectorAll('button'), (x) => {
+        const sel = x === b;
+        x.classList.toggle('on', sel);
+        x.setAttribute('aria-pressed', String(sel));
+      });
+      SND.setEngineType(b.dataset.v);
+      if (!SND.engineEnabled()) { SND.setEngine(true); $('engineOn').checked = true; } // 選んだ音を その場で聞ける
+      if (SND.isMuted()) setSound(true);
+    });
+
+    $('autoAccel').addEventListener('change', (e) => {
+      state.autoAccel = e.target.checked;
+      if (!state.autoAccel) state.boost = 0;
+    });
 
     $('kidsMode').addEventListener('change', (e) => setKids(e.target.checked));
 
@@ -1183,7 +1247,15 @@ body.kids .bottom-row{grid-template-columns:1fr}
     }
 
     // 速度
-    let target = MAX_SPEED * state.cruise;
+    // ぶつからずに（道からはみ出さずに）走っていると、だんだん速くなる。
+    // はみ出した・とまるを押した・一時停止 のときは、もとのスピード（スライダー）に もどる。
+    const onEdge = Math.abs(state.lateral) > ROAD_HALF - CAR_W / 2;
+    if (onEdge || state.brake || state.paused || !state.autoAccel) {
+      state.boost = Math.max(0, state.boost - dt * 0.8);
+    } else if (state.speed > 60) {
+      state.boost = Math.min(Math.max(0, 1 - state.cruise), state.boost + dt * 0.02); // 約30秒で最高速度
+    }
+    let target = MAX_SPEED * Math.min(1, state.cruise + state.boost);
     if (state.gas) target = MAX_SPEED;
     if (state.nitroOn) target = MAX_SPEED * 1.4;
     if (state.brake || state.paused) target = 0;
