@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="なかまわけ">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="theme-color" content="#bfe8ff">
+<title>なかまわけ</title>
+<link rel="apple-touch-icon" href="../../icons/menu-180.png">
+<link rel="icon" type="image/png" href="../../icons/menu-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- なかまわけ：はじめの がめん -->
+<section id="screen-nk-start" class="screen nk active" aria-labelledby="nk-title">
+  <button id="nk-start-home" class="btn-back btn-corner-top" aria-label="ゲームの いちらんへ もどる">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
+  </button>
+  <h1 id="nk-title" class="nk-title"><span aria-hidden="true">🧠</span> なかまわけ</h1>
+  <p class="nk-sub">おなじ なかまを さがそう</p>
+  <div class="nk-preview" id="nk-preview" aria-hidden="true"></div>
+  <div class="nk-options">
+    <div class="nk-seg" role="group" aria-label="えらぶ かず">
+      <button id="nk-c2" class="nk-seg-btn" aria-pressed="true" aria-label="2つから えらぶ">
+        <span class="nk-dots" aria-hidden="true">●●</span><span>2たく</span>
+      </button>
+      <button id="nk-c3" class="nk-seg-btn" aria-pressed="false" aria-label="3つから えらぶ">
+        <span class="nk-dots" aria-hidden="true">●●●</span><span>3たく</span>
+      </button>
+    </div>
+    <button id="nk-voice" class="nk-voice" aria-pressed="true">
+      <span class="nk-voice-icon" aria-hidden="true">🔊</span><span class="nk-voice-text">こえ あり</span>
+    </button>
+  </div>
+  <button id="nk-begin" class="nk-begin" aria-label="はじめる">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+    <span>はじめる</span>
+  </button>
+</section>
+
+<!-- なかまわけ：ゲーム がめん -->
+<section id="screen-nk-game" class="screen nk" aria-label="なかまわけ">
+  <div class="nk-top">
+    <button id="nk-home" class="btn-back" aria-label="ゲームの いちらんへ もどる">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
+    </button>
+    <ol id="nk-progress" class="nk-progress" aria-label="しんこう"></ol>
+    <div class="nk-top-spacer"></div>
+  </div>
+  <div class="nk-qbox">
+    <h2 id="nk-question" class="nk-question"></h2>
+    <button id="nk-listen" class="nk-listen" aria-label="もういちど きく">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9zm12.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+      <span>もういちど きく</span>
+    </button>
+  </div>
+  <div id="nk-choices" class="nk-choices"></div>
+  <div class="nk-foot">
+    <p id="nk-feedback" class="nk-feedback" role="status" aria-live="polite"></p>
+    <button id="nk-next" class="nk-next" aria-label="つぎへ" hidden>
+      <span>つぎへ</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- なかまわけ：おわりの がめん -->
+<section id="screen-nk-end" class="screen nk" aria-labelledby="nk-end-title">
+  <h2 id="nk-end-title" class="nk-end-title">ぜんぶ<br>できたね！</h2>
+  <div id="nk-stamps" class="nk-stamps" role="img" aria-label="スタンプ 5こ"></div>
+  <div class="nk-end-buttons">
+    <button id="nk-again" class="nk-again" aria-label="もういちど あそぶ">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/></svg>
+      <span>もういちど</span>
+    </button>
+    <button id="nk-end-home" class="nk-gohome" aria-label="ゲームの いちらんへ もどる">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
+      <span>ホームへ</span>
+    </button>
+  </div>
+</section>
+
+<!-- 紙吹雪 -->
+<canvas id="fx"></canvas>
+
+<script src="../../vehicles.js"></script>
+<script src="nakama-data.js"></script>
+<script src="core.js"></script>
+<script src="nakamawake.js"></script>
+</body>
+</html>

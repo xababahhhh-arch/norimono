@@ -46,6 +46,7 @@
   .t{font-size:24px;font-weight:800;line-height:1.25;word-break:keep-all;overflow-wrap:anywhere}
   .s{margin-top:6px;font-size:14px;font-weight:600;color:rgba(255,255,255,.72);line-height:1.45}
   .card.quiz{background:#1f5f9e;box-shadow:0 7px 0 #123f6c}
+  .card.nakama{background:#2e7d4f;box-shadow:0 7px 0 #1b5233}
   .card.road{background:#a24400;box-shadow:0 7px 0 #6b2c00}
   .foot{text-align:center;font-size:12px;color:rgba(255,255,255,.45)}
   @media (max-height:600px){ .card svg{width:76px} .t{font-size:20px} }
@@ -64,10 +65,11 @@
      title : 画面に出す名前
      sub   : 説明の1行
      url   : ゲームの場所（games/○○/index.html）
-     art   : 絵の種類（'quiz' か 'road'。新しい絵は ART に足す）
+     art   : 絵の種類（'quiz' / 'nakama' / 'road'。新しい絵は ART に足す）
    ============================================================ */
 const GAMES = [
   { title:'のりもの あてっこ', sub:'のりものの なまえを あてよう', url:'atekko.html', art:'quiz', cls:'quiz' },
+  { title:'🧠 なかまわけ',     sub:'おなじ なかまを さがそう',       url:'games/nakamawake/index.html', art:'nakama', cls:'nakama' },
   { title:'🚗 ミニカーロード', sub:'ミニカーを おいて はしらせよう', url:'games/minicar/index.html', art:'road', cls:'road' }
 ];
 
@@ -78,6 +80,13 @@ const ART = {
     <circle cx="32" cy="92" r="11" fill="#0e1620"/><circle cx="62" cy="92" r="11" fill="#0e1620"/>
     <circle cx="88" cy="38" r="26" fill="#ffffff"/>
     <text x="88" y="52" text-anchor="middle" font-size="38" font-weight="800" fill="#1f5f9e">?</text>
+  </svg>`,
+  nakama: `<svg viewBox="0 0 120 120" aria-hidden="true">
+    <rect x="8" y="14" width="104" height="92" rx="20" fill="#ffffff"/>
+    <circle cx="36" cy="44" r="14" fill="#ff6b4a"/><circle cx="84" cy="44" r="14" fill="#ff6b4a"/>
+    <rect x="22" y="70" width="28" height="24" rx="6" fill="#2f8be0"/>
+    <path d="M84 68 L100 94 L68 94 Z" fill="#36c275"/>
+    <path d="M52 44 H68" stroke="#b9c3d0" stroke-width="5" stroke-linecap="round"/>
   </svg>`,
   road: `<svg viewBox="0 0 120 120" aria-hidden="true">
     <path d="M38 8 L82 8 L96 112 L24 112 Z" fill="#4e535b"/>
