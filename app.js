@@ -548,8 +548,23 @@
         if (cards[idx]) cards[idx].classList.add('hint');
       }
       armIdle();
-      talk(['phrase:retry', 'name:' + t.id, 'phrase:q'], `もう一度！${t.say}は、どれ？`);
+      // おしたものの名前を教えてから、もう一度きく
+      showCardTag(card, v);
+      talk(['name:' + v.id, 'phrase:retry', 'name:' + t.id, 'phrase:q'], `それは、${v.say}だよ。もう一度！${t.say}は、どれ？`);
     }
+  }
+
+  // まちがえたカードに、その乗り物の名前を出す
+  function showCardTag(card, v) {
+    let tag = card.querySelector('.card-tag');
+    if (!tag) {
+      tag = document.createElement('span');
+      tag.className = 'card-tag';
+      card.appendChild(tag);
+    }
+    tag.textContent = v.name;
+    tag.style.color = v.color || '#2f8be0';
+    tag.classList.remove('show'); void tag.offsetWidth; tag.classList.add('show');
   }
 
   function finish() {
@@ -842,8 +857,16 @@
 
   // ---------------- オフライン対応 ----------------
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    // 新しい版が届いたら、すぐに切りかえる（古い版が残らないように）
+    const hadController = !!navigator.serviceWorker.controller;
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController || reloaded) return;
+      reloaded = true;
+      location.reload();
+    });
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js').catch(() => { });
+      navigator.serviceWorker.register('sw.js').then((r) => r.update()).catch(() => { });
     });
   }
 

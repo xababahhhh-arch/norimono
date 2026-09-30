@@ -1,189 +1,110 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>のりもの あそび</title>
+<meta name="theme-color" content="#123a5e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="のりもの">
-<meta name="format-detection" content="telephone=no,email=no,address=no">
-<meta name="theme-color" content="#bfe8ff">
-<title>のりもの あてっこ</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="のりもの あそび">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
-<link rel="stylesheet" href="style.css">
+<link rel="apple-touch-icon" href="icons/menu-180.png">
+<link rel="icon" href="icons/menu-192.png">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(120% 90% at 50% 0%,#1d5686 0%,#123a5e 60%,#0d2942 100%);
+    color:#fff;
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
+    -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
+    overflow:hidden;
+  }
+  .wrap{
+    height:100%;
+    padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 18px);
+    display:flex;flex-direction:column;gap:14px;
+  }
+  h1{
+    font-size:26px;font-weight:800;letter-spacing:.06em;text-align:center;
+    text-shadow:0 2px 0 rgba(0,0,0,.35);
+  }
+  .list{flex:1;display:flex;flex-direction:column;gap:14px;min-height:0}
+  .card{
+    flex:1;display:flex;align-items:center;gap:16px;
+    padding:16px 18px;border-radius:26px;border:0;
+    background:#1b4c79;color:#fff;text-align:left;text-decoration:none;
+    box-shadow:0 7px 0 rgba(0,0,0,.35);
+    transition:transform .06s linear,box-shadow .06s linear;
+  }
+  .card:active{transform:translateY(6px);box-shadow:0 1px 0 rgba(0,0,0,.35)}
+  .card svg{flex:none;width:96px;height:auto}
+  .card > span:last-child{flex:1;min-width:0}
+  .t,.s{display:block}
+  .t{font-size:24px;font-weight:800;line-height:1.25}
+  .s{margin-top:6px;font-size:14px;font-weight:600;color:rgba(255,255,255,.72);line-height:1.45}
+  .card.quiz{background:#1f5f9e;box-shadow:0 7px 0 #123f6c}
+  .card.road{background:#a24400;box-shadow:0 7px 0 #6b2c00}
+  .foot{text-align:center;font-size:12px;color:rgba(255,255,255,.45)}
+  @media (max-height:600px){ .card svg{width:76px} .t{font-size:20px} }
+</style>
 </head>
 <body>
-
-<!-- はじめの がめん -->
-<section id="screen-start" class="screen active">
-  <div class="start-title">
-    <span class="t1">のりもの</span>
-    <span class="t2">あてっこ</span>
-  </div>
-  <div class="parade" id="parade"></div>
-  <button id="btn-play" class="btn-play" aria-label="あそぶ">
-    <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M36,24 L78,50 L36,76 Z" fill="#fff" stroke="#fff" stroke-width="8" stroke-linejoin="round"/></svg>
-  </button>
-  <div class="play-label">あそぶ</div>
-  <button id="btn-zukan" class="btn-zukan" aria-label="ずかん">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 6.5C10.3 5.3 8 4.8 5.5 4.8 4.4 4.8 3.4 5 2.5 5.3v13.4c.9-.3 1.9-.5 3-.5 2.5 0 4.8.5 6.5 1.8 1.7-1.3 4-1.8 6.5-1.8 1.1 0 2.1.2 3 .5V5.3c-.9-.3-1.9-.5-3-.5-2.5 0-4.8.5-6.5 1.7zm-1 11c-1.5-.8-3.4-1.1-5.5-1.1-.7 0-1.3 0-2 .1V6.6c.6-.1 1.3-.2 2-.2 2.1 0 4 .4 5.5 1.3z"/></svg>
-    <span>ずかん</span>
-  </button>
-  <button id="btn-settings" class="btn-hidden-corner" aria-label="せってい（ながおし）">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.4-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4L10.6 6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.4L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.4 2.5-1c.5.4 1.1.7 1.7 1l.4 2.7h4l.4-2.7c.6-.3 1.2-.6 1.7-1l2.5 1 2-3.4zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
-  </button>
-</section>
-
-<!-- ゲーム がめん -->
-<section id="screen-game" class="screen">
-  <div class="topbar">
-    <button id="btn-home" class="btn-small-faint" aria-label="おうち（ながおし）">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
-    </button>
-    <div id="progress" class="progress"></div>
-    <button id="btn-repeat" class="btn-speaker" aria-label="もういちど きく">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9zm12.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
-    </button>
-  </div>
-  <button id="question" class="question" aria-live="polite">
-    <span id="qname" class="qname"></span><span class="qwa"> は</span><span class="qdore"> どれ？</span>
-  </button>
-  <div id="choices" class="choices"></div>
-  <div id="retry-bubble" class="retry-bubble">もういちど！</div>
-</section>
-
-<!-- ずかん がめん -->
-<section id="screen-zukan" class="screen">
-  <div class="zukan-head">
-    <button id="btn-zukan-back" class="btn-back" aria-label="もどる">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
-    </button>
-    <div class="zukan-title">ずかん</div>
-    <div class="zukan-spacer"></div>
-  </div>
-  <div id="zukan-list" class="zukan-list"></div>
-</section>
-
-<!-- おわりの がめん -->
-<section id="screen-end" class="screen">
-  <div class="end-star">
-    <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6l12.9 26.2 28.9 4.2-20.9 20.4 4.9 28.8L50 72 24.2 85.6l4.9-28.8L8.2 36.4l28.9-4.2z" fill="#ffd23f" stroke="#f5a800" stroke-width="4" stroke-linejoin="round"/><circle cx="38" cy="46" r="4" fill="#5a3b00"/><circle cx="62" cy="46" r="4" fill="#5a3b00"/><path d="M40 57q10 9 20 0" stroke="#5a3b00" stroke-width="4" fill="none" stroke-linecap="round"/></svg>
-  </div>
-  <div class="end-text">すごい！<br>ぜんぶ できたね！</div>
-  <div id="end-list" class="end-list"></div>
-  <button id="btn-again" class="btn-again" aria-label="もういっかい">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/></svg>
-    <span>もういっかい</span>
-  </button>
-  <button id="btn-end-home" class="btn-small-faint end-home" aria-label="はじめに もどる">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
-  </button>
-</section>
-
-<!-- せいかい の 表示 -->
-<div id="correct-pop" class="correct-pop">
-  <div class="cp-text">せいかい！</div>
-  <div id="cp-name" class="cp-name"></div>
+<div class="wrap">
+  <h1>のりもの あそび</h1>
+  <div class="list" id="list"></div>
+  <p class="foot">あそびたい ほうを えらんでね</p>
 </div>
 
-<!-- 紙吹雪 -->
-<canvas id="fx"></canvas>
+<script>
+/* ============================================================
+   ゲームを ふやすとき は、この GAMES に 1つ 足すだけ。
+     title : 画面に出す名前
+     sub   : 説明の1行
+     url   : ゲームの場所（games/○○/index.html）
+     art   : 絵の種類（'quiz' か 'road'。新しい絵は ART に足す）
+   ============================================================ */
+const GAMES = [
+  { title:'のりもの あてっこ', sub:'のりものの なまえを あてよう', url:'atekko.html', art:'quiz', cls:'quiz' },
+  { title:'ミニカー ロード',   sub:'ミニカーを おいて はしらせよう', url:'games/minicar/index.html', art:'road', cls:'road' }
+];
 
-<!-- 保護者向け せってい -->
-<div id="settings" class="settings" hidden>
-  <div class="settings-panel">
-    <h2>せってい（保護者の方へ）</h2>
+const ART = {
+  quiz: `<svg viewBox="0 0 120 120" aria-hidden="true">
+    <rect x="16" y="34" width="62" height="54" rx="14" fill="#ffd23f"/>
+    <rect x="24" y="44" width="46" height="20" rx="7" fill="#123a5e"/>
+    <circle cx="32" cy="92" r="11" fill="#0e1620"/><circle cx="62" cy="92" r="11" fill="#0e1620"/>
+    <circle cx="88" cy="38" r="26" fill="#ffffff"/>
+    <text x="88" y="52" text-anchor="middle" font-size="38" font-weight="800" fill="#1f5f9e">?</text>
+  </svg>`,
+  road: `<svg viewBox="0 0 120 120" aria-hidden="true">
+    <path d="M38 8 L82 8 L96 112 L24 112 Z" fill="#4e535b"/>
+    <g fill="#ffcf33">
+      <rect x="56" y="12" width="8" height="18"/><rect x="56" y="40" width="8" height="18"/>
+      <rect x="56" y="68" width="8" height="18"/><rect x="56" y="96" width="8" height="16"/>
+    </g>
+    <g transform="translate(60,62)">
+      <rect x="-30" y="-20" width="12" height="18" rx="4" fill="#0e1620"/>
+      <rect x="18" y="-20" width="12" height="18" rx="4" fill="#0e1620"/>
+      <rect x="-30" y="6" width="12" height="20" rx="4" fill="#0e1620"/>
+      <rect x="18" y="6" width="12" height="20" rx="4" fill="#0e1620"/>
+      <path d="M0 -36 C12 -36 22 -26 22 -12 C22 4 24 16 18 30 L-18 30 C-24 16 -22 4 -22 -12 C-22 -26 -12 -36 0 -36 Z" fill="#ff6a00" stroke="#fff" stroke-width="3"/>
+      <path d="M-11 -2 L11 -2 L15 16 L-15 16 Z" fill="#16202c"/>
+    </g>
+  </svg>`
+};
 
-    <div class="set-row">
-      <div class="set-label">1回の問題の数</div>
-      <div class="seg" data-key="count">
-        <button data-val="3">3</button><button data-val="5">5</button><button data-val="8">8</button><button data-val="12">12</button>
-      </div>
-    </div>
+document.getElementById('list').innerHTML = GAMES.map((g) => `
+  <a class="card ${g.cls || ''}" href="${g.url}">
+    ${ART[g.art] || ''}
+    <span><span class="t">${g.title}</span><span class="s">${g.sub}</span></span>
+  </a>`).join('');
 
-    <div class="set-row">
-      <div class="set-label">むずかしさ</div>
-      <div class="seg" data-key="level">
-        <button data-val="1">かんたん</button><button data-val="2">ふつう</button><button data-val="3">むずかしい</button>
-      </div>
-      <div class="set-hint">かんたん：2つから選ぶ（ちがう種類）／ふつう：3つから選ぶ／むずかしい：似た乗り物どうし</div>
-    </div>
-
-    <div class="set-row">
-      <div class="set-label">出てくる乗り物（タップで オン・オフ）</div>
-      <div id="set-vehicles" class="chips"></div>
-    </div>
-
-    <div class="set-row">
-      <div class="set-label">声の読み上げ</div>
-      <div class="seg" data-key="voice">
-        <button data-val="true">オン</button><button data-val="false">オフ</button>
-      </div>
-    </div>
-
-    <div class="set-row">
-      <div class="set-label">声の種類</div>
-      <select id="set-voice" class="set-select"></select>
-      <div class="set-hint">「拡張」「プレミアム」と付いた声がいちばん自然です。入っていない場合は、下の説明を見てください。</div>
-    </div>
-
-    <div class="set-row">
-      <div class="set-label">話す速さ</div>
-      <div class="seg" data-key="rate">
-        <button data-val="0.8">ゆっくり</button><button data-val="0.95">ふつう</button>
-      </div>
-    </div>
-
-    <div class="set-row">
-      <div class="set-label">効果音</div>
-      <div class="seg" data-key="sfx">
-        <button data-val="true">オン</button><button data-val="false">オフ</button>
-      </div>
-    </div>
-
-    <button id="btn-open-recorder" class="set-btn rec-open">🎙 声と音の録音（おうちの人の声・本物の音）</button>
-    <div class="set-hint">「はやぶさ」「は、どれ？」などを録音すると、iPhoneの読み上げの代わりに その声で問題を出します。</div>
-
-    <button id="btn-test-voice" class="set-btn">声と音のテスト</button>
-
-    <details class="set-howto">
-      <summary>もっと自然な声にするには（iPhone）</summary>
-      <ol>
-        <li>iPhoneの「設定」→「アクセシビリティ」→「読み上げコンテンツ」→「声」を開く</li>
-        <li>「日本語」を選び、「Kyoko」や「O-ren」を開く</li>
-        <li>「拡張」または「プレミアム」の声の ⬇ を押してダウンロード（Wi-Fi推奨）</li>
-        <li>このゲームを開き直し、上の「声の種類」でその声を選ぶ</li>
-      </ol>
-    </details>
-
-    <p class="set-note">
-      音が出ないときは、iPhoneの音量と、マナーモード（消音）スイッチを確認してください。<br>
-      お子さまが他の画面に移動しないようにするには、iPhoneの「アクセスガイド」機能が便利です。
-    </p>
-    <p class="set-note small">のりもの あてっこ Ver.3</p>
-
-    <button id="btn-close-settings" class="set-btn primary">とじる</button>
-  </div>
-</div>
-
-<!-- 声と音の録音（保護者向け） -->
-<div id="recorder" class="recorder" hidden>
-  <div class="rec-head">
-    <h2>声と音の録音</h2>
-    <button id="btn-rec-close" class="rec-close">とじる</button>
-  </div>
-  <p class="rec-note">
-    ● で録音開始、■ で止めます（声は5秒、音は10秒で自動で止まります）。録音はこのiPhoneの中だけに保存されます。<br>
-    <b>なまえ</b>：乗り物の名前をはっきり読んでください。「ことば」もそろうと、問題文がすべておうちの人の声になります。<br>
-    <b>おと</b>：駅や道で本物の音を録ると、正解したときや ずかんで流れます。
-  </p>
-  <div id="rec-list" class="rec-list"></div>
-</div>
-
-<script src="vehicles.js"></script>
-<script src="app.js"></script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
 </body>
 </html>

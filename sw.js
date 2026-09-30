@@ -1,59 +1,50 @@
-/* オフラインで遊べるようにするための仕組み（Service Worker）
- * ファイルを更新したら、下の CACHE の番号（v1 → v2 …）を上げると確実に反映されます。 */
-const CACHE = 'norimono-v3';
-const FILES = [
+/* のりもの あそび（ゲーム集）のオフライン用。
+   ゲームを足したら CORE に1行足すと、最初からオフラインで遊べる。 */
+const CACHE = 'norimono-hub-v1';
+const CORE = [
   './',
   './index.html',
-  './style.css',
-  './app.js',
-  './vehicles.js',
   './manifest.webmanifest',
-  './icons/icon-180.png',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  './back.js',
+  './icons/menu-180.png',
+  './icons/menu-192.png',
+  './icons/menu-512.png',
+  './atekko.html',
+  './app.js',
+  './style.css',
+  './vehicles.js',
+  './games/minicar/index.html'
 ];
 
-// vehicles.js に書いた画像・音のファイルも保存しておく
-try {
-  importScripts('./vehicles.js');
-  if (self.VEHICLES) {
-    self.VEHICLES.forEach((v) => {
-      if (v.image) FILES.push('./' + v.image);
-      if (v.sound) FILES.push('./' + v.sound);
-    });
-  }
-} catch (e) { }
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) =>
-      Promise.all(FILES.map((f) => cache.add(f).catch(() => null)))
-    ).then(() => self.skipWaiting())
+self.addEventListener('install', (e) => {
+  e.waitUntil(
+    caches.open(CACHE)
+      // 1つ欠けても全体が失敗しないように個別に入れる
+      .then((c) => Promise.all(CORE.map((u) => c.add(u).catch(() => { }))))
+      .then(() => self.skipWaiting())
   );
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
-// 保存したものをすぐ使い、裏で新しいものに更新する
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+self.addEventListener('fetch', (e) => {
+  if (e.request.method !== 'GET') return;
   // 同じサイトに置いた別アプリ（sakura-event/）はキャッシュしない
-  if (new URL(req.url).pathname.includes('/sakura-event/')) return;
-  event.respondWith(
-    caches.open(CACHE).then((cache) =>
-      cache.match(req, { ignoreSearch: true }).then((cached) => {
-        const net = fetch(req)
-          .then((res) => { if (res && res.ok) cache.put(req, res.clone()); return res; })
-          .catch(() => cached);
-        return cached || net;
-      })
-    )
+  if (new URL(e.request.url).pathname.includes('/sakura-event/')) return;
+  e.respondWith(
+    caches.match(e.request, { ignoreSearch: true }).then((hit) => {
+      if (hit) return hit;
+      return fetch(e.request).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => { });
+        return res;
+      }).catch(() => caches.match('./index.html'));
+    })
   );
 });

@@ -345,6 +345,31 @@ svg { display: block; }
 }
 .card.fade { opacity: .25; filter: grayscale(.6); }
 
+/* まちがえたときに出る 乗り物の名前 */
+.card-tag {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 3px solid currentColor;
+  border-radius: 999px;
+  padding: 2px 16px;
+  font-size: clamp(20px, 6vw, 28px);
+  font-weight: 800;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+}
+.card-tag.show { animation: tagshow 2.6s ease-out forwards; }
+@keyframes tagshow {
+  0% { opacity: 0; transform: translate(-50%, 10px) scale(.7); }
+  12% { opacity: 1; transform: translate(-50%, 0) scale(1.05); }
+  20% { transform: translate(-50%, 0) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 .card.wiggle { animation: wiggle .5s ease-in-out; }
 @keyframes wiggle {
   0%, 100% { transform: rotate(0); }
