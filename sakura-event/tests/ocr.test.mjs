@@ -176,3 +176,13 @@ test('確定ゲート：問い合わせ先は値があれば確認必須', () =>
     assert.equal(gateChecks(event).find((x) => x.id === 'contact').na, true);
   }
 });
+
+test('SHA-256：安全でない接続（crypto.subtle がない）でも同じ値を自前の計算で求める', async () => {
+  const { sha256Bytes } = await import('../js/core/hash.js');
+  const { createHash } = await import('node:crypto');
+  for (const n of [0, 1, 55, 56, 63, 64, 65, 1000, 70000]) {
+    const data = new Uint8Array(n).map((_, i) => (i * 31 + n) & 255);
+    const hex = Buffer.from(sha256Bytes(data)).toString('hex');
+    assert.equal(hex, createHash('sha256').update(data).digest('hex'), `長さ ${n}`);
+  }
+});

@@ -148,16 +148,44 @@ function releaseFile(f) {
   f.file = null;
 }
 
+/** 失敗の原因と次の操作を、担当者に分かる言葉にする */
+function explainError(err, what) {
+  const m = String(err?.message ?? err ?? '');
+  if (/dynamically imported module|Failed to fetch|Importing a module|NetworkError|Load failed|404/i.test(m)) {
+    return `${what}に必要なプログラム（vendor フォルダ）を読み込めませんでした。アプリを http://localhost などのアドレスで開いているか、ファイル一式（vendor フォルダを含む）がそろっているかを確認し、ページを読み込み直してください。`;
+  }
+  if (/Worker|module script|SharedArrayBuffer|WebAssembly|wasm/i.test(m)) {
+    return `${what}の処理（Worker・WebAssembly）をこのブラウザ・画面で起動できませんでした。最新の Chrome・Edge・Firefox・Safari で、アプリを直接開いてお試しください（埋め込み画面や古いブラウザでは動かない場合があります）。`;
+  }
+  if (/password|PasswordException/i.test(m)) return `${what}：パスワード付きのPDFは読み込めません。パスワードを外したPDFを選んでください。`;
+  if (/Invalid PDF|InvalidPDFException|FormatError|Missing PDF/i.test(m)) return `${what}：PDFが壊れているか、PDFではない可能性があります。元のPDFを保存し直してから選んでください。`;
+  if (/memory|allocation|RangeError/i.test(m)) return `${what}：メモリが足りませんでした。ほかのタブを閉じるか、OCRの解像度を 200 dpi にしてお試しください。`;
+  return `${what}：${m || '原因不明のエラー'}。ページを読み込み直してもう一度お試しください。`;
+}
+
 $('file-input').addEventListener('change', async (e) => {
   const errors = [];
   const notes = [];
-  for (const file of e.target.files) {
+  const picked = [...e.target.files];
+  e.target.value = ''; // 同じファイルを選び直しても change が起きるように、先に空にする
+  if (!picked.length) return;
+  const st = $('file-status');
+  st.hidden = false;
+  st.className = 'st';
+  for (const [i, file] of picked.entries()) {
+    st.textContent = `読み込み中（${i + 1}/${picked.length}）：${file.name}（${formatSize(file.size)}）…`;
     const kind = /pdf$/i.test(file.type) || /\.pdf$/i.test(file.name) ? 'pdf' : /^image\/(jpeg|png)$/.test(file.type) || /\.(jpe?g|png)$/i.test(file.name) ? 'image' : null;
     if (!kind) { errors.push(`エラー：「${file.name}」は対応していない形式です。PDF・JPG・PNG を選んでください。`); continue; }
-    const sha256 = await sha256Hex(await file.arrayBuffer());
+    let sha256;
+    try {
+      sha256 = await sha256Hex(await file.arrayBuffer());
+    } catch (err) {
+      errors.push(`エラー：「${file.name}」を読み込めませんでした。${explainError(err, 'ファイルの読み込み')}`);
+      continue;
+    }
     const dup = state.files.find((f) => f.sha256 === sha256);
     if (dup) {
-      notes.push(`「${file.name}」は、すでに選んだ「${dup.name}」と同じファイルです（SHA-256 が一致）。新しい版としては扱いません。`);
+      notes.push(`「${file.name}」は、すでに選んだ「${dup.name}」と同じファイルです（SHA-256 が一致）。新しい版としては扱いません。解析をやり直す場合は、STEP 2 の「解析を始める」または「抽出をやり直す」を押してください。別の資料として最初から読み込む場合は、「すべてクリア」を押してから選び直してください。`);
       continue;
     }
     const side = state.files.length === 0 ? 'front' : state.files.length === 1 ? 'back' : 'other';
@@ -169,7 +197,13 @@ $('file-input').addEventListener('change', async (e) => {
       notes.push(`「${file.name}」は、今の解析結果の基になった資料と異なります。解析し直すと、前の確認結果・承認状態は引き継ぎません。`);
     }
   }
-  e.target.value = '';
+  const added = picked.length - errors.length - notes.filter((n) => n.includes('同じファイルです')).length;
+  st.textContent = errors.length
+    ? `読み込みが終わりました（追加 ${added}件／選んだ ${picked.length}件）。読み込めなかったファイルは下のエラーを確認してください。`
+    : added
+      ? `読み込みが終わりました（追加 ${added}件）。「次へ：自動解析」を押してください。`
+      : '選んだファイルは、すでに読み込んだものと同じでした（追加 0件）。下の案内を確認してください。';
+  st.className = errors.length || !added ? 'st st-needs_review' : 'st st-confirmed';
   $('step1-error').textContent = errors.join('\n');
   $('step1-error').hidden = !errors.length;
   refreshSourceCheck();
@@ -236,6 +270,7 @@ async function clearAll() {
   if (state.busy) state.cancelRequested = true;
   for (const f of state.files) releaseFile(f);
   state.files = [];
+  $('file-status').hidden = true;
   state.event = null;
   state.analysis = null;
   state.outputs = null;
@@ -322,7 +357,7 @@ async function ocrPage(f, pg, label) {
     pg.ocrStatus = 'done';
   } catch (err) {
     pg.ocrStatus = 'error';
-    pg.error = err?.message ?? String(err);
+    pg.error = explainError(err, 'OCR');
   } finally {
     releaseCanvas(canvas);
   }
@@ -336,7 +371,12 @@ async function acquireText({ onlyPages = null } = {}) {
     for (const [fi, f] of state.files.entries()) {
       if (f.kind === 'pdf' && !f.pdf) {
         setProgress(`${f.name}：PDFを開いて文字を取り出しています…`, 0);
-        const r = await openPdf(f.file);
+        let r;
+        try {
+          r = await openPdf(f.file);
+        } catch (err) {
+          throw new Error(explainError(err, `「${f.name}」を開くこと`));
+        }
         f.pdf = r.pdf;
         f.pages = r.pages.map((p) => ({ page: p.page, pdfLines: p.lines, ocrLines: null, ocrStatus: 'none', mode: null }));
         for (const pg of f.pages) pg.mode = defaultMode(pg);
@@ -482,10 +522,15 @@ async function analyze({ reextract = false } = {}) {
     setProgress('取り出した文字から項目を抽出しています…');
     const { result, changedSources } = await runExtraction();
     renderSummary(result, { changedSources, reextracted: reextract || hadConfirmations });
-    setProgress('解析が終わりました。', 1);
+    const failed = state.files.flatMap((f) => f.pages.filter((p) => p.ocrStatus === 'error').map((p) => `${f.name} ${p.page}ページ`));
+    setProgress(failed.length
+      ? `解析は終わりましたが、OCRできなかったページがあります：${failed.join('、')}。下のページ一覧でエラーの内容を確認し、「OCRを再実行」を押してください。`
+      : '解析が終わりました。', 1);
+    if (failed.length) announce('OCRできなかったページがあります。');
     renderPages();
   } catch (err) {
-    $('analyze-result').replaceChildren(h('p', { class: 'err' }, `エラー：解析できませんでした（${err.message}）。もう一度「解析を始める」を押すか、ファイルを選び直してください。`));
+    $('analyze-result').replaceChildren(h('p', { class: 'err', role: 'alert' }, `エラー：解析できませんでした。${err.message}　もう一度「解析を始める」を押すか、ファイルを選び直してください。`));
+    setProgress('解析できませんでした（上のエラーを確認してください）。', 0);
     announce('解析できませんでした。');
   }
 }
@@ -727,3 +772,11 @@ goto(1, { focus: false });
 // ページを閉じるときに OCR の Worker を終了する
 window.addEventListener('pagehide', () => { terminateOcr(); });
 window.addEventListener('resize', updateStepper);
+
+function formatSize(n) {
+  return n >= 1024 * 1024 ? `${(n / 1024 / 1024).toFixed(1)}MB` : `${Math.max(1, Math.round(n / 1024))}KB`;
+}
+
+// 起動の確認（index.html の起動チェックが、読み込めなかった場合の案内を出す）
+window.__sakuraAppReady = true;
+document.getElementById('boot-error')?.setAttribute('hidden', '');

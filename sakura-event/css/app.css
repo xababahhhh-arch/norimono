@@ -193,3 +193,4 @@ dialog::backdrop { background: rgb(0 0 0 / .5); }
 .fld.inline select { width: auto; }
 .progress-box { border: 2px solid var(--line); padding: .5rem 1rem; margin: .5rem 0; }
 .progress-box progress { width: 100%; height: 14px; }
+.boot-error { margin: .5rem 1rem; }

@@ -8,9 +8,25 @@
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="css/app.css">
 <script type="module" src="js/app.js"></script>
+<script>
+  // 起動チェック（アプリ本体が読み込めない場合に、無反応にせず原因と次の操作を表示する）
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      if (window.__sakuraAppReady) return;
+      var box = document.getElementById('boot-error');
+      var msg = location.protocol === 'file:'
+        ? 'このアプリは、ファイルをダブルクリックして開くと動きません（ブラウザの安全の仕組みでプログラムが読み込まれないため）。付属の起動用ファイル（start-local）を実行し、表示された http://localhost:8000/ のアドレスで開いてください。'
+        : 'アプリのプログラムを読み込めませんでした。ファイル一式（js・vendor フォルダを含む）がそろっているか、最新の Chrome・Edge・Firefox・Safari で開いているかを確認し、ページを読み込み直してください。';
+      box.querySelector('span').textContent = msg;
+      box.hidden = false;
+    }, 1500);
+  });
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ移動</a>
+<p id="boot-error" class="err boot-error" role="alert" hidden><strong>エラー：アプリを起動できませんでした。</strong><span></span></p>
+<noscript><p class="err boot-error">JavaScript が無効になっています。ブラウザの設定で JavaScript を有効にしてください。</p></noscript>
 
 <header class="app-header">
   <div class="app-header-inner">
@@ -44,6 +60,7 @@
       <p id="file-help" class="help">PDFは、まず文字をそのまま取り出します。文字が取れないページ（文字が図形になっているチラシなど）と、JPG・PNGの画像は、ブラウザの中で文字を読み取ります（OCR）。</p>
       <input id="file-input" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple aria-describedby="file-help">
     </div>
+    <p id="file-status" class="st" role="status" aria-live="polite" hidden></p>
     <div id="file-list" aria-live="polite"></div>
     <p class="help">SHA-256（ハッシュ値）は、同じファイルかどうかを確かめるためだけに使います。最新版かどうか・公開が承認された版かどうかは判定しません。</p>
 

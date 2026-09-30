@@ -22,6 +22,8 @@ export const DEFAULT_THRESHOLD = 200;
 
 let workerPromise = null;
 let progressHandler = null;
+// 読み込みに失敗した module はページを開いている間ブラウザが覚えているため、再試行では別のURL（?retry=回数）で読む
+let failedAttempts = 0;
 
 export function isOcrLoaded() {
   return workerPromise !== null;
@@ -32,7 +34,7 @@ export function prepareOcr(onProgress) {
   if (onProgress) progressHandler = onProgress;
   if (!workerPromise) {
     workerPromise = (async () => {
-      const mod = await import(`${BASE}tesseract.esm.min.js`);
+      const mod = await import(`${BASE}tesseract.esm.min.js${failedAttempts ? `?retry=${failedAttempts}` : ''}`);
       const createWorker = mod.createWorker ?? mod.default?.createWorker;
       const worker = await createWorker(OCR_LANGS, 1 /* LSTM のみ */, {
         workerPath: `${BASE}worker.min.js`,
@@ -46,7 +48,7 @@ export function prepareOcr(onProgress) {
       await worker.setParameters({ tessedit_pageseg_mode: '3', preserve_interword_spaces: '1' });
       return worker;
     })();
-    workerPromise.catch(() => { workerPromise = null; });
+    workerPromise.catch(() => { workerPromise = null; failedAttempts += 1; });
   }
   return workerPromise;
 }

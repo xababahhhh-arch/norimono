@@ -5,10 +5,12 @@ const WORKER_URL = new URL('../../vendor/pdfjs/pdf.worker.min.mjs', import.meta.
 const CMAP_URL = new URL('../../vendor/pdfjs/cmaps/', import.meta.url).href;
 
 let pdfjsPromise = null;
+// 読み込みに失敗した module はページを開いている間ブラウザが覚えているため、再試行では別のURL（?retry=回数）で読む
+let failedAttempts = 0;
 /** PDF.js を読み込む。Worker は1つ作って使い回す（読み込み後はネットワークを切っても動く） */
 export function loadPdfjs() {
   if (!pdfjsPromise) {
-    pdfjsPromise = import(PDFJS_URL).then((lib) => {
+    pdfjsPromise = import(failedAttempts ? `${PDFJS_URL}?retry=${failedAttempts}` : PDFJS_URL).then((lib) => {
       if (typeof Worker !== 'undefined') {
         lib.GlobalWorkerOptions.workerPort = new Worker(WORKER_URL, { type: 'module' });
       } else {
@@ -16,7 +18,7 @@ export function loadPdfjs() {
       }
       return lib;
     });
-    pdfjsPromise.catch(() => { pdfjsPromise = null; });
+    pdfjsPromise.catch(() => { pdfjsPromise = null; failedAttempts += 1; });
   }
   return pdfjsPromise;
 }
