@@ -28,6 +28,8 @@
 | `source_file` | string / null | 取り出したファイル名 |
 | `source_page` | number / null | ページ番号（1始まり）。画像は 1 |
 | `source_text` | string / null | 取り出し元の **加工前の** 文字列（前後を含む1行程度） |
+| `source_method` | `pdf_text` / `ocr` / `paste` / `mixed` / null | 取得方法。画面では「PDFの文字から取得」「OCRで取得」「担当者が修正」（`origin: manual`）などと表示 |
+| `source_bbox` | {x0,y0,x1,y1} / null | ページ上の位置（0〜1、上が0）。プレビューで枠を表示するために使う |
 | `confidence` | number / null | 0〜1。抽出規則の確からしさ。人が入力した値は 1 |
 | `origin` | `extracted` / `inferred` / `computed` / `manual` / `ai` | 値の由来。`inferred` は推定（例：年の省略を補った） |
 | `confirmed` | boolean | 人が「確認済み」にしたか。**抽出器・AIは true にしない** |
@@ -204,7 +206,10 @@
   "meta": {
     "created_at": "2026-06-01T10:00:00+09:00",
     "updated_at": "2026-06-01T10:30:00+09:00",
-    "source_files": [ { "name": "flyer_front.pdf", "type": "application/pdf", "pages": 1 } ],
+    "source_files": [ { "name": "flyer_front.pdf", "type": "application/pdf", "size": 123456,
+                        "sha256": "…64桁…", "imported_at": "2026-06-01T10:00:00+09:00", "pages": 1 } ],
+    "source_review": { "confirmed": false },     // 担当者が「版を確認した」か（SHA-256 は同一性の確認だけ。最新版・承認済みとは判定しない）
+    "source_mismatch": false,                    // 読み込んだファイルが記録の SHA-256 と一致しない（差し替え）→ 確定できない
     "extractor": "rules-1.0",
     "finalized": false,                          // 確認ゲート通過後に true
     "finalized_at": null,

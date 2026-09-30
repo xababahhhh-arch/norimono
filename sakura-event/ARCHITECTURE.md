@@ -66,11 +66,12 @@
        │ STEP 1-2（ブラウザ内のみ）
        ▼
 ┌───────────────┐  PDF.js：ページごとの文字と文字サイズ
-│ raw extraction │  画像：Phase 2 で Tesseract.js（OCR）
+│ raw extraction │  文字のないページ・画像：PDF.js で画像化 → 白黒化 → Tesseract.js（ブラウザ内OCR、jpn+eng）
+│                │  ページごとに PDFの文字／OCR／PDF＋OCRにしかない行 を選ぶ（無条件に連結しない）
 │ raw.json       │  → { file, page, text, lines[] } のまま保存（加工しない）
 └──────┬────────┘
        │ ルールベース抽出（extract/rules.js）
-       │  各値に source_file / source_page / source_text / confidence を付ける
+       │  各値に source_file / source_page / source_text / source_method / source_bbox を付ける
        ▼
 ┌───────────────┐
 │ event.json     │  ← Single Source of Truth
@@ -142,7 +143,8 @@
 - 状態は **記号＋文字＋色** で表示します（✓確認済み／！要確認／－情報なし）。色だけに頼りません。
 - 各項目の横に出典（ファイル名・ページ・元の文字列）と確信度を表示します。
 - 1行の入力欄、複数行の入力欄、選択肢、繰り返し項目（出演者・曲目・日程・料金・チケット取扱・小イベント）はスキーマ定義から自動で作ります（`ui/form.js`）。
-- 作業中の event.json はブラウザ内（localStorage）に自動保存し、event.json の読み込み・書き出しもできます。
+- 原稿・抽出結果はブラウザの保存領域（localStorage・IndexedDB 等）に自動保存しません。event.json は「保存」ボタンで端末へ書き出し、読み込みで再開します。
+- 項目を選ぶと、左のプレビューで取得元のページに移り、位置情報（OCR・PDFの文字の bbox）があれば枠で強調します。
 - 幅の狭い画面では1カラムに切り替わり、チラシプレビューは上に表示します。
 
 ## 6. モジュール構成
@@ -163,7 +165,8 @@ sakura-event/
 │   │   └── phrases.js      禁止表現・用語説明・略語
 │   ├── extract/
 │   │   ├── pdf.js          PDF.js によるページごとの文字抽出（ブラウザ）
-│   │   ├── ocr.js          OCR adapter（Phase 2、現在は「未対応」を返す）
+│   │   ├── ocr.js          ブラウザ内OCR（Tesseract.js、同梱資材のみ、Worker の準備・解放、白黒化）
+│   │   ├── pagetext.js     ページの文字の整形、PDFの文字とOCRの重複しない組み合わせ
 │   │   └── rules.js        raw → event.json 下書き（ルールベース）
 │   ├── generate/
 │   │   ├── hp.js           HP用HTML（CMS貼り付け用の断片＋確認用の完全なページ）
@@ -174,12 +177,13 @@ sakura-event/
 │   ├── ai/adapter.js       文章生成 adapter（local / 外部AI、送信同意）
 │   └── ui/                 フォーム・プレビュー・出力パネル
 ├── vendor/pdfjs/           PDF.js（同梱。CDNへの依存なし）
+├── vendor/tesseract/       Tesseract.js・WASM・jpn/eng 学習データ（同梱。CDNへの依存なし）
 ├── fixtures/               テスト用 event.json と チラシ文字データ
 └── tests/                  node:test
 ```
 
 - `core/`, `extract/rules.js`, `generate/`, `a11y/` は DOM に依存しない純粋関数にし、Node.js でテストできるようにします（a11y チェックは Document を引数で受け取ります）。
-- 外部ライブラリは PDF.js のみ（リポジトリに同梱）。テストでは linkedom を使います。
+- 外部ライブラリは PDF.js と Tesseract.js のみ（リポジトリに同梱）。テストでは linkedom を使います。
 
 ### AI adapter
 
@@ -205,9 +209,11 @@ sakura-event/
 ## 7. セキュリティ・プライバシー
 
 - ファイルは `FileReader` / `URL.createObjectURL` でブラウザ内でのみ扱い、ネットワークへ送信しません。
-- PDF.js は `vendor/` に同梱し、実行時に外部CDNを読みません。
+- PDF.js・Tesseract.js（Worker・WASM・学習データを含む）は `vendor/` に同梱し、実行時に外部CDNを読みません。学習データもブラウザに保存しません（`cacheMethod: 'none'`）。
+- PDF・ページ画像・OCR結果・修正内容は、サーバー・外部AI・アクセス解析・エラー収集・URLのいずれにも含めません。
+- 「すべてクリア」やページを閉じたときに、PDF文書・画像のURL・OCRのWorkerを解放します。
 - 生成するHTMLの値はすべてエスケープします（`<script>` 等を埋め込めない）。URLは `http:` / `https:` / `tel:` / `mailto:` のみ許可します。
-- localStorage の自動保存はその端末のブラウザ内だけに残ります。「作業データを消去」ボタンで削除できます。
+- 自動保存はしません。以前の版が localStorage に残したデータがあれば、画面に知らせて消去ボタンを出します。
 
 ## 8. テスト方針
 

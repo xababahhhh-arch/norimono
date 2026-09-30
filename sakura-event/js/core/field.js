@@ -7,6 +7,10 @@ export function field(value = null, src = {}) {
     source_file: src.file ?? src.source_file ?? null,
     source_page: src.page ?? src.source_page ?? null,
     source_text: src.text ?? src.source_text ?? null,
+    // 取得方法：pdf_text（PDFの文字）/ ocr（OCR）/ paste（貼り付けた文字）/ mixed。担当者が直した値は origin が manual
+    source_method: src.method ?? src.source_method ?? null,
+    // 取得元のページ上の位置（0〜1。上が 0）。プレビューで強調表示に使う
+    source_bbox: src.bbox ?? src.source_bbox ?? null,
     confidence: src.confidence ?? null,
     origin: src.origin ?? (isEmpty(value) ? null : 'manual'),
     confirmed: src.confirmed ?? false,
@@ -73,6 +77,13 @@ export const REVIEW_LABELS = {
 };
 
 export const LOW_CONFIDENCE = 0.9;
+
+/** 取得方法の表示（担当者が修正した値を区別する） */
+export function methodLabel(f) {
+  if (!isField(f)) return '';
+  if (f.origin === 'manual') return has(f) ? '担当者が入力・修正' : '';
+  return { pdf_text: 'PDFの文字から取得', ocr: 'OCRで取得', paste: '貼り付けた文字から取得', mixed: 'PDFの文字とOCRから取得' }[f.source_method] ?? '';
+}
 
 /** @deprecated 確信度の数値で「低い」と表示しない方針（REAL_DATA_TEST_UNPLUGGED.md）。互換のため残す。 */
 export function isLowConfidence(f) {

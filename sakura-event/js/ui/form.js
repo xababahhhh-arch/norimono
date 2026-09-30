@@ -2,13 +2,13 @@
 // スキーマ定義（GROUPS）から自動で作る。状態は記号＋文字＋色で示す（色だけに頼らない）。
 import { h, nextId, announce } from './dom.js';
 import { GROUPS, STATUSES, UPDATE_TYPES, pathOf, isVisibleFor, eventType, createListItem } from '../core/schema.js';
-import { getPath, setValue, confirmField, reviewState, REVIEW_LABELS, has, str } from '../core/field.js';
+import { getPath, setValue, confirmField, reviewState, REVIEW_LABELS, has, str, methodLabel } from '../core/field.js';
 import { weekdayCheck, formatIssues, gateChecks, gateProgress } from '../core/validate.js';
 import { weekdayOf, isIsoDate, todayIso } from '../core/dates.js';
 
 const PLACEHOLDER = { date: '例：2026-07-04', time: '例：14:00', tel: '例：045-000-0000', url: 'https://', email: 'name@example.jp', number: '例：3000' };
 
-export function createReviewForm(root, getEvent, onChange) {
+export function createReviewForm(root, getEvent, onChange, options = {}) {
   const refreshers = new Map(); // path → () => void
   const inputs = new Map(); // path → input id
 
@@ -77,6 +77,7 @@ export function createReviewForm(root, getEvent, onChange) {
     const err = h('p', { id: errId, class: 'err' });
     const src = h('p', { id: srcId, class: 'src' });
     const basis = h('p', { class: 'basis' });
+    const method = h('p', { class: 'method' });
     const why = h('p', { class: 'why', id: `${id}-why` });
     const help = def.help ? h('p', { id: helpId, class: 'help' }, def.help) : null;
     const computed = h('p', { class: 'computed' });
@@ -92,6 +93,10 @@ export function createReviewForm(root, getEvent, onChange) {
       src.hidden = !src.textContent;
       basis.textContent = basisText(cur);
       basis.hidden = !basis.textContent;
+      const ml = methodLabel(cur);
+      method.textContent = ml ? `取得方法：${ml}` : '';
+      method.hidden = !ml;
+      method.className = `method method-${cur.origin === 'manual' ? 'manual' : cur.source_method ?? 'none'}`;
       why.textContent = reasonsText(cur);
       why.hidden = !why.textContent;
       btn.textContent = cur.confirmed ? '確認を取り消す' : has(cur) ? '確認済みにする' : '該当なしとして確認';
@@ -123,6 +128,8 @@ export function createReviewForm(root, getEvent, onChange) {
       if (changed) onChange({ path, structural: def.key === 'event_type' });
     };
     input.addEventListener(def.type === 'select' ? 'change' : 'change', commit);
+    // 項目を選ぶと、チラシのプレビューで取得元を表示する
+    input.addEventListener('focus', () => options.onFocusField?.(getPath(getEvent(), path)));
     if (def.type !== 'select') input.addEventListener('input', () => { /* 入力中は確定しない（change で反映） */ });
     btn.addEventListener('click', () => {
       commit();
@@ -134,7 +141,7 @@ export function createReviewForm(root, getEvent, onChange) {
 
     refresh();
     return h('div', { class: `fld fld-${def.type}`, dataset: { path } },
-      label, help, input, computed, status, err, why, src, basis, h('div', { class: 'fld-actions' }, btn));
+      label, help, input, computed, status, method, err, why, src, basis, h('div', { class: 'fld-actions' }, btn));
   }
 
   function listBlock(def, path, type) {
@@ -266,7 +273,8 @@ export function createReviewForm(root, getEvent, onChange) {
         h('p', {}, h('strong', {}, `${it.resolved ? '✓ 対応済み' : it.blocking ? '！ 対応が必要' : '－ 参考'}　${it.topic}`)),
         h('blockquote', {}, `原文：${it.text}`, it.page ? `（${it.file ?? ''} ${it.page}ページ）` : ''),
         h('p', { class: 'why' }, `理由：${it.reason}`),
-        h('div', { class: 'fld-actions' }, btn)));
+        h('div', { class: 'fld-actions' }, btn,
+          it.file && options.onFocusField ? h('button', { type: 'button', class: 'btn-secondary', onclick: () => options.onFocusField({ source_file: it.file, source_page: it.page, source_bbox: it.bbox }) }, 'チラシで位置を見る') : null)));
     });
     box.append(ul);
     inputs.set('meta.review_items', 'grp-review');

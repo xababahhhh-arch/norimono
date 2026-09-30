@@ -270,6 +270,29 @@ export function gateChecks(ev) {
     urls.length === 0 ? '外部URLはありません' : badUrls.length ? `未確認または形式が正しくないURLが${badUrls.length}件あります` : `確認済み（${urls.length}件）`,
     badUrls.length ? 'URLを実際に開いて行き先が正しいことを確認し、「確認済みにする」を押してください。' : '', urls.length === 0);
 
+  // 曲目・問い合わせ先（値があれば照合を必須にする。OCR では特に誤読しやすい）
+  const works = ev.program?.works?.items ?? [];
+  const badWorks = works.filter((w) => ['composer', 'work', 'section', 'notes'].some((k) => has(w[k]) && !w[k].confirmed));
+  add('program', '曲目', 'program.works', badWorks.length === 0,
+    works.length ? (badWorks.length ? `未確認の曲目が${badWorks.length}件あります` : `確認済み（${works.length}件）`) : '曲目の登録なし',
+    badWorks.length ? '作曲者・曲名をチラシの表記どおりか照合し、「確認済みにする」を押してください。' : '', works.length === 0);
+  const contact = ev.organization?.contact;
+  add('contact', '問い合わせ先', 'organization.contact', !has(contact) || !!contact.confirmed, has(contact) ? stateText(contact) : '記載なし',
+    has(contact) && !contact.confirmed ? needConfirm : '', !has(contact));
+
+  // 入力資料（版）の確認。ハッシュは同じファイルかどうかの確認だけに使い、最新版・承認済みかは担当者が確認する
+  const srcFiles = (ev.meta?.source_files ?? []).filter((f) => f.sha256);
+  if (srcFiles.length) {
+    add('source_version', '入力資料の版', 'meta.source_review', !!ev.meta.source_review?.confirmed,
+      ev.meta.source_review?.confirmed ? '確認済み' : '未確認',
+      '入力した資料（ファイル名・取込日時）が、原稿の基にする版であることを担当者が確認し、「版を確認した」を押してください。システムは最新版かどうか・承認済みかどうかを判定しません。');
+  }
+  if (ev.meta?.source_mismatch) {
+    add('source_mismatch', '入力資料の一致', 'meta.source_review', false,
+      '読み込んだファイルが、この event.json の記録（SHA-256）と一致しません',
+      '別の資料に差し替えた場合は、解析からやり直してください。前の確認結果・承認状態は引き継ぎません。');
+  }
+
   // 販売・受付状況（チラシからは決めない。担当者が設定する）
   const code = ev.status?.code ?? 'unset';
   add('status', '販売・受付状況', 'status', code !== 'unset',

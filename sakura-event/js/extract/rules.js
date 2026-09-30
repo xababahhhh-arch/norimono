@@ -7,7 +7,7 @@ import { createEmptyEvent, VENUE_ROOMS, FACILITY_NAME } from '../core/schema.js'
 import { normalizeText, toIso, isIsoDate, weekdayOf, normTime, reiwaToYear, todayIso } from '../core/dates.js';
 import { classify } from '../core/classify.js';
 
-export const EXTRACTOR_VERSION = 'rules-1.1';
+export const EXTRACTOR_VERSION = 'rules-1.2';
 
 // ---- 前処理 -----------------------------------------------------------
 
@@ -38,18 +38,37 @@ export function flattenRaw(raw) {
         if (!text) { blank = true; continue; }
         const prev = lines.at(-1);
         // 「…オンライン窓口・」＋「その他プレイガイド：8月16日」のように、行末が「・」「、」で続く文は1行につなぐ
+        const method = ln.method ?? pg.method ?? file.method ?? null;
         if (!blank && prev && prev.file === file.name && prev.page === (pg.page ?? 1) && /[・、，,]$/.test(prev.norm) && !matchLabel(prepLine(text))) {
           prev.text = `${prev.text}${text}`;
           prev.norm = prepLine(prev.text);
           prev.joined = true;
+          if (prev.method !== method) prev.method = 'mixed';
+          prev.bbox = unionBox(prev.bbox, ln.bbox ?? null);
+          prev.lowWords = [...(prev.lowWords ?? []), ...(ln.lowWords ?? [])];
           continue;
         }
-        lines.push({ file: file.name, page: pg.page ?? 1, text, norm: prepLine(text), size: ln.size ?? null, idx: lines.length, blankBefore: blank });
+        // 位置情報がある行（PDFの文字・OCR）は、行間が大きく空いた所や段（列）が変わった所を空行とみなす
+        if (!blank && prev && prev.page === (pg.page ?? 1) && prev.bbox && ln.bbox) {
+          const lh = Math.max(0.004, prev.bbox.y1 - prev.bbox.y0);
+          const gap = ln.bbox.y0 - prev.bbox.y1;
+          if (gap > lh * 1.6 || gap < -lh * 2 || Math.abs(ln.bbox.x0 - prev.bbox.x0) > 0.25) blank = true;
+        }
+        lines.push({
+          file: file.name, page: pg.page ?? 1, text, norm: prepLine(text), size: ln.size ?? null, idx: lines.length, blankBefore: blank,
+          method, bbox: ln.bbox ?? null, conf: ln.conf ?? null, lowWords: ln.lowWords ?? [],
+        });
         blank = false;
       }
     }
   }
   return lines;
+}
+
+function unionBox(a, b) {
+  if (!a) return b;
+  if (!b) return a;
+  return { x0: Math.min(a.x0, b.x0), y0: Math.min(a.y0, b.y0), x1: Math.max(a.x1, b.x1), y1: Math.max(a.y1, b.y1) };
 }
 
 // ---- 見出し（ラベル）の判定 ---------------------------------------------
@@ -369,13 +388,24 @@ export function extractEvent(raw, opts = {}) {
   const consumed = new Set(); // 行全体を別の項目の値として使った行（注意事項に重複させない）
 
   const defaultBasis = (ln) => (ln.label ? `見出し「${ln.label.word}」の行から取り出しました` : 'チラシの文字の書き方から取り出しました');
-  const src = (ln, confidence, extra = {}) => ({ file: ln.file, page: ln.page, text: ln.text, confidence, origin: 'extracted', basis: extra.basis ?? defaultBasis(ln), ...extra });
+  const OCR_REASON = 'OCRで読み取った文字です。チラシの文字と1文字ずつ照合してください';
+  const ocrReasons = (ln) => {
+    if (ln.method !== 'ocr' && ln.method !== 'mixed') return [];
+    const r = [OCR_REASON];
+    if (ln.lowWords?.length) r.push(`読み取りにくかった部分があります（「${ln.lowWords.slice(0, 5).join('」「')}」）`);
+    return r;
+  };
+  const src = (ln, confidence, extra = {}) => ({
+    file: ln.file, page: ln.page, text: ln.text, confidence, origin: 'extracted', method: ln.method ?? null, bbox: ln.bbox ?? null,
+    basis: extra.basis ?? defaultBasis(ln), ...extra,
+    reasons: [...(extra.reasons ?? []), ...ocrReasons(ln)],
+  });
   // 値として取り込まず、原文つきで人の判断を求める記載
   ev.meta.review_items = [];
   const review = (topic, ln, reason, { blocking = true, text } = {}) => {
     const t = text ?? ln.text;
     if (ev.meta.review_items.some((r) => r.topic === topic && r.text === t)) return;
-    ev.meta.review_items.push({ id: `r${ev.meta.review_items.length + 1}`, topic, text: t, page: ln.page, file: ln.file, reason, blocking, resolved: false, resolution: '' });
+    ev.meta.review_items.push({ id: `r${ev.meta.review_items.length + 1}`, topic, text: t, page: ln.page, file: ln.file, method: ln.method ?? null, bbox: ln.bbox ?? null, reason, blocking, resolved: false, resolution: '' });
   };
   const setF = (obj, key, value, ln, confidence, extra) => {
     if (value === null || value === undefined || value === '') return false;
@@ -414,7 +444,9 @@ export function extractEvent(raw, opts = {}) {
     date: field(iso, src(ln, conf, inferred
       ? { origin: 'inferred', basis: '日付の書き方の行から取り出しました', reasons: ['年がチラシに書かれていないため推定しました'] }
       : { basis: '「発売」「受付」などの語がない行の日付を、公演日としました' })),
-    weekday_on_flyer: dt.weekday ? field(dt.weekday, src(ln, 0.95, { basis: '日付の後の（）内の曜日です' })) : field(null),
+    weekday_on_flyer: dt.weekday
+      ? field(dt.weekday, src(ln, 0.95, { basis: '日付の後の（）内の曜日です' }))
+      : field(null, unreadableWeekday(ln, dt) ? { reasons: [`日付の後の曜日の部分（「${ln.norm[dt.end]}」）を読み取れませんでした。チラシの曜日を確認してください`], text: ln.text, page: ln.page, file: ln.file, method: ln.method, bbox: ln.bbox } : {}),
     session_label: field(null),
     doors_open: field(null),
     start_time: field(null),
@@ -422,6 +454,8 @@ export function extractEvent(raw, opts = {}) {
     status: null,
   });
   const KIND_WORD = { doors_open: '開場', start_time: '開演・開始', end_time: '終演・終了' };
+  // OCR で四角囲みの曜日（㊏など）が別の文字になった場合
+  const unreadableWeekday = (ln, dt) => (ln.method === 'ocr' || ln.method === 'mixed') && /[^\s\d/(（)）:〜.,、。]/.test(ln.norm[dt.end] ?? ' ');
   const applyTimes = (s, times, ln, labelText) => {
     const amb = timeAmbiguity(ln.norm, times);
     if (amb) {
@@ -453,6 +487,10 @@ export function extractEvent(raw, opts = {}) {
   lines.forEach((ln, i) => {
     const ctx = dateContext(ln);
     const dates = findDates(ln.norm);
+    // OCR：日付・時刻に関わる語と数字があるのに日付として読めない行（「20268A 158」など）は確認を求める
+    if ((ln.method === 'ocr' || ln.method === 'mixed') && !dates.length && /(発売|予約|先行|開演|開場|公演日|日時)/.test(ln.norm) && /\d{3,}/.test(ln.norm) && !/(TEL|FAX|\d{2,4}-\d{2,4}-\d{3,4})/.test(ln.norm)) {
+      review('日付の読み取り', ln, '日付らしき数字がありますが、日付として読み取れませんでした（OCRの読み誤りの可能性があります）。チラシで日付・時刻を確認して入力してください。');
+    }
     if (dates.length && ctx !== 'event') {
       const r = resolveYear(dates[0], yctx);
       if (!r) return;
@@ -468,7 +506,9 @@ export function extractEvent(raw, opts = {}) {
           const after = findTimes(t.slice(dt.end, dates[dates.indexOf(dt) + 1]?.index ?? t.length));
           const time = after[0]?.time ?? null;
           const sched = ev.tickets.sales_schedule.items;
-          if (sched.some((x) => x.method.value === method && x.date.value === rr.iso && x.time.value === time)) continue;
+          const same = sched.find((x) => x.method.value.replace(/\s/g, '') === method.replace(/\s/g, '') && x.date.value === rr.iso);
+          if (same && (same.time.value === time || !time)) continue; // 同じ記載（片方の時刻が読めなかった場合も含む）
+          if (same && !same.time.value) { same.time = field(time, src(ln, 0.8, { basis: '発売日の後に書かれた時刻です' })); continue; }
           const basis = '「発売」「先行」などの語がある行の日付です。日付より前の文字を販売方法として取り出しました';
           sched.push({
             id: `ss${sched.length + 1}`,
@@ -663,6 +703,11 @@ export function extractEvent(raw, opts = {}) {
     // 手数料・駐車料金などの文は料金として読まない（同じ行に「席」などがあっても）
     const t = /(手数料|駐車|送料|交通費)/.test(ln.norm) ? splitSentences(ln.norm).filter((x) => !/(手数料|駐車|送料|交通費)/.test(x)).join('※') : ln.norm;
     if (!priceCtx.test(t)) continue;
+    // OCR で「2,500円」が「2.500円」のように読まれた場合は、金額を推測で直さず、確認を求める
+    const oddSep = [...t.matchAll(/\d[.．]\d{3}\s*円/g)];
+    if (oddSep.length) {
+      review('金額の読み取り', ln, `金額の区切りが「.」になっている部分があります（${oddSep.map((m) => `「${m[0]}」`).join('')}）。OCRの読み誤りの可能性があるため、この金額は料金に入れていません。チラシで金額を確認して入力してください。`);
+    }
     if (promo.has(ln.idx) || /^[■◆]/.test(t)) {
       if (/\d\s*円/.test(t)) review('料金らしき記載', ln, '全館共通の案内や別企画の記載と思われるため、本公演の料金には入れていません。本公演に当てはまるか確認してください。', { blocking: false });
       continue;
@@ -678,10 +723,11 @@ export function extractEvent(raw, opts = {}) {
       if (seat) { setF(ev.pricing, 'seating_type', seat[1], ln, 0.85); seatingDone = true; }
     }
     if (/税込/.test(t)) setF(ev.pricing, 'tax_included', '税込', ln, 0.85);
-    const PRICE_RE = /([^\s\d:：/／、,()（）]{1,12}(?:[(（][^)）]{1,15}[)）])?)?\s*[:：]?\s*[¥￥]?\s*(\d{1,3}(?:,\d{3})+|\d+)\s*円\s*(?:[(（]([^)）]{1,30})[)）])?/g;
+    const PRICE_RE = /([^\s\d:：/／、,()（）]{1,12}(?:\s?[(（][^)）]{1,15}[)）])?)?\s*[:：]?\s*[¥￥]?\s*(\d{1,3}(?:,\d{3})+|\d+)\s*円\s*(?:[(（]([^)）]{1,30})[)）])?/g;
     let m;
     let found = false;
     while ((m = PRICE_RE.exec(t))) {
+      if (/\d[.．]$/.test(t.slice(0, m.index + m[0].indexOf(m[2]))) || /[.．]\d{3}\s*円/.test(m[0])) continue;
       let cat = (m[1] ?? '').replace(/(全席指定|全席自由|自由席|指定席|料金|入場料|チケット)/g, '').replace(/^[・\s]+|[・\s]+$/g, '');
       if (/^(各|計|約)$/.test(cat)) cat = '';
       // 区分名が文の途中（「歳以下は当日券が」など）になる場合は料金として取り込まない
@@ -788,7 +834,7 @@ export function extractEvent(raw, opts = {}) {
   const isChannelName = (ln, t) => {
     if (!t || /^[※*●■・]/.test(t) || /^(TEL|Tel|電話|FAX|http)/.test(t) || findDates(t).length || /(発売|引換|主催|問い?合|申込|応募)/.test(t)) return false;
     if (ln.label && ln.label.key !== 'tickets') return false;
-    const nameOnly = t.replace(/●.*$/, '').replace(URL_RE, '').replace(PHONE_RE, '').replace(/要?\s*[PL]\s*コード.*$/, '').replace(/(TEL|Tel|電話)\s*[:：]?/g, '').replace(/[(（][^)）]*[)）]/g, '').trim();
+    const nameOnly = t.replace(/\s[●$•]\s*\S*取扱い?$/, '').replace(/●.*$/, '').replace(URL_RE, '').replace(PHONE_RE, '').replace(/要?\s*[PL]\s*コード.*$/, '').replace(/(TEL|Tel|電話)\s*[:：]?/g, '').replace(/[(（][^)）]*[)）]/g, '').trim();
     if (!/[A-Za-z一-龥ぁ-んァ-ヶ]/.test(nameOnly) || nameOnly.length > 30 || /[。]/.test(nameOnly)) return false;
     return (ln.section === 'tickets' && !ln.label) || (ln.label?.key === 'tickets' && !!ln.label.rest) || PROVIDER_NAME.test(nameOnly);
   };
@@ -802,10 +848,11 @@ export function extractEvent(raw, opts = {}) {
     }
     if (ln.facility || ln.blankBefore || (ln.label && ln.label.key !== 'tickets' && ln.label.key !== 'closed_days')) curCh = null;
     if (isChannelName(ln, t)) {
-      const detail = t.match(/●\s*(.+)$/)?.[1] ?? null;
+      // 「●全券種取扱い」の●がOCRで「$」などになった場合も、名前と分ける（文字は直さない）
+      const detail = t.match(/●\s*(.+)$/)?.[1] ?? t.match(/\s[$•]\s*(\S*取扱い?)$/)?.[1] ?? null;
       const ph = [...t.matchAll(PHONE_RE)][0];
       const url = t.match(URL_RE)?.[0];
-      const name = t.replace(/●.*$/, '').replace(URL_RE, '').replace(PHONE_RE, '').replace(/要?\s*[PL]\s*コード.*$/, '').replace(/(TEL|Tel|電話)\s*[:：]?/g, '').replace(/[(（][^)）]*[)）]\s*$/, '').replace(/[:：\s]+$/, '').trim();
+      const name = t.replace(/\s[●$•]\s*\S*取扱い?$/, '').replace(/●.*$/, '').replace(URL_RE, '').replace(PHONE_RE, '').replace(/要?\s*[PL]\s*コード.*$/, '').replace(/(TEL|Tel|電話)\s*[:：]?/g, '').replace(/[(（][^)）]*[)）]\s*$/, '').replace(/[:：\s]+$/, '').trim();
       curCh = {
         id: `t${channels.length + 1}`,
         name: field(name, src(ln, 0.7, chB(ln.section === 'tickets' ? '「チケット取扱い」の見出しの後の行です' : 'チケットの取扱先の名前（「チケット」「窓口」など）の行です'))),
@@ -831,7 +878,8 @@ export function extractEvent(raw, opts = {}) {
     }
     const ph = [...t.matchAll(PHONE_RE)][0];
     const url = t.match(URL_RE)?.[0];
-    if (/^●/.test(t)) {
+    // 「●一般・学生券のみ取扱い」（OCR では●が別の文字になることがある。文字は直さずそのまま入れる）
+    if (/^●/.test(t) || (/(取扱い?|取り扱い)$/.test(t) && t.length <= 25 && !ph && !url)) {
       const d = t.replace(/^●\s*/, '');
       curCh.detail = curCh.detail.value ? (curCh.detail.value = `${curCh.detail.value}／${d}`, curCh.detail) : field(d, src(ln, 0.7, chB('取扱先の名前の後の「●」の行です')));
     } else if (ph && /^(TEL|Tel|電話)/.test(t)) {
@@ -908,6 +956,7 @@ export function extractEvent(raw, opts = {}) {
       instrument: p.instrument ? field(p.instrument, src(ln, conf)) : field(null),
       profile: field(null), photo: field(null), photo_alt: field(null), photo_credit: field(null),
     };
+    if (ln.method === 'ocr' || ln.method === 'mixed') addReason(item.name, '人名はOCRで誤読しやすい文字です。推測で直さず、チラシの表記どおりか1文字ずつ確認してください');
     performers.push(item);
     return item;
   };
@@ -980,14 +1029,18 @@ export function extractEvent(raw, opts = {}) {
   const nameKey0 = (x) => String(x).replace(/\s/g, '');
   lines.forEach((ln, i) => {
     if (ln.label || consumed.has(ln.idx)) return;
-    const h = ln.norm.match(/^([一-龥々ぁ-んァ-ヶー・]{1,8}(?:\s[一-龥々ぁ-んァ-ヶー・]{1,8})?)\s*[(（]([^)）]+)[)）]$/);
-    if (!h || !isInstrumentOrRole(h[2])) return;
+    const h = ln.norm.match(/^([一-龥々ぁ-んァ-ヶー・]{1,8}(?:\s[一-龥々ぁ-んァ-ヶー・]{1,8})?)\s*[(（]([^)）}\]]+)[)）}\]]$/);
+    // （）内が楽器・役割の語か、次の行が大文字の欧文名なら、プロフィールの見出しとみなす
+    const romanNext = lines[i + 1] && /^[A-Z][A-Z .'’-]+$/.test(lines[i + 1].norm);
+    if (!h || (!isInstrumentOrRole(h[2]) && !romanNext)) return;
     const heading = h[1].trim();
     let p = performers.find((x) => nameKey0(x.name.value) === nameKey0(heading));
     if (!p) {
-      p = addPerformer({ name: heading, instrument: INSTRUMENTS.includes(h[2]) ? h[2] : null, role: ROLES.includes(h[2]) ? h[2] : null }, ln, 0.6);
+      const known = isInstrumentOrRole(h[2]);
+      p = addPerformer({ name: heading, instrument: INSTRUMENTS.includes(h[2]) || !known ? h[2] : null, role: ROLES.includes(h[2]) ? h[2] : null }, ln, 0.6);
       if (!p) return;
       p.name.basis = 'プロフィールの見出し「名前（楽器）」から取り出しました';
+      if (!known && p.instrument.value) addReason(p.instrument, `（）内「${h[2]}」は登録済みの楽器・役割の語ではありません（OCRの読み誤りの可能性）。チラシで確認してください`);
     } else {
       if (p.name.value !== heading) addReason(p.name, `チラシ内で名前の表記が異なります（「${p.name.value}」と「${heading}」）`);
       if (INSTRUMENTS.includes(h[2]) && p.instrument.value !== h[2]) {
@@ -1007,8 +1060,12 @@ export function extractEvent(raw, opts = {}) {
     for (; j < lines.length; j++) {
       const b = lines[j];
       if (b.label || b.facility || (b.blankBefore && body.length) || consumed.has(b.idx)) break;
-      if (/^[一-龥々ぁ-んァ-ヶー・]{1,8}(?:\s[一-龥々ぁ-んァ-ヶー・]{1,8})?\s*[(（][^)）]+[)）]$/.test(b.norm)) break;
-      if (!/。/.test(b.norm) && b.norm.length < 30) break;
+      if (/^[一-龥々ぁ-んァ-ヶー・]{1,8}(?:\s[一-龥々ぁ-んァ-ヶー・]{1,8})?\s*[(（][^)）}\]]+[)）}\]]$/.test(b.norm)) break;
+      if (b.bbox) {
+        // 位置情報がある場合は、同じ段で行が続く間を本文とする（OCR は段の幅で改行されるため）
+        const prevB = body.at(-1) ?? lines[j - 1];
+        if (prevB?.bbox && (Math.abs(b.bbox.x0 - prevB.bbox.x0) > 0.05 || b.bbox.y0 - prevB.bbox.y1 > (prevB.bbox.y1 - prevB.bbox.y0) * 1.6)) break;
+      } else if (!/。/.test(b.norm) && b.norm.length < 30) break;
       body.push(b);
     }
     if (body.length && !p.profile.value) {
@@ -1064,6 +1121,10 @@ export function extractEvent(raw, opts = {}) {
       item.work = field(mm[2].trim(), src(ln, 0.75));
     } else {
       item.work = field(text, src(ln, 0.5));
+    }
+    if (ln.method === 'ocr' || ln.method === 'mixed') {
+      addReason(item.work, '曲名・作品名はOCRで誤読しやすい文字です。推測で直さず、チラシの表記どおりか確認してください');
+      if (item.composer.value) addReason(item.composer, '作曲者名はOCRで誤読しやすい文字です。チラシの表記どおりか確認してください');
     }
     works.push(item);
   }

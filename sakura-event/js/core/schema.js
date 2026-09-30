@@ -293,6 +293,10 @@ export function createEmptyEvent(now = new Date().toISOString()) {
       extractor: null, finalized: false, finalized_at: null,
       // 抽出器が値として取り込まず、人の判断を求めた記載（原文つき）
       review_items: [],
+      // 入力資料の版を担当者が確認したか（SHA-256 は同一性の確認だけ。最新版・承認済みかは判定しない）
+      source_review: { confirmed: false, confirmed_at: null, note: '' },
+      // 読み込んだファイルが source_files と一致しない場合 true（アプリが設定する）
+      source_mismatch: false,
       // 生成・承認・公開の記録。生成完了＝公開ではない。
       workflow: { state: 'draft', generated_at: null, approved_by: '', approved_at: null, published_at: null, published_url: '' },
     },
@@ -384,9 +388,10 @@ export function normalizeEvent(input, opts = {}) {
     text: u.text ?? '',
   }));
   if (src.meta) {
-    const { review_items: ri, workflow: wf, ...rest } = src.meta;
+    const { review_items: ri, workflow: wf, source_review: sr, ...rest } = src.meta;
+    ev.meta.source_review = { confirmed: !!sr?.confirmed, confirmed_at: sr?.confirmed_at ?? null, note: sr?.note ?? '' };
     Object.assign(ev.meta, rest);
-    ev.meta.review_items = Array.isArray(ri) ? ri.map((x, i) => ({ id: x.id ?? `r${i + 1}`, topic: x.topic ?? '', text: x.text ?? '', page: x.page ?? null, file: x.file ?? null, reason: x.reason ?? '', blocking: !!x.blocking, resolved: !!x.resolved, resolution: x.resolution ?? '' })) : [];
+    ev.meta.review_items = Array.isArray(ri) ? ri.map((x, i) => ({ id: x.id ?? `r${i + 1}`, topic: x.topic ?? '', text: x.text ?? '', page: x.page ?? null, file: x.file ?? null, reason: x.reason ?? '', blocking: !!x.blocking, resolved: !!x.resolved, resolution: x.resolution ?? '', method: x.method ?? null, bbox: x.bbox ?? null })) : [];
     ev.meta.workflow = { ...ev.meta.workflow, ...(wf ?? {}) };
   }
   if (!EVENT_TYPES[ev.event_type.value]) ev.event_type.value = 'performance';

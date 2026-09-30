@@ -35,18 +35,43 @@
   <!-- STEP 1 -->
   <section id="step-1" class="step" aria-labelledby="step-1-h">
     <h1 id="step-1-h">STEP 1　チラシをアップロード</h1>
-    <p class="lead">この画面ですること：公演・イベントのチラシ（PDF・JPG・PNG）を選びます。表面と裏面など、複数のファイルを選べます。</p>
+    <p class="lead">この画面ですること：公演・イベントのチラシ（PDF・JPG・PNG）を選びます。表面と裏面など、複数のファイルを選べます。ファイルはこのブラウザの中だけで処理し、外部へ送りません。</p>
+
+    <p id="legacy-notice" class="st st-needs_review" hidden>！ 以前の版のこのアプリが、このブラウザに作業データを自動保存しています。今の版は自動保存をしません。<button type="button" id="legacy-clear" class="btn-link">以前の版の作業データを消去する</button></p>
 
     <div class="fld">
       <label for="file-input">チラシのファイル（PDF・JPG・PNG）</label>
-      <p id="file-help" class="help">PDFは文字を自動で取り出します。画像（JPG・PNG）の文字の読み取りは準備中です。画像の場合は、下の欄にチラシの文字を貼り付けてください。</p>
+      <p id="file-help" class="help">PDFは、まず文字をそのまま取り出します。文字が取れないページ（文字が図形になっているチラシなど）と、JPG・PNGの画像は、ブラウザの中で文字を読み取ります（OCR）。</p>
       <input id="file-input" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple aria-describedby="file-help">
     </div>
     <div id="file-list" aria-live="polite"></div>
+    <p class="help">SHA-256（ハッシュ値）は、同じファイルかどうかを確かめるためだけに使います。最新版かどうか・公開が承認された版かどうかは判定しません。</p>
+
+    <details class="more">
+      <summary>OCR（文字の読み取り）の設定</summary>
+      <div class="fld">
+        <label for="ocr-dpi">画像にするときの解像度</label>
+        <p id="ocr-dpi-help" class="help">解像度を上げると小さい文字を読みやすくなりますが、時間とメモリが増えます。実物のチラシでの測定では、300 dpi が標準に適していました。</p>
+        <select id="ocr-dpi" aria-describedby="ocr-dpi-help"></select>
+      </div>
+      <div class="fld">
+        <label for="ocr-threshold">白黒にするときの明るさの境目</label>
+        <p id="ocr-threshold-help" class="help">灰色や色付きの文字を読み落とす場合は、値を上げてください。写真の部分が文字として読まれる場合は、値を下げてください。</p>
+        <select id="ocr-threshold" aria-describedby="ocr-threshold-help">
+          <option value="180">180（濃い文字だけ）</option>
+          <option value="200" selected>200（標準）</option>
+          <option value="220">220（薄い灰色の文字も読む）</option>
+        </select>
+      </div>
+      <div class="fld-actions">
+        <button type="button" id="ocr-prepare" class="btn-secondary">OCRの資材を先に読み込む（ネットワークを切って使う場合）</button>
+      </div>
+      <p id="ocr-prepare-status" class="help" role="status"></p>
+    </details>
 
     <div class="fld">
       <label for="paste-text">チラシの文字を貼り付け（任意）</label>
-      <p id="paste-help" class="help">画像のチラシや、PDFから文字が取れない場合に使います。ここに入れた文字も同じように解析します。</p>
+      <p id="paste-help" class="help">チラシの文字原稿がある場合は、ここに貼り付けると、OCRより正確に取り出せます。</p>
       <textarea id="paste-text" rows="8" aria-describedby="paste-help"></textarea>
     </div>
 
@@ -66,16 +91,14 @@
           <option value="06_exhibition">展示</option>
           <option value="07_recruit">参加者募集</option>
           <option value="08_openday">オープンデー</option>
+          <option value="09_paste_duo_layout">デュオ公演（実物チラシの書き方をまねた架空の内容）</option>
         </select>
-      </div>
-      <div class="fld-actions">
-        <button type="button" id="resume-btn" class="btn-secondary" hidden>前回の作業を再開</button>
-        <button type="button" id="clear-btn" class="btn-secondary">このブラウザに保存した作業データを消去</button>
       </div>
     </details>
 
     <p id="step1-error" class="err" hidden></p>
     <div class="step-actions">
+      <button type="button" id="clear-btn" class="btn-secondary">すべてクリア（読み込んだ資料・解析結果・生成物を消去）</button>
       <button type="button" id="to-step2" class="btn-primary">次へ：自動解析</button>
     </div>
   </section>
@@ -83,15 +106,28 @@
   <!-- STEP 2 -->
   <section id="step-2" class="step" aria-labelledby="step-2-h" hidden>
     <h1 id="step-2-h">STEP 2　自動解析</h1>
-    <p class="lead">この画面ですること：「解析を始める」を押すと、チラシから日付・時刻・料金などの候補を取り出します。取り出した値はまだ「要確認」です。</p>
+    <p class="lead">この画面ですること：「解析を始める」を押すと、ページごとに文字を取り出し（文字が取れないページはOCR）、日付・時刻・料金などの候補を取り出します。取り出した値はまだ「要確認」です。OCRが終わっても、確認が済んだことにはなりません。</p>
     <div class="fld">
       <label for="adapter-select">解析の方法</label>
       <select id="adapter-select" aria-describedby="adapter-help"></select>
-      <p id="adapter-help" class="help">外部のAIサービスは使いません（準備中）。将来使う場合は、送信前に必ず確認を表示します。</p>
+      <p id="adapter-help" class="help">外部のAIサービスは使いません。OCRもこのブラウザの中で行います。</p>
     </div>
     <div class="step-actions">
       <button type="button" id="analyze-btn" class="btn-primary">解析を始める</button>
+      <button type="button" id="cancel-btn" class="btn-secondary" hidden>キャンセル（処理中のページが終わったら止めます）</button>
     </div>
+    <div id="progress" class="progress-box" hidden>
+      <p id="progress-text" role="status" aria-live="polite"></p>
+      <progress id="progress-bar" max="100" value="0" aria-labelledby="progress-text"></progress>
+    </div>
+    <section id="pages-box" class="group" aria-labelledby="pages-h" hidden>
+      <h2 id="pages-h" class="h-small">ページごとの文字の取り方</h2>
+      <p class="help">PDFの文字とOCRの結果は自動では連結しません。両方あるページは、使う文字を選んでください。「PDFの文字＋OCRにしかない行」を選ぶと、PDFの文字と同じ内容の行は除いて追加します。</p>
+      <ul id="page-list" class="page-list"></ul>
+      <div class="fld-actions">
+        <button type="button" id="reextract-btn" class="btn-secondary" hidden>この選び方で抽出をやり直す</button>
+      </div>
+    </section>
     <div id="analyze-result" aria-live="polite"></div>
     <div class="step-actions">
       <button type="button" data-goto="1" class="btn-secondary">戻る：アップロード</button>
@@ -111,8 +147,12 @@
       </section>
       <section class="review-right" aria-labelledby="info-h">
         <h2 id="info-h">取り出したイベント情報</h2>
+        <div id="source-review" class="gate"></div>
         <div id="gate-summary" class="gate"></div>
         <form id="review-form" novalidate onsubmit="return false"></form>
+        <div class="fld-actions">
+          <button type="button" id="save-json-btn" class="btn-secondary">作業途中の event.json を端末に保存</button>
+        </div>
       </section>
     </div>
     <div class="step-actions">

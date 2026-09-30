@@ -178,3 +178,18 @@ dialog::backdrop { background: rgb(0 0 0 / .5); }
 .app-footer { border-top: 3px solid var(--line); padding: 1rem 16px; max-width: 80rem; margin: 0 auto; font-size: .9375rem; }
 
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+.pv-stage { position: relative; }
+.pv-stage canvas, .pv-stage img { display: block; width: 100%; height: auto; }
+.pv-mark { position: absolute; border: 4px solid #b00020; outline: 2px solid #ffffff; box-sizing: border-box; pointer-events: none; }
+.method { margin: .125rem 0; font-size: .875rem; font-weight: 700; }
+.method-ocr::before { content: "OCR "; }
+.method-manual::before { content: "✎ "; }
+.hash { display: block; font-size: .8125rem; overflow-wrap: anywhere; }
+.hash code { font-size: .8125rem; }
+.page-list { list-style: none; padding: 0; }
+.page-list > li { border: 2px solid var(--line); border-radius: 6px; padding: .5rem 1rem; margin: .5rem 0; }
+.fld.inline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: .25rem 0; }
+.fld.inline label { display: inline; }
+.fld.inline select { width: auto; }
+.progress-box { border: 2px solid var(--line); padding: .5rem 1rem; margin: .5rem 0; }
+.progress-box progress { width: 100%; height: 14px; }
