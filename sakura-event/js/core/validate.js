@@ -163,6 +163,10 @@ export function gateChecks(ev) {
   add('title', 'タイトル', 'basic.title', fieldCheck(ev.basic.title, { allowEmpty: false }),
     stateText(ev.basic.title, false), has(ev.basic.title) ? needConfirm : 'タイトルを入力してください。');
 
+  if (has(ev.basic.subtitle)) {
+    add('subtitle', 'サブタイトル', 'basic.subtitle', !!ev.basic.subtitle.confirmed, stateText(ev.basic.subtitle), needConfirm);
+  }
+
   // 開催日・曜日・開場・開演
   const dates = ev.schedule.dates;
   const periodTypes = ['exhibition', 'recruitment', 'multi_event'];
@@ -216,6 +220,21 @@ export function gateChecks(ev) {
       add('performers', '出演者', 'performers', bad.length === 0,
         bad.length ? `未確認の出演者が${bad.length}名います` : `確認済み（${ps.items.length}名）`,
         bad.length ? '各出演者の名前を確認し、「確認済みにする」を押してください。' : '');
+      // 楽器・役割・読み・ローマ字（値があれば照合を必須にする）
+      const badDetail = ps.items.filter((p) => PERFORMER_DETAIL_KEYS.some((k) => has(p[k]) && !p[k].confirmed));
+      add('performer_details', '楽器・役割', 'performers', badDetail.length === 0,
+        badDetail.length ? `楽器・役割・読み・ローマ字表記に未確認のものが${badDetail.length}名分あります` : '確認済み',
+        badDetail.length ? '楽器・役割・読み・ローマ字表記をチラシの表記どおりか照合し、「確認済みにする」を押してください。' : '');
+      // プロフィール：掲載する場合は原文との照合（確認済み）を必須にする。照合できない場合は担当者が「掲載しない」を選ぶ
+      const withProf = ps.items.filter((p) => has(p.profile));
+      const badProf = withProf.filter((p) => str(p.profile_use) !== 'exclude' && !p.profile.confirmed);
+      const excluded = withProf.filter((p) => str(p.profile_use) === 'exclude');
+      add('profiles', 'プロフィール', 'performers', badProf.length === 0,
+        !withProf.length ? 'プロフィールの記載なし'
+          : badProf.length ? `原文と照合していないプロフィールが${badProf.length}名分あります（${badProf.map((p) => str(p.name) || '名前未入力').join('、')}）`
+            : `確認済み（掲載${withProf.length - excluded.length}名・掲載しない${excluded.length}名）`,
+        badProf.length ? 'プロフィールをチラシの原文と1文字ずつ照合して直し、「確認済みにする」を押してください。照合できない場合は「プロフィールの掲載」で「掲載しない」を選んでください（HP・SNSに出しません）。' : '',
+        withProf.length === 0);
     }
   } else {
     add('performers', '出演者', 'performers', true, `該当なし（種別：${typeLabel(type)}）`, '', true);
@@ -276,9 +295,25 @@ export function gateChecks(ev) {
   add('program', '曲目', 'program.works', badWorks.length === 0,
     works.length ? (badWorks.length ? `未確認の曲目が${badWorks.length}件あります` : `確認済み（${works.length}件）`) : '曲目の登録なし',
     badWorks.length ? '作曲者・曲名をチラシの表記どおりか照合し、「確認済みにする」を押してください。' : '', works.length === 0);
-  const contact = ev.organization?.contact;
-  add('contact', '問い合わせ先', 'organization.contact', !has(contact) || !!contact.confirmed, has(contact) ? stateText(contact) : '記載なし',
-    has(contact) && !contact.confirmed ? needConfirm : '', !has(contact));
+  const contactFs = ['contact', 'contact_hours', 'email'].map((k) => ev.organization?.[k]).filter((f) => has(f));
+  const badContact = contactFs.filter((f) => !f.confirmed);
+  add('contact', '問い合わせ先', 'organization.contact', badContact.length === 0,
+    !contactFs.length ? '記載なし' : badContact.length ? `問い合わせ先・受付時間・メールに未確認のものが${badContact.length}件あります` : '確認済み',
+    badContact.length ? needConfirm : '', !contactFs.length);
+
+  // チケット取扱（取扱先の名前・詳細・電話・受付時間・注記。URL は「外部URL」で確認）
+  const chans = ev.tickets?.ticket_channels?.items ?? [];
+  const badChans = chans.filter((c) => ['name', 'detail', 'phone', 'hours', 'notes'].some((k) => has(c[k]) && !c[k].confirmed));
+  add('channels', 'チケット取扱', 'tickets.ticket_channels', badChans.length === 0,
+    !chans.length ? '取扱先の登録なし' : badChans.length ? `未確認の取扱先が${badChans.length}件あります` : `確認済み（${chans.length}件）`,
+    badChans.length ? '取扱先の名前・電話・受付時間・注記をチラシと照合し、「確認済みにする」を押してください。' : '', !chans.length);
+
+  // 主催・共催など
+  const orgFs = ORGANIZER_KEYS.map((k) => ev.organization?.[k]).filter((f) => has(f));
+  const badOrg = orgFs.filter((f) => !f.confirmed);
+  add('organizers', '主催・共催など', 'organization.organizer', badOrg.length === 0,
+    !orgFs.length ? '記載なし' : badOrg.length ? `未確認のものが${badOrg.length}件あります` : '確認済み',
+    badOrg.length ? needConfirm : '', !orgFs.length);
 
   // 入力資料（版）の確認。ハッシュは同じファイルかどうかの確認だけに使い、最新版・承認済みかは担当者が確認する
   const srcFiles = (ev.meta?.source_files ?? []).filter((f) => f.sha256);
@@ -293,10 +328,19 @@ export function gateChecks(ev) {
       '別の資料に差し替えた場合は、解析からやり直してください。前の確認結果・承認状態は引き継ぎません。');
   }
 
+  // 上のどれにも当たらない掲載項目（紹介文・注意事項・アクセスなど）。未確認の値はHP・SNSに出さないため、確定前にすべて照合する
+  // 確認画面に表示される項目（種別で隠れる項目は、担当者が確認できないため数えない）
+  const visible = GROUPS.filter((g) => isVisibleFor(g, type)).flatMap((g) => g.fields.filter((d) => isVisibleFor(d, type)).map((d) => pathOf(g, d)));
+  const under = (p, c) => p === c || p.startsWith(`${c}.`);
+  const others = unconfirmedFieldPaths(ev).filter((p) => visible.some((c) => under(p, c)) && !COVERED_PREFIXES.some((c) => under(p, c)));
+  add('others', 'その他の掲載項目', others[0] ?? 'basic', others.length === 0,
+    others.length ? `未確認の値が${others.length}件あります` : '確認済み',
+    others.length ? '「要確認」の項目をチラシと照合し、「確認済みにする」を押してください。載せない場合は値を消してください。' : '');
+
   // 販売・受付状況（チラシからは決めない。担当者が設定する）
   const code = ev.status?.code ?? 'unset';
   add('status', '販売・受付状況', 'status', code !== 'unset',
-    code === 'unset' ? '未設定' : '設定済み',
+    code === 'unset' ? '未確認' : '設定済み',
     code === 'unset' ? '窓口・販売システムで現在の販売・受付状況を確認し、「販売・受付状況」を選んでください（チラシからは判断しません）。' : '');
 
   // 抽出器が判断できず、人の確認を求めた記載
@@ -306,6 +350,32 @@ export function gateChecks(ev) {
     pendingReview.length ? '「判断が必要な記載」の原文を確認し、必要な項目に入力してから「対応済みにする」を押してください。' : '',
     (ev.meta?.review_items ?? []).filter((r) => r.blocking).length === 0);
 
+  return out;
+}
+
+const PERFORMER_DETAIL_KEYS = ['role', 'instrument', 'reading', 'roman_name'];
+const ORGANIZER_KEYS = ['organizer', 'co_organizer', 'supporter', 'sponsor', 'grant', 'cooperation'];
+// 個別のチェックで確認している項目（「その他の掲載項目」には数えない）
+const COVERED_PREFIXES = [
+  'basic.title', 'basic.subtitle', 'schedule.dates', 'schedule.start_date', 'venue.venue', 'performers', 'pricing.prices',
+  'pricing.age_requirement', 'tickets.sales_start', 'tickets.sales_schedule', 'tickets.ticket_channels', 'participation.application_method',
+  'participation.application_start', 'organization.phone', 'organization.contact', 'organization.contact_hours', 'organization.email',
+  ...ORGANIZER_KEYS.map((k) => `organization.${k}`), 'program.works', 'links', 'participation.application_url', 'media.video',
+];
+
+/** 値があるのに確認されていない項目のパス（担当者が掲載しないと判断したプロフィールは除く） */
+export function unconfirmedFieldPaths(ev) {
+  const out = [];
+  const visit = (o, path) => {
+    if (!o || typeof o !== 'object') return;
+    if (isField(o)) { if (has(o) && !o.confirmed) out.push(path); return; }
+    for (const [k, v] of Object.entries(o)) {
+      if (!path && (k === 'meta' || k === 'status' || k === 'updates')) continue;
+      if (k === 'profile' && str(o.profile_use) === 'exclude') continue;
+      visit(v, path ? `${path}.${k}` : k);
+    }
+  };
+  visit(ev, '');
   return out;
 }
 

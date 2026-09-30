@@ -24,6 +24,7 @@ export function loadPdfjs() {
 /**
  * テキスト項目を行にまとめる（y座標が近いものを同じ行とし、x順に並べる）。
  * pageSize（scale 1 の幅・高さ）があれば、行の位置を 0〜1 で返す（上が 0）。
+ * 段組み（2段・3段）のページでは、左右の段の文字を1行につなげず、段ごとに上から順に並べる。
  */
 export function itemsToLines(items, pageSize = null) {
   const rows = [];
@@ -37,8 +38,58 @@ export function itemsToLines(items, pageSize = null) {
     row.parts.push({ x, str, size, w: it.width ?? 0 });
   }
   rows.sort((p, q) => q.y - p.y);
-  return rows.map((r) => {
-    r.parts.sort((p, q) => p.x - q.x);
+  rows.forEach((r) => r.parts.sort((p, q) => p.x - q.x));
+
+  // 段の境目：大きく空いた後に始まる文字の x 位置が、3行以上でそろう所
+  const width = pageSize?.width ?? Math.max(1, ...rows.flatMap((r) => r.parts.map((p) => p.x + p.w)));
+  const tol = width * 0.02;
+  const starts = [];
+  for (const r of rows) {
+    for (let i = 1; i < r.parts.length; i++) {
+      const prev = r.parts[i - 1];
+      const gap = r.parts[i].x - (prev.x + prev.w);
+      if (gap > Math.max(prev.size, r.parts[i].size) * 2.5) starts.push(r.parts[i].x);
+    }
+  }
+  const bounds = [];
+  for (const x of [...starts].sort((p, q) => p - q)) {
+    if (bounds.some((b) => Math.abs(b - x) <= tol)) continue;
+    if (starts.filter((s) => Math.abs(s - x) <= tol).length >= 3) bounds.push(x);
+  }
+
+  // 行を段ごとの区切りに分ける（境目の直前が大きく空いている所だけで分ける）
+  const segs = [];
+  rows.forEach((r, ri) => {
+    let cur = null;
+    r.parts.forEach((p, i) => {
+      const prev = r.parts[i - 1];
+      const gap = prev ? p.x - (prev.x + prev.w) : 0;
+      const atBound = prev && gap > Math.max(prev.size, p.size) * 2.5 && bounds.some((b) => Math.abs(b - p.x) <= tol);
+      if (!cur || atBound) segs.push((cur = { ri, y: r.y, parts: [] }));
+      cur.parts.push(p);
+    });
+  });
+  const colOf = (sg) => bounds.filter((b) => sg.parts[0].x >= b - tol).length;
+  const spans = (sg) => {
+    const x0 = sg.parts[0].x;
+    const last = sg.parts.at(-1);
+    return bounds.some((b) => x0 < b - tol && last.x + last.w > b + tol);
+  };
+
+  // 並べ方：境目をまたぐ行（見出し・下部の帯など）までを1つの帯とし、帯の中は段ごとに上から順
+  const ordered = [];
+  let band = [];
+  const flush = () => {
+    band.sort((p, q) => colOf(p) - colOf(q) || p.ri - q.ri);
+    ordered.push(...band);
+    band = [];
+  };
+  for (const sg of segs) {
+    if (bounds.length && spans(sg)) { flush(); ordered.push(sg); } else band.push(sg);
+  }
+  flush();
+
+  return ordered.map((r) => {
     let text = '';
     let lastEnd = null;
     for (const p of r.parts) {

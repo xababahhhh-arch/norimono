@@ -6,6 +6,7 @@ import { field, addReason } from '../core/field.js';
 import { createEmptyEvent, VENUE_ROOMS, FACILITY_NAME } from '../core/schema.js';
 import { normalizeText, toIso, isIsoDate, weekdayOf, normTime, reiwaToYear, todayIso } from '../core/dates.js';
 import { classify } from '../core/classify.js';
+import { similarity } from './pagetext.js';
 
 export const EXTRACTOR_VERSION = 'rules-1.2';
 
@@ -39,8 +40,10 @@ export function flattenRaw(raw) {
         const prev = lines.at(-1);
         // 「…オンライン窓口・」＋「その他プレイガイド：8月16日」のように、行末が「・」「、」で続く文は1行につなぐ
         const method = ln.method ?? pg.method ?? file.method ?? null;
-        if (!blank && prev && prev.file === file.name && prev.page === (pg.page ?? 1) && /[・、，,]$/.test(prev.norm) && !matchLabel(prepLine(text))) {
-          prev.text = `${prev.text}${text}`;
+        // 「9月13日（日）」＋次の行「10:00〜」のように、日付の次の行に時刻だけがある場合も1行につなぐ
+        const timeOnly = /^\d{1,2}[:：]\d{2}\s*[〜~～ー一-]?$/.test(prepLine(text)) && prev && /日\s*(?:[(（][^)）]{1,4}[)）])?$/.test(prev.norm);
+        if (!blank && prev && prev.file === file.name && prev.page === (pg.page ?? 1) && (timeOnly || (/[・、，,]$/.test(prev.norm) && !matchLabel(prepLine(text))))) {
+          prev.text = timeOnly ? `${prev.text} ${text}` : `${prev.text}${text}`;
           prev.norm = prepLine(prev.text);
           prev.joined = true;
           if (prev.method !== method) prev.method = 'mixed';
@@ -97,7 +100,8 @@ const LABELS = [
   ['accessibility', 'バリアフリー|アクセシビリティ'],
 ];
 const LABEL_RE = new RegExp(
-  `^[【■●◆◇▶▼◎○・\\[［<〈(（]*\\s*(${LABELS.map(([, p]) => p).join('|')})\\s*(?:[】］\\]>〉)）]\\s*[:：]?|[:：]|\\s|$)\\s*(.*)$`,
+  // 見出し語の後は、区切り（：・空白・閉じ括弧・行末）か、補足の括弧（「料金（全席指定・税込）」）
+  `^[【■●◆◇▶▼◎○・\\[［<〈(（]*\\s*(${LABELS.map(([, p]) => p).join('|')})\\s*(?:[】］\\]>〉)）]\\s*[:：]?|[:：]|\\s|$|(?=[(（][^)）]{1,20}[)）]))\\s*(.*)$`,
 );
 
 export function matchLabel(norm) {
@@ -501,7 +505,7 @@ export function extractEvent(raw, opts = {}) {
         for (const dt of dates) {
           const rr = resolveYear(dt, yctx);
           if (!rr) continue;
-          let method = t.slice(0, dt.index).replace(/[\s:：]+$/, '').replace(/^[【■●◆]+|[】]+$/g, '').trim();
+          let method = t.slice(0, dt.index).replace(/[\s:：・、,，]+$/, '').replace(/^[【■●◆]+|[】]+$/g, '').trim();
           if (!method || /^\d/.test(method)) method = ln.label?.word ?? '発売';
           const after = findTimes(t.slice(dt.end, dates[dates.indexOf(dt) + 1]?.index ?? t.length));
           const time = after[0]?.time ?? null;
@@ -699,10 +703,43 @@ export function extractEvent(raw, opts = {}) {
   });
   const priceCtx = /(円|無料)/;
   let seatingDone = false;
+  const priceHeadingInfo = (t, ln) => {
+    if (!seatingDone) {
+      const seat = t.match(/(全席指定|全席自由|自由席|指定席|全席自由・?[^\s]*|当日自由席)/);
+      if (seat) { setF(ev.pricing, 'seating_type', seat[1], ln, 0.85); seatingDone = true; }
+    }
+    if (/税込/.test(t)) setF(ev.pricing, 'tax_included', '税込', ln, 0.85);
+  };
+  // 料金の行（料金欄）にあるのに料金として取り出せなかった金額（「3,000M」「1,500」のように円が読めない等）は、
+  // 推測で補わず、原文つきで確認を求める（黙って取り落とさない）
+  const reportDropped = (t, spans, oddSep, ln) => {
+    const dropped = [];
+    for (const n of t.matchAll(/\d{1,3}(?:[,，.．]\d{3})+|\d{3,}/g)) {
+      const a = n.index;
+      const b = a + n[0].length;
+      if (spans.some(([x, y]) => a >= x && b <= y)) continue;
+      if (oddSep.some((o) => a >= o.index && b <= o.index + o[0].length)) continue;
+      const before = t.slice(0, a);
+      const after = t.slice(b);
+      if (/^\s*(年|月|日|歳|才|名|人|枚|席|分|時|号|回|%|％|[:：\-－]|[.．]\d)/.test(after)) continue;
+      if (/([\-－〒:：]|コード\s*[:：]?\s*|[A-Za-z])$/.test(before)) continue;
+      dropped.push(t.slice(Math.max(0, a - 6), Math.min(t.length, b + 1)).replace(/^[^\s/／、]*[/／、]\s*/, '').trim());
+    }
+    if (dropped.length) {
+      review('料金の取り落とし', ln, `料金の行に、料金として取り出せなかった金額があります（${dropped.map((x) => `「${x}」`).join('')}）。「円」が読み取れない・区切りが違うなど、OCRの読み誤りの可能性があります。推測では補っていません。チラシで区分と金額を確認し、料金に追加してください。`);
+    }
+  };
   for (const ln of lines) {
     // 手数料・駐車料金などの文は料金として読まない（同じ行に「席」などがあっても）
     const t = /(手数料|駐車|送料|交通費)/.test(ln.norm) ? splitSentences(ln.norm).filter((x) => !/(手数料|駐車|送料|交通費)/.test(x)).join('※') : ln.norm;
-    if (!priceCtx.test(t)) continue;
+    if (!priceCtx.test(t)) {
+      // 料金の見出し・料金欄の「円」のない行：席種・税込の記載を読み、読めない金額があれば確認を求める
+      if (ln.section === 'price' && !promo.has(ln.idx)) {
+        priceHeadingInfo(t, ln);
+        reportDropped(t, [], [], ln);
+      }
+      continue;
+    }
     // OCR で「2,500円」が「2.500円」のように読まれた場合は、金額を推測で直さず、確認を求める
     const oddSep = [...t.matchAll(/\d[.．]\d{3}\s*円/g)];
     if (oddSep.length) {
@@ -718,15 +755,13 @@ export function extractEvent(raw, opts = {}) {
     // 「会員登録（無料）」などは入場料ではない。入場・参加などの無料だけを料金として扱う
     const freeOk = /(入場|参加|観覧|受講|鑑賞|全席)\s*無料|^無料/.test(t) || ln.section === 'price';
     if (!inPriceSection && !freeOk) continue;
-    if (!seatingDone) {
-      const seat = t.match(/(全席指定|全席自由|自由席|指定席|全席自由・?[^\s]*|当日自由席)/);
-      if (seat) { setF(ev.pricing, 'seating_type', seat[1], ln, 0.85); seatingDone = true; }
-    }
-    if (/税込/.test(t)) setF(ev.pricing, 'tax_included', '税込', ln, 0.85);
+    priceHeadingInfo(t, ln);
     const PRICE_RE = /([^\s\d:：/／、,()（）]{1,12}(?:\s?[(（][^)）]{1,15}[)）])?)?\s*[:：]?\s*[¥￥]?\s*(\d{1,3}(?:,\d{3})+|\d+)\s*円\s*(?:[(（]([^)）]{1,30})[)）])?/g;
     let m;
     let found = false;
+    const spans = [];
     while ((m = PRICE_RE.exec(t))) {
+      spans.push([m.index, m.index + m[0].length]);
       if (/\d[.．]$/.test(t.slice(0, m.index + m[0].indexOf(m[2]))) || /[.．]\d{3}\s*円/.test(m[0])) continue;
       let cat = (m[1] ?? '').replace(/(全席指定|全席自由|自由席|指定席|料金|入場料|チケット)/g, '').replace(/^[・\s]+|[・\s]+$/g, '');
       if (/^(各|計|約)$/.test(cat)) cat = '';
@@ -748,6 +783,7 @@ export function extractEvent(raw, opts = {}) {
       ev.pricing.prices.items.push(item);
       found = true;
     }
+    reportDropped(t, spans, oddSep, ln);
     if (!found && freeOk && /無料/.test(t) && !/(入場無料の|以外)/.test(t)) {
       const lbl = t.match(/((?:入場|参加|観覧|受講)?無料(?:\s*[(（][^)）]*[)）])?)/)[1];
       if (!ev.pricing.prices.items.some((p) => p.amount.value === 0)) {
@@ -954,7 +990,7 @@ export function extractEvent(raw, opts = {}) {
       roman_name: field(null),
       role: p.role ? field(p.role, src(ln, conf)) : field(null),
       instrument: p.instrument ? field(p.instrument, src(ln, conf)) : field(null),
-      profile: field(null), photo: field(null), photo_alt: field(null), photo_credit: field(null),
+      profile: field(null), profile_use: field(null), photo: field(null), photo_alt: field(null), photo_credit: field(null),
     };
     if (ln.method === 'ocr' || ln.method === 'mixed') addReason(item.name, '人名はOCRで誤読しやすい文字です。推測で直さず、チラシの表記どおりか1文字ずつ確認してください');
     performers.push(item);
@@ -1191,6 +1227,58 @@ export function extractEvent(raw, opts = {}) {
   for (const g of GENRES) {
     const f = genreSrc.find((x) => String(x.value).includes(g));
     if (f) { ev.genre = field(g, { file: f.source_file, page: f.source_page, text: f.source_text, confidence: 0.6, origin: 'extracted', basis: 'タイトル・紹介文にあるジャンルの語です' }); break; }
+  }
+
+  // ---- 発売日程の整理 ----
+  // 同じ発売の記載がチラシの2か所にある場合、OCRの読み誤りで販売方法の文字が少し違っても1件にまとめる。
+  // 年・時刻が食い違う場合は推測で決めず、確定を止める記載に出す。
+  {
+    const sched = ev.tickets.sales_schedule.items;
+    const k2 = (x) => String(x ?? '').normalize('NFKC').replace(/[\s・、,，]/g, '');
+    const lnOf = (f) => ({ text: f.source_text ?? '', page: f.source_page, file: f.source_file, method: f.source_method, bbox: f.source_bbox });
+    const firstEvent = sessions.map((x) => x.date.value).filter(Boolean).sort()[0] ?? ev.schedule.start_date.value ?? null;
+    const kept = [];
+    for (const it of sched) {
+      const md = String(it.date.value ?? '').slice(5);
+      const twin = kept.find((x) => String(x.date.value ?? '').slice(5) === md && md
+        && (k2(x.method.value) === k2(it.method.value) || similarity(x.method.value, it.method.value) >= 0.75));
+      if (!twin) { kept.push(it); continue; }
+      if (twin.date.value !== it.date.value) {
+        const vals = [twin.date.value, it.date.value];
+        // 開催日より後の日付は発売日としてありえないため、もう一方を候補にする（どちらにしても人が確認する）
+        if (firstEvent && twin.date.value > firstEvent && !(it.date.value > firstEvent)) twin.date = it.date;
+        const msg = `同じ発売の記載がチラシの2か所にあり、日付が食い違っています（${vals.join('／')}）。チラシで確認してください`;
+        addReason(twin.date, msg);
+        review('発売日の食い違い', lnOf(it.date), `${msg}。OCRの読み誤りの可能性があります。`);
+      }
+      if (!twin.time.value && it.time.value) twin.time = it.time;
+      else if (twin.time.value && it.time.value && twin.time.value !== it.time.value) {
+        const msg = `同じ発売の記載がチラシの2か所にあり、時刻が食い違っています（${twin.time.value}／${it.time.value}）。チラシで確認してください`;
+        addReason(twin.time, msg);
+        review('発売日の食い違い', lnOf(it.time), msg);
+      }
+    }
+    kept.forEach((x, i) => { x.id = `ss${i + 1}`; });
+    ev.tickets.sales_schedule.items = kept;
+    if (firstEvent) {
+      for (const it of kept) {
+        if (it.date.value && it.date.value > firstEvent) {
+          const msg = `発売日（${it.date.value}）が開催日（${firstEvent}）より後になっています。年の読み取り・推定が誤っている可能性があります。チラシで確認してください`;
+          addReason(it.date, msg);
+          review('発売日の確認', lnOf(it.date), msg);
+        }
+      }
+    }
+  }
+
+  // ---- 出演者名の点検：「作曲者：曲名」のような「：」を含む名前は、見出しの読み誤り等で曲目が混ざった可能性がある ----
+  for (const p of ev.performers.items) {
+    const n = String(p.name.value ?? '');
+    if (/[:：]/.test(n)) {
+      addReason(p.name, '名前に「：」が含まれています。曲目（作曲者：曲名）や見出しが混ざった可能性があります');
+      review('出演者の読み取り', { text: p.name.source_text ?? n, page: p.name.source_page, file: p.name.source_file, method: p.name.source_method, bbox: p.name.source_bbox },
+        `出演者として取り出した「${n}」に「：」が含まれています。曲目（作曲者：曲名）や見出しの読み誤りが混ざった可能性があります。チラシで出演者・曲目を確認し、不要なら出演者から削除してください。`);
+    }
   }
 
   // ---- 状態の手がかり（自動では設定しない） ----

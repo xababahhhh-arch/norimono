@@ -1,10 +1,11 @@
 // HP用プレーンテキスト（CMSのテキスト欄・メール配信などに使う）。HTMLと同じ順序・同じ情報。
-import { lines, priceText, performerLabel, yen, str, has } from './util.js';
+import { lines, priceText, performerLabel, yen, str, has, forPublication } from './util.js';
 import { formatDateJa, isIsoDate } from '../core/dates.js';
 import { eventType, statusLabel, TYPE_SETS, STATUSES, UPDATE_TYPES } from '../core/schema.js';
 import { canFinalize } from '../core/validate.js';
 
-export function generateText(ev, opts = {}) {
+export function generateText(evIn, opts = {}) {
+  const ev = forPublication(evIn);
   const gate = canFinalize(ev);
   const draft = opts.draft ?? !gate.ok;
   const type = eventType(ev);
@@ -19,7 +20,7 @@ export function generateText(ev, opts = {}) {
   if (draft) out.push('※下書き：確認が済んでいない項目があります。このまま公開しないでください。', '');
   out.push(str(ev.basic.title) || 'タイトル：情報なし（要確認）');
   if (has(ev.basic.subtitle)) out.push(str(ev.basic.subtitle));
-  out.push('', `販売・受付状況：${ev.status?.code === 'unset' ? '未設定（要確認）' : statusLabel(ev.status)}`);
+  out.push('', `販売・受付状況：${ev.status?.code === 'unset' ? '未確認（窓口・販売システムで確認してください）' : statusLabel(ev.status)}`);
   for (const dd of ev.schedule.dates.items) {
     if (dd.status && STATUSES[dd.status]) out.push(`・${d(str(dd.date))}${has(dd.start_time) ? ` ${str(dd.start_time)}の回` : ''}：${STATUSES[dd.status].label}`);
   }

@@ -122,7 +122,7 @@ test('主催の括弧書きの続き・「企画・制作」の区切り・サ�
   assert.equal(v(ev.genre), null, '標語「ジャズでつながる…」からジャンルを決めない');
 });
 
-test('すべての取り出した値に抽出根拠があり、確認済みにはしない。販売状況は未設定', () => {
+test('すべての取り出した値に抽出根拠があり、確認済みにはしない。販売状況は未確認', () => {
   const ev = run('09_paste_duo_layout').event;
   walk(ev, (f) => {
     assert.equal(f.confirmed, false);
@@ -135,7 +135,7 @@ test('すべての取り出した値に抽出根拠があり、確認済みに�
 test('HP：出演者・販売方法別の発売日時・取扱先ごとの注記を出力し、販売状況を仮定しない', () => {
   const ev = run('09_paste_duo_layout').event;
   const draft = parse(generateHP(ev, { mode: 'page' }).html);
-  assert.match(draft.querySelector('.ev-status-badge').textContent, /未設定/);
+  assert.match(draft.querySelector('.ev-status-badge').textContent, /未確認/);
   const ev2 = reviewAll(normalizeEvent(JSON.parse(JSON.stringify(ev))), 'scheduled');
   assert.equal(canFinalize(ev2).ok, true, JSON.stringify(canFinalize(ev2).blockers));
   const doc = parse(generateHP(ev2, { mode: 'page' }).html);

@@ -122,7 +122,8 @@
       "name": Field, "reading": Field, "roman_name": Field,
       "role": Field,                             // 出演 / 講師 / ナビゲーター / 指揮 など
       "instrument": Field,
-      "profile": Field,                          // チラシ等の原文。要約・補完しない
+      "profile": Field,                          // チラシ等の原文。要約・補完しない。掲載するなら原文照合（confirmed）が確定の条件
+      "profile_use": Field,                      // null：掲載する（照合が必要）／"exclude"：担当者の判断で掲載しない（HP・SNSに出さない）
       "photo": Field,                            // 画像ファイル名またはURL
       "photo_alt": Field,
       "photo_credit": Field
@@ -232,7 +233,7 @@
 
 | code | 標準ラベル | HPでの表示（記号＋文字） | 主な種別 |
 |---|---|---|---|
-| `unset` | 未設定 | ？ 販売・受付状況は未設定です（要確認） | 全般（初期値。**チラシからは決めない**。未設定のままでは確定できない） |
+| `unset` | 未確認 | ？ 販売・受付状況は未確認です（窓口・販売システムで確認してください） | 全般（初期値。**チラシからは決めない**。未設定のままでは確定できない） |
 | `scheduled` | 発売前 | ◇ 発売前 | 全般 |
 | `on_sale` | 発売中 | ● 発売中 | 公演 |
 | `few_tickets` | 残りわずか | ▲ 残りわずか | 公演 |
@@ -276,7 +277,7 @@ HPでは新しい順に「更新履歴」として表示し、出演者変更・
 | 年齢制限 | `pricing.age_requirement` | |
 | チケット発売情報 | `tickets.sales_start` と `tickets.sales_schedule` の各行（WS・講座・募集は `participation.application_start` / `application_method`） | |
 | 電話番号 | `organization.phone` | 形式チェックあり |
-| 販売・受付状況 | `status.code` | `unset`（未設定）のままでは確定できない。窓口・販売システムで確認して設定する |
+| 販売・受付状況 | `status.code` | `unset`（未確認）のままでは確定できない。窓口・販売システムで確認して設定する |
 | 判断が必要な記載 | `meta.review_items`（`blocking: true`） | 原文を確認して「対応済み」にするまで確定できない |
 | 外部URL | 値のある URL 項目すべて（`links` `ticket_channels[].url` `participation.application_url` `media.video`） | `http(s)://` のみ |
 

@@ -11,7 +11,6 @@ import { defaultMode, linesForExtraction, countChars, PAGE_MODES } from './extra
 import { ADAPTERS, runWithAdapter } from './ai/adapter.js';
 import { normalizeEvent, EVENT_TYPES, WORKFLOW_STATES } from './core/schema.js';
 import { canFinalize, gateProgress } from './core/validate.js';
-import { reviewState } from './core/field.js';
 import { sha256Hex, sourceRecord, sameSources } from './core/hash.js';
 
 // 以前の版が使っていた自動保存のキー（今の版は書き込まない。消去の案内だけに使う）
@@ -616,18 +615,8 @@ $('gen-final').addEventListener('click', async () => {
   refreshSourceCheck();
   const r = canFinalize(state.event);
   if (!r.ok) { renderStep4Gate(); return; }
-  // 必須でない項目の未確認数
-  let unconfirmed = 0;
-  const walk = (o) => {
-    if (o && typeof o === 'object') {
-      if ('value' in o && 'confirmed' in o) { if (reviewState(o) === 'needs_review') unconfirmed += 1; return; }
-      Object.values(o).forEach(walk);
-    }
-  };
-  walk(state.event);
-  const ok = await confirmDialog(unconfirmed
-    ? `必須項目はすべて確認済みです。ただし、必須でない項目のうち ${unconfirmed} 件が「要確認」のままです。これらもHP・SNSに表示されます。生成しますか？\n（生成しても公開はされません。公開前に上長の承認が必要です）`
-    : '確認済みの内容で生成します。よろしいですか？\n（生成しても公開はされません。公開前に上長の承認が必要です）');
+  // 確定ゲートで、掲載するすべての値（プロフィールを含む）が確認済みであることを確かめている
+  const ok = await confirmDialog('確認済みの内容で生成します。よろしいですか？\n（生成しても公開はされません。公開前に上長の承認が必要です）');
   if (!ok) return;
   state.event.meta.finalized = true;
   state.event.meta.finalized_at = new Date().toISOString();

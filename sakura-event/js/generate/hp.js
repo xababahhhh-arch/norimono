@@ -1,5 +1,5 @@
 // HP用HTMLの生成。入力は event.json だけ。値のない項目は出力しない（推測で埋めない）。
-import { esc, safeHref, langWrap, isLatin, yen, lines, priceText, performerLabel, str, has, val } from './util.js';
+import { esc, safeHref, langWrap, isLatin, yen, lines, priceText, performerLabel, str, has, val, forPublication } from './util.js';
 import { flyerAlt, performerPhotoAlt } from './alt.js';
 import { formatDateJa, datetimeAttr, isIsoDate } from '../core/dates.js';
 import { eventType, statusLabel, statusMark, STATUSES, CLOSED_STATUSES, TYPE_SETS, FACILITY_NAME, UPDATE_TYPES } from '../core/schema.js';
@@ -78,7 +78,8 @@ function performerHeading(type, ev) {
  * opts.draft: true なら未確認の項目に［要確認］を付け、下書き表示を入れる。
  *             省略時は確定ゲートを通過していなければ下書き。
  */
-export function generateHP(ev, opts = {}) {
+export function generateHP(evIn, opts = {}) {
+  const ev = forPublication(evIn);
   const mode = opts.mode ?? 'fragment';
   const H = opts.headingStart ?? (mode === 'page' ? 1 : 2);
   const gate = canFinalize(ev);
@@ -149,7 +150,7 @@ export function generateHP(ev, opts = {}) {
   // 2. イベント状態
   {
     const code = ev.status?.code ?? 'unset';
-    const lbl = code === 'unset' ? '販売・受付状況は未設定です（要確認）' : statusLabel(ev.status);
+    const lbl = code === 'unset' ? '販売・受付状況は未確認です（窓口・販売システムで確認してください）' : statusLabel(ev.status);
     const body = [];
     body.push(`<p class="ev-status-badge"><span aria-hidden="true">${esc(statusMark(code))}</span> ${esc(lbl)}</p>`);
     const perSession = ev.schedule.dates.items.filter((d) => d.status && STATUSES[d.status]);

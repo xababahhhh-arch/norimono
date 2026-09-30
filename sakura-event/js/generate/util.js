@@ -2,6 +2,21 @@
 import { str, has, val, isField } from '../core/field.js';
 import { isSafeUrl } from '../core/validate.js';
 
+/** 担当者が「プロフィールを掲載しない」と判断したか */
+export function profileExcluded(p) {
+  return str(p?.profile_use) === 'exclude';
+}
+
+/**
+ * 公開用の見え方：担当者が掲載しないと判断したプロフィールを除いた event（元の event は変えない）。
+ */
+export function forPublication(ev) {
+  if (!ev.performers?.items?.some((p) => profileExcluded(p) && has(p.profile))) return ev;
+  const c = JSON.parse(JSON.stringify(ev));
+  for (const p of c.performers.items) if (profileExcluded(p)) p.profile = { ...p.profile, value: null };
+  return c;
+}
+
 export function esc(s) {
   return String(s ?? '')
     .replace(/&/g, '&amp;')

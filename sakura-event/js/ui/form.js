@@ -101,7 +101,7 @@ export function createReviewForm(root, getEvent, onChange, options = {}) {
       why.hidden = !why.textContent;
       btn.textContent = cur.confirmed ? '確認を取り消す' : has(cur) ? '確認済みにする' : '該当なしとして確認';
       // 必須でない空欄は確認不要（ボタンを出さない）
-      btn.hidden = !def.required && !has(cur) && !cur.confirmed;
+      btn.hidden = (!def.required && !has(cur) && !cur.confirmed) || !!def.selfConfirm;
       btn.setAttribute('aria-describedby', stId);
       // エラー
       const errors = [];
@@ -125,7 +125,9 @@ export function createReviewForm(root, getEvent, onChange, options = {}) {
     const commit = () => {
       const cur = getPath(getEvent(), path);
       const changed = setValue(cur, parseInput(def, input.value));
-      if (changed) onChange({ path, structural: def.key === 'event_type' });
+      // 担当者が選ぶ判断（例：プロフィールを掲載しない）は、選んだこと自体を確認とする
+      if (changed && def.selfConfirm) confirmField(cur, has(cur));
+      if (changed) onChange({ path, structural: def.key === 'event_type' || !!def.selfConfirm });
     };
     input.addEventListener(def.type === 'select' ? 'change' : 'change', commit);
     // 項目を選ぶと、チラシのプレビューで取得元を表示する

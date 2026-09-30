@@ -16,8 +16,8 @@ export const EVENT_TYPES = {
 };
 
 export const STATUSES = {
-  // 販売・受付状況はチラシからは決めない。担当者が窓口の状況を確認して設定するまで「未設定」。
-  unset: { label: '未設定', mark: '？' },
+  // 販売・受付状況はチラシからは決めない。担当者が窓口の状況を確認して設定するまで「未確認」。
+  unset: { label: '未確認', mark: '？' },
   scheduled: { label: '発売前', mark: '◇' },
   on_sale: { label: '発売中', mark: '●' },
   few_tickets: { label: '残りわずか', mark: '▲' },
@@ -116,7 +116,12 @@ export const GROUPS = [
         f('roman_name', 'ローマ字表記', { lang: 'en' }),
         f('role', '役割', { help: '例：出演、講師、ナビゲーター' }),
         f('instrument', '楽器・声種'),
-        f('profile', 'プロフィール', { type: 'textarea', help: 'チラシ等の原文。要約・補完はしません。' }),
+        f('profile', 'プロフィール', { type: 'textarea', help: 'チラシ等の原文。要約・補完はしません。掲載する場合は、チラシの原文と1文字ずつ照合してから「確認済みにする」を押してください。' }),
+        f('profile_use', 'プロフィールの掲載', {
+          type: 'select', selfConfirm: true,
+          options: { '': '掲載する（原文との照合が必要）', exclude: '掲載しない（担当者の判断）' },
+          help: '原文と照合できない場合は「掲載しない」を選んでください。HP・SNSにプロフィールを出しません。',
+        }),
         f('photo', '写真（ファイル名またはURL）'),
         f('photo_alt', '写真の代替テキスト'),
         f('photo_credit', '写真クレジット'),

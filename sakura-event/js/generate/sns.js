@@ -1,6 +1,6 @@
 // SNS投稿の生成（SNS_RULES.md）。X / Facebook / Instagram × A（お知らせ）B（アーティスト）C（プログラム）。
 // 入力は event.json だけ。足りない情報はAIで補わず、メッセージを返す。
-import { lines, priceText, performerLabel, str, has } from './util.js';
+import { lines, priceText, performerLabel, str, has, profileExcluded } from './util.js';
 import { formatDateJa, formatDateShort, isIsoDate } from '../core/dates.js';
 import { eventType, statusLabel, CLOSED_STATUSES, TYPE_SETS } from '../core/schema.js';
 import { findUnsupportedPhrases } from '../core/phrases.js';
@@ -75,7 +75,9 @@ function facts(ev, opts) {
 
   const prices = ev.pricing.prices.items.filter((p) => has(p.amount) || has(p.label));
   const priceSummary = prices.map((p) => `${str(p.category) ? `${str(p.category)} ` : ''}${priceText(p)}`).join('／');
-  const performers = ev.performers.items.filter((p) => has(p.name));
+  // SNS には、担当者が原文と照合した（確認済みの）プロフィールだけを使う。掲載しないと判断したものは使わない
+  const performers = ev.performers.items.filter((p) => has(p.name))
+    .map((p) => (profileExcluded(p) || !p.profile?.confirmed ? { ...p, profile: { ...p.profile, value: null } } : p));
   const works = ev.program.works.items.filter((w) => has(w.work) || has(w.composer));
   const subs = ev.sub_events.items.filter((s) => has(s.title));
 

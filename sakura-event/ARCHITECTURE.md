@@ -109,7 +109,7 @@
 | 各値に出典（ファイル・ページ・元の文字列）と confidence を付与 | `extract/rules.js` |
 | 抽出した値はすべて「要確認」。確信度の数値は表示せず、抽出根拠（`basis`）と確認が必要な理由（`reasons`）を表示 | `core/field.js`、`ui/form.js` |
 | 判断できない記載（開場・開演の対応、車椅子の文の種類など）は値にせず、原文つきの「判断が必要な記載」（`meta.review_items`）にする。対応するまで確定不可 | `extract/rules.js`、`core/validate.js` |
-| 販売・受付状況はチラシから決めない（初期値「未設定」、未設定では確定不可） | `core/schema.js`、`core/validate.js` |
+| 販売・受付状況はチラシから決めない（初期値「未確認」、未確認では確定不可） | `core/schema.js`、`core/validate.js` |
 | 生成完了・上長承認・公開を別の状態として記録（システムは公開しない） | `app.js`、`meta.workflow` |
 | 年の省略された日付は年を推定するが confidence を下げ、推定したことを記録 | `extract/rules.js` |
 | 曜日は日付から再計算し、チラシの曜日表記と照合。不一致は「エラー：曜日が一致しません」 | `core/validate.js` |
