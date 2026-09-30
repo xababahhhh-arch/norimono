@@ -1,0 +1,19 @@
+{
+  "_fixture": "8. オープンデー型複合イベント（架空）",
+  "event_id": "2026-11-03-sample-openday",
+  "event_type": "multi_event",
+  "basic": { "title": "さくらプラザ サンプル・オープンデー2026", "description": "ふだんは入れない舞台裏の見学や、楽器体験などを行う1日です。" },
+  "status": { "code": "scheduled", "label": "入場無料（一部要申込）" },
+  "schedule": { "dates": [{ "date": "2026-11-03", "weekday_on_flyer": "火・祝", "doors_open": null, "start_time": "10:00", "end_time": "16:00" }] },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "館内各所" },
+  "performers": { "items": [], "none_confirmed": true },
+  "sub_events": [
+    { "title": "バックステージ見学ツアー", "start_time": "10:30", "end_time": "11:15", "place": "ホール", "target": "小学生以上", "application": "要申込（各回20名・抽選）" },
+    { "title": "ミニコンサート", "start_time": "13:00", "end_time": "13:30", "place": "ホール", "application": "申込不要" },
+    { "title": "楽器体験コーナー", "start_time": "10:00", "end_time": "16:00", "place": "リハーサル室", "application": "申込不要" }
+  ],
+  "pricing": { "prices": [{ "amount": 0, "label": "入場無料" }], "age_requirement": "どなたでも参加できます（ツアーは小学生以上）" },
+  "tickets": { "sales_start": null },
+  "participation": { "application_method": "見学ツアーのみ、WEBフォームで事前に申し込んでください。", "application_url": "https://example.jp/openday-form", "application_deadline": "2026-10-20", "lottery": "応募多数の場合は抽選" },
+  "organization": { "organizer": "さくらプラザ（架空）", "phone": "045-000-0000", "contact": "さくらプラザ" }
+}

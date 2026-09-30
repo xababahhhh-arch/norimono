@@ -1,0 +1,12 @@
+{
+  "_fixture": "12. 展示（会期型）（架空）",
+  "event_id": "2026-10-03-sample-photo",
+  "event_type": "exhibition",
+  "basic": { "title": "サンプル写真展「とつかの四季」" },
+  "status": { "code": "scheduled", "label": "入場無料" },
+  "schedule": { "dates": [], "start_date": "2026-10-03", "end_date": "2026-10-12", "open_hours": "10:00〜18:00（最終日は16:00まで）" },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "ギャラリー" },
+  "performers": { "items": [], "none_confirmed": true },
+  "pricing": { "prices": [{ "amount": 0, "label": "入場無料" }], "age_requirement": null },
+  "organization": { "organizer": "とつか写真の会（架空）", "co_organizer": "さくらプラザ（架空）", "contact": "とつか写真の会 事務局", "phone": "045-000-1111" }
+}

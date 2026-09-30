@@ -1,0 +1,14 @@
+{
+  "_fixture": "6. 無料イベント（ロビーコンサート・申込不要）（架空）",
+  "event_id": "2026-06-20-sample-lobby",
+  "event_type": "performance",
+  "basic": { "title": "さくらプラザ サンプル・ロビーコンサート", "description": "お買い物の途中にも気軽に立ち寄れる、30分のミニコンサートです。" },
+  "status": { "code": "scheduled", "label": "入場無料・申込不要" },
+  "schedule": { "dates": [{ "date": "2026-06-20", "weekday_on_flyer": null, "doors_open": null, "start_time": "12:15", "end_time": "12:45" }] },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "ホワイエ" },
+  "performers": [{ "name": "サンプル弦楽四重奏団", "profile": "サンプル市内で活動する弦楽四重奏団。" }],
+  "program": { "works": [{ "composer": "モーツァルト", "work": "アイネ・クライネ・ナハトムジーク 第1楽章" }, { "composer": "Traditional", "work": "Amazing Grace" }] },
+  "pricing": { "prices": [{ "amount": 0, "label": "入場無料（申込不要）" }], "age_requirement": "どなたでもご覧いただけます" },
+  "tickets": { "sales_start": null },
+  "organization": { "organizer": "さくらプラザ（架空）", "phone": "045-000-0000", "contact": "さくらプラザ" }
+}

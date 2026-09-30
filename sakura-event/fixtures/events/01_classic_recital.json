@@ -1,0 +1,54 @@
+{
+  "_fixture": "1. 通常クラシック公演（架空）",
+  "event_id": "2026-07-04-sample-piano",
+  "event_type": "performance",
+  "genre": "クラシック",
+  "basic": {
+    "title": "春風ことね ピアノ・リサイタル",
+    "subtitle": "ショパンとフランスの響き",
+    "catchphrase": "夏の午後に、ピアノの響きを。",
+    "description": "サンプル音楽大学出身のピアニスト、春風ことねによるソロ・リサイタルです。\n前半はショパン、後半はドビュッシーとラヴェルを演奏します。"
+  },
+  "status": { "code": "on_sale" },
+  "schedule": {
+    "dates": [{ "date": "2026-07-04", "weekday_on_flyer": "土", "doors_open": "13:30", "start_time": "14:00", "end_time": "16:00" }],
+    "duration": "約2時間",
+    "intermission": "休憩あり（15分）"
+  },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "ホール" },
+  "performers": [{
+    "name": "春風ことね", "reading": "はるかぜことね", "roman_name": "Kotone Harukaze", "role": "出演", "instrument": "ピアノ",
+    "profile": "サンプル音楽大学卒業。国内各地でソロ・室内楽の演奏活動を行う。2020年よりサンプル市を拠点に活動している。"
+  }],
+  "program": {
+    "works": [
+      { "composer": "ショパン", "work": "バラード 第1番 ト短調 作品23", "section": "第1部" },
+      { "composer": "ショパン", "work": "夜想曲 第2番 変ホ長調 作品9-2", "section": "第1部" },
+      { "composer": "ドビュッシー", "work": "月の光", "section": "第2部" },
+      { "composer": "ラヴェル", "work": "水の戯れ", "section": "第2部" }
+    ],
+    "notes": "曲目は変更になる場合があります。"
+  },
+  "pricing": {
+    "seating_type": "全席指定",
+    "prices": [{ "category": "一般", "amount": 3000 }, { "category": "学生", "amount": 1500, "note": "25歳以下" }],
+    "tax_included": "税込",
+    "age_requirement": "未就学児入場不可",
+    "student_requirements": "学生券は当日学生証を提示してください。"
+  },
+  "tickets": {
+    "sales_start": "2026-05-09",
+    "presale": "友の会先行 2026年5月2日（土）",
+    "ticket_channels": [
+      { "name": "さくらプラザチケットセンター", "phone": "045-000-0000", "hours": "10:00〜18:00" },
+      { "name": "サンプルチケット", "url": "https://tickets.example.jp/sample-piano" }
+    ],
+    "ticket_codes": [{ "provider": "チケットぴあ", "code": "Pコード 123-456" }]
+  },
+  "accessibility": { "wheelchair": "車いす席があります。購入時にお申し出ください。", "hearing_support": "ヒアリングループを利用できます。" },
+  "notes": "開演後は、曲の区切りまでご入場をお待ちいただく場合があります。",
+  "organization": { "organizer": "さくらプラザ（架空）", "supporter": "サンプル区", "contact": "さくらプラザ", "phone": "045-000-0000", "contact_hours": "10:00〜18:00" },
+  "links": [{ "label": "春風ことね 公式サイト", "url": "https://example.jp/kotone" }],
+  "media": { "flyer_front": "flyer-2026-07-04-front.pdf", "flyer_back": "flyer-2026-07-04-back.pdf" },
+  "meta": { "page_url": "https://example.jp/event/sample-piano.html" }
+}

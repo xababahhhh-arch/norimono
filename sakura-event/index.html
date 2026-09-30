@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>イベント広報生成｜戸塚区民文化センター さくらプラザ</title>
+<meta name="description" content="チラシから event.json を作り、人が確認したうえで HP・SNS・代替テキスト・アクセシビリティ報告を生成します。">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/app.css">
+<script type="module" src="js/app.js"></script>
+<script>
+  // 起動チェック（アプリ本体が読み込めない場合に、無反応にせず原因と次の操作を表示する）
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      if (window.__sakuraAppReady) return;
+      var box = document.getElementById('boot-error');
+      var msg = location.protocol === 'file:'
+        ? 'このアプリは、ファイルをダブルクリックして開くと動きません（ブラウザの安全の仕組みでプログラムが読み込まれないため）。付属の起動用ファイル（start-local）を実行し、表示された http://localhost:8000/ のアドレスで開いてください。'
+        : 'アプリのプログラムを読み込めませんでした。ファイル一式（js・vendor フォルダを含む）がそろっているか、最新の Chrome・Edge・Firefox・Safari で開いているかを確認し、ページを読み込み直してください。';
+      box.querySelector('span').textContent = msg;
+      box.hidden = false;
+    }, 1500);
+  });
+</script>
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+<p id="boot-error" class="err boot-error" role="alert" hidden><strong>エラー：アプリを起動できませんでした。</strong><span></span></p>
+<noscript><p class="err boot-error">JavaScript が無効になっています。ブラウザの設定で JavaScript を有効にしてください。</p></noscript>
+
+<header class="app-header">
+  <div class="app-header-inner">
+    <p class="app-title">さくらプラザ イベント広報生成</p>
+    <p class="app-privacy">ファイルはこのブラウザの中だけで処理し、外部へ送信しません。</p>
+  </div>
+  <nav class="stepper" aria-label="作業の手順">
+    <ol id="stepper">
+      <li data-step="1"><button type="button" data-goto="1"><span class="step-no">STEP 1</span> チラシをアップロード<span class="step-state"></span></button></li>
+      <li data-step="2"><button type="button" data-goto="2"><span class="step-no">STEP 2</span> 自動解析<span class="step-state"></span></button></li>
+      <li data-step="3"><button type="button" data-goto="3"><span class="step-no">STEP 3</span> 内容を確認・修正<span class="step-state"></span></button></li>
+      <li data-step="4"><button type="button" data-goto="4"><span class="step-no">STEP 4</span> HP/SNS生成<span class="step-state"></span></button></li>
+      <li data-step="5"><button type="button" data-goto="5"><span class="step-no">STEP 5</span> コピー・書き出し<span class="step-state"></span></button></li>
+    </ol>
+  </nav>
+</header>
+
+<div id="status-message" class="visually-hidden" role="status" aria-live="polite"></div>
+
+<main id="main" tabindex="-1">
+
+  <!-- STEP 1 -->
+  <section id="step-1" class="step" aria-labelledby="step-1-h">
+    <h1 id="step-1-h">STEP 1　チラシをアップロード</h1>
+    <p class="lead">この画面ですること：公演・イベントのチラシ（PDF・JPG・PNG）を選びます。表面と裏面など、複数のファイルを選べます。ファイルはこのブラウザの中だけで処理し、外部へ送りません。</p>
+
+    <p id="legacy-notice" class="st st-needs_review" hidden>！ 以前の版のこのアプリが、このブラウザに作業データを自動保存しています。今の版は自動保存をしません。<button type="button" id="legacy-clear" class="btn-link">以前の版の作業データを消去する</button></p>
+
+    <div class="fld">
+      <label for="file-input">チラシのファイル（PDF・JPG・PNG）</label>
+      <p id="file-help" class="help">PDFは、まず文字をそのまま取り出します。文字が取れないページ（文字が図形になっているチラシなど）と、JPG・PNGの画像は、ブラウザの中で文字を読み取ります（OCR）。</p>
+      <input id="file-input" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple aria-describedby="file-help">
+    </div>
+    <p id="file-status" class="st" role="status" aria-live="polite" hidden></p>
+    <div id="file-list" aria-live="polite"></div>
+    <p class="help">SHA-256（ハッシュ値）は、同じファイルかどうかを確かめるためだけに使います。最新版かどうか・公開が承認された版かどうかは判定しません。</p>
+
+    <details class="more">
+      <summary>OCR（文字の読み取り）の設定</summary>
+      <div class="fld">
+        <label for="ocr-dpi">画像にするときの解像度</label>
+        <p id="ocr-dpi-help" class="help">解像度を上げると小さい文字を読みやすくなりますが、時間とメモリが増えます。実物のチラシでの測定では、300 dpi が標準に適していました。</p>
+        <select id="ocr-dpi" aria-describedby="ocr-dpi-help"></select>
+      </div>
+      <div class="fld">
+        <label for="ocr-threshold">白黒にするときの明るさの境目</label>
+        <p id="ocr-threshold-help" class="help">灰色や色付きの文字を読み落とす場合は、値を上げてください。写真の部分が文字として読まれる場合は、値を下げてください。</p>
+        <select id="ocr-threshold" aria-describedby="ocr-threshold-help">
+          <option value="180">180（濃い文字だけ）</option>
+          <option value="200" selected>200（標準）</option>
+          <option value="220">220（薄い灰色の文字も読む）</option>
+        </select>
+      </div>
+      <div class="fld-actions">
+        <button type="button" id="ocr-prepare" class="btn-secondary">OCRの資材を先に読み込む（ネットワークを切って使う場合）</button>
+      </div>
+      <p id="ocr-prepare-status" class="help" role="status"></p>
+    </details>
+
+    <div class="fld">
+      <label for="paste-text">チラシの文字を貼り付け（任意）</label>
+      <p id="paste-help" class="help">チラシの文字原稿がある場合は、ここに貼り付けると、OCRより正確に取り出せます。</p>
+      <textarea id="paste-text" rows="8" aria-describedby="paste-help"></textarea>
+    </div>
+
+    <details class="more">
+      <summary>その他の始め方</summary>
+      <div class="fld">
+        <label for="json-input">保存した event.json を読み込む</label>
+        <input id="json-input" type="file" accept="application/json,.json">
+      </div>
+      <div class="fld">
+        <label for="sample-select">サンプル（架空のチラシ文字）で試す</label>
+        <select id="sample-select">
+          <option value="">選んでください</option>
+          <option value="01_classic">通常クラシック公演</option>
+          <option value="03_family">0歳からのファミリー公演（2回公演）</option>
+          <option value="04_workshop">ワークショップ</option>
+          <option value="06_exhibition">展示</option>
+          <option value="07_recruit">参加者募集</option>
+          <option value="08_openday">オープンデー</option>
+          <option value="09_paste_duo_layout">デュオ公演（実物チラシの書き方をまねた架空の内容）</option>
+        </select>
+      </div>
+    </details>
+
+    <p id="step1-error" class="err" hidden></p>
+    <div class="step-actions">
+      <button type="button" id="clear-btn" class="btn-secondary">すべてクリア（読み込んだ資料・解析結果・生成物を消去）</button>
+      <button type="button" id="to-step2" class="btn-primary">次へ：自動解析</button>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section id="step-2" class="step" aria-labelledby="step-2-h" hidden>
+    <h1 id="step-2-h">STEP 2　自動解析</h1>
+    <p class="lead">この画面ですること：「解析を始める」を押すと、ページごとに文字を取り出し（文字が取れないページはOCR）、日付・時刻・料金などの候補を取り出します。取り出した値はまだ「要確認」です。OCRが終わっても、確認が済んだことにはなりません。</p>
+    <div class="fld">
+      <label for="adapter-select">解析の方法</label>
+      <select id="adapter-select" aria-describedby="adapter-help"></select>
+      <p id="adapter-help" class="help">外部のAIサービスは使いません。OCRもこのブラウザの中で行います。</p>
+    </div>
+    <div class="step-actions">
+      <button type="button" id="analyze-btn" class="btn-primary">解析を始める</button>
+      <button type="button" id="cancel-btn" class="btn-secondary" hidden>キャンセル（処理中のページが終わったら止めます）</button>
+    </div>
+    <div id="progress" class="progress-box" hidden>
+      <p id="progress-text" role="status" aria-live="polite"></p>
+      <progress id="progress-bar" max="100" value="0" aria-labelledby="progress-text"></progress>
+    </div>
+    <section id="pages-box" class="group" aria-labelledby="pages-h" hidden>
+      <h2 id="pages-h" class="h-small">ページごとの文字の取り方</h2>
+      <p class="help">PDFの文字とOCRの結果は自動では連結しません。両方あるページは、使う文字を選んでください。「PDFの文字＋OCRにしかない行」を選ぶと、PDFの文字と同じ内容の行は除いて追加します。</p>
+      <ul id="page-list" class="page-list"></ul>
+      <div class="fld-actions">
+        <button type="button" id="reextract-btn" class="btn-secondary" hidden>この選び方で抽出をやり直す</button>
+      </div>
+    </section>
+    <div id="analyze-result" aria-live="polite"></div>
+    <div class="step-actions">
+      <button type="button" data-goto="1" class="btn-secondary">戻る：アップロード</button>
+      <button type="button" id="to-step3" class="btn-primary" disabled>次へ：内容を確認・修正</button>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section id="step-3" class="step" aria-labelledby="step-3-h" hidden>
+    <h1 id="step-3-h">STEP 3　内容を確認・修正</h1>
+    <p class="lead">この画面ですること：左のチラシと右の情報を見比べて、正しければ「確認済みにする」を押します。間違いは直接直してください。必須の項目がすべて確認済みになり、販売・受付状況を設定し、「判断が必要な記載」に対応すると、生成できます。確信度の数値は表示しません。代わりに「抽出根拠」と「確認が必要な理由」を表示します。</p>
+    <p class="legend-states">状態の見方：<span class="st st-confirmed">✓ 確認済み</span>　<span class="st st-needs_review">！ 要確認</span>　<span class="st st-missing">－ 情報なし</span></p>
+    <div class="review">
+      <section class="review-left" aria-labelledby="pv-h">
+        <h2 id="pv-h">チラシ</h2>
+        <div id="preview"></div>
+      </section>
+      <section class="review-right" aria-labelledby="info-h">
+        <h2 id="info-h">取り出したイベント情報</h2>
+        <div id="source-review" class="gate"></div>
+        <div id="gate-summary" class="gate"></div>
+        <form id="review-form" novalidate onsubmit="return false"></form>
+        <div class="fld-actions">
+          <button type="button" id="save-json-btn" class="btn-secondary">作業途中の event.json を端末に保存</button>
+        </div>
+      </section>
+    </div>
+    <div class="step-actions">
+      <button type="button" data-goto="2" class="btn-secondary">戻る：自動解析</button>
+      <button type="button" data-goto="4" class="btn-primary">次へ：HP/SNS生成</button>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section id="step-4" class="step" aria-labelledby="step-4-h" hidden>
+    <h1 id="step-4-h">STEP 4　HP/SNS生成</h1>
+    <p class="lead">この画面ですること：確認済みの event.json から、HP・SNS・代替テキスト・アクセシビリティ報告を作ります。すべて同じ event.json から作るので、内容は一致します。生成しても公開はされません（公開前に上長の承認が必要です）。</p>
+    <div class="fld">
+      <label for="page-url">HPページのURL（SNSの導線に使います）</label>
+      <p id="page-url-help" class="help">まだ決まっていない場合は空欄のままにすると「［HPページのURL］」と表示されます。</p>
+      <input id="page-url" type="url" placeholder="https://" aria-describedby="page-url-help">
+    </div>
+    <div id="gate-final" class="gate"></div>
+    <div class="step-actions">
+      <button type="button" id="gen-draft" class="btn-secondary">下書きとして生成</button>
+      <button type="button" id="gen-final" class="btn-primary">確認済みの内容で生成する（公開はしません）</button>
+    </div>
+    <div id="step4-output"></div>
+    <div class="step-actions">
+      <button type="button" data-goto="3" class="btn-secondary">戻る：内容を確認・修正</button>
+      <button type="button" id="to-step5" class="btn-primary" disabled>次へ：コピー・書き出し</button>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section id="step-5" class="step" aria-labelledby="step-5-h" hidden>
+    <h1 id="step-5-h">STEP 5　コピー・書き出し</h1>
+    <p class="lead">この画面ですること：必要なものをコピーするか、ファイルとして保存します。上長の承認と公開はこのシステムの外で行い、ここには記録だけを残します。event.json を保存しておくと、公開後の状況更新（完売・受付終了など）に使えます。</p>
+    <section class="group" aria-labelledby="workflow-h">
+      <h2 id="workflow-h" class="h-small">承認・公開の記録</h2>
+      <div id="workflow-panel"></div>
+    </section>
+    <div id="step5-output"></div>
+    <div class="step-actions">
+      <button type="button" data-goto="4" class="btn-secondary">戻る：HP/SNS生成</button>
+      <button type="button" data-goto="3" class="btn-secondary">状況を更新する（STEP 3へ）</button>
+    </div>
+  </section>
+
+</main>
+
+<dialog id="confirm-dialog" aria-labelledby="confirm-dialog-h">
+  <h2 id="confirm-dialog-h">確認</h2>
+  <div id="confirm-dialog-body"></div>
+  <div class="step-actions">
+    <button type="button" id="confirm-cancel" class="btn-secondary">キャンセル</button>
+    <button type="button" id="confirm-ok" class="btn-primary">続ける</button>
+  </div>
+</dialog>
+
+<footer class="app-footer">
+  <p>このアプリは入力資料にない情報を事実として追加しません。生成物は必ず担当者が確認してから公開してください。</p>
+</footer>
+</body>
+</html>

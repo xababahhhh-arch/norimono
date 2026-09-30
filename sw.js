@@ -35,6 +35,8 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  // 同じサイトに置いた別アプリ（sakura-event/）はキャッシュしない
+  if (new URL(e.request.url).pathname.includes('/sakura-event/')) return;
   e.respondWith(
     caches.match(e.request, { ignoreSearch: true }).then((hit) => {
       if (hit) return hit;

@@ -1,0 +1,22 @@
+{
+  "_fixture": "11. 出演者変更などの更新があるイベント（共催）（架空）",
+  "event_id": "2026-11-21-sample-duo",
+  "event_type": "performance",
+  "genre": "クラシック",
+  "basic": { "title": "サンプル・デュオ・コンサート", "description": "ヴァイオリンとピアノによるデュオ・コンサートです。" },
+  "status": { "code": "on_sale" },
+  "updates": [
+    { "date": "2026-10-01", "type": "performer_change", "text": "出演を予定していた星野あかり（ピアノ）は体調不良のため出演できなくなりました。代わりに月島ゆう（ピアノ）が出演します。曲目の変更はありません。" },
+    { "date": "2026-08-01", "type": "notice", "text": "チケットの販売を開始しました。" }
+  ],
+  "schedule": { "dates": [{ "date": "2026-11-21", "weekday_on_flyer": "土", "doors_open": "13:30", "start_time": "14:00" }] },
+  "venue": { "venue": "戸塚区民文化センター さくらプラザ", "room": "ホール" },
+  "performers": [
+    { "name": "風間 りん", "instrument": "ヴァイオリン", "profile": "サンプル音楽大学卒業。室内楽を中心に活動している。" },
+    { "name": "月島ゆう", "instrument": "ピアノ", "profile": "サンプル音楽大学卒業。" }
+  ],
+  "program": { "works": [{ "composer": "ベートーヴェン", "work": "ヴァイオリン・ソナタ 第5番「春」" }, { "composer": "フランク", "work": "ヴァイオリン・ソナタ イ長調" }] },
+  "pricing": { "seating_type": "全席指定", "prices": [{ "category": "一般", "amount": 3000 }], "age_requirement": "未就学児入場不可" },
+  "tickets": { "sales_start": "2026-08-01", "ticket_channels": [{ "name": "さくらプラザチケットセンター", "phone": "045-000-0000" }] },
+  "organization": { "organizer": "サンプル音楽協会（架空）", "co_organizer": "さくらプラザ（架空）", "grant": "サンプル文化財団", "contact": "サンプル音楽協会", "phone": "045-000-3333" }
+}

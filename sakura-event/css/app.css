@@ -1,0 +1,196 @@
+/* さくらプラザ イベント広報生成 — 画面のスタイル
+   文字と背景のコントラストは 7:1 以上（WCAG 1.4.6）、フォーカス枠は 3px（2.4.13）、
+   操作できる要素は 44px 以上（2.5.5）。状態は色だけでなく記号と文字でも示す（1.4.1）。 */
+:root {
+  --text: #1a1a1a;
+  --bg: #ffffff;
+  --muted-bg: #f3f3f0;
+  --line: #595959;
+  --link: #0a3a80;
+  --primary: #0a3a80;
+  --primary-text: #ffffff;
+  --focus: #0a3a80;
+  --ok-bg: #e6f4ea;
+  --ok-text: #0b3d1a;
+  --warn-bg: #fff4d6;
+  --warn-text: #4a3300;
+  --missing-bg: #eeeeee;
+  --missing-text: #2b2b2b;
+  --err-bg: #fde8e8;
+  --err-text: #5c0000;
+  --current-bg: #0a3a80;
+  --current-text: #ffffff;
+  --header-h: 120px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: var(--header-h); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Meiryo", sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+a { color: var(--link); text-underline-offset: .2em; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+[tabindex="-1"]:focus { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.skip {
+  position: absolute; left: 8px; top: -200px; z-index: 100;
+  background: var(--bg); color: var(--link); padding: 10px 16px; border: 3px solid var(--focus);
+  min-height: 44px;
+}
+.skip:focus { top: 8px; }
+
+/* ヘッダーとステップ表示（常に上部に表示） */
+.app-header {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg); border-bottom: 3px solid var(--line);
+}
+.app-header-inner { max-width: 80rem; margin: 0 auto; padding: 4px 16px 0; display: flex; flex-wrap: wrap; gap: 0 1.5rem; align-items: baseline; }
+.app-title { font-weight: 700; margin: 0; font-size: 1.125rem; }
+.app-privacy { margin: 0; font-size: .9375rem; }
+.stepper ol {
+  list-style: none; margin: 0 auto; padding: 4px 16px 8px; max-width: 80rem;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px;
+}
+.stepper button {
+  width: 100%; min-height: 44px; text-align: left; font: inherit; font-size: .9375rem; line-height: 1.35;
+  background: var(--muted-bg); color: var(--text); border: 2px solid var(--line); border-radius: 6px; padding: 4px 8px; cursor: pointer;
+}
+.stepper .step-no { display: block; font-weight: 700; }
+.stepper li.current button { background: var(--current-bg); color: var(--current-text); border-color: var(--current-bg); }
+.stepper li.done .step-no::after { content: "（済）"; font-weight: 400; }
+.stepper button[aria-disabled="true"] { border-style: dashed; cursor: not-allowed; }
+@media (max-width: 52em) {
+  .stepper ol { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+  .stepper button { font-size: .8125rem; padding: 2px 4px; }
+  .app-privacy { display: none; }
+}
+@media (max-width: 36em) {
+  .stepper button { font-size: 0; }
+  .stepper .step-no { font-size: .8125rem; }
+  .stepper li.current button { font-size: .8125rem; }
+  .stepper li.done .step-no::after { content: "済"; }
+}
+
+main { max-width: 80rem; margin: 0 auto; padding: 8px 16px 48px; }
+h1 { font-size: 1.5rem; line-height: 1.4; margin: 1rem 0 .5rem; }
+h2 { font-size: 1.25rem; margin: 1.25rem 0 .5rem; }
+.h-small { font-size: 1.125rem; }
+h3 { font-size: 1.125rem; margin: 0 0 .5rem; }
+h4 { font-size: 1rem; margin: 1rem 0 .25rem; }
+.lead { background: var(--muted-bg); padding: .75rem 1rem; border-left: 6px solid var(--line); }
+
+/* フォーム */
+.fld { margin: 0 0 1rem; }
+.fld label { display: block; font-weight: 700; }
+.fld label input[type="checkbox"] { width: 24px; height: 24px; vertical-align: middle; }
+input[type="text"], input[type="url"], input[type="tel"], input[type="email"], input:not([type]), select, textarea {
+  width: 100%; max-width: 48rem; font: inherit; color: var(--text); background: var(--bg);
+  border: 2px solid var(--line); border-radius: 4px; padding: 8px 10px; min-height: 44px;
+}
+input[type="file"] { font: inherit; min-height: 44px; }
+textarea { min-height: 5rem; }
+[aria-invalid="true"] { border-color: var(--err-text) !important; border-width: 3px !important; }
+.req { font-weight: 400; margin-left: .5em; }
+.help { margin: .125rem 0 .25rem; font-size: .9375rem; }
+.src { margin: .125rem 0; font-size: .875rem; overflow-wrap: anywhere; }
+.computed { margin: .125rem 0; font-size: .9375rem; }
+.computed:empty, .err:empty { display: none; }
+.basis { margin: .125rem 0; font-size: .875rem; }
+.why { margin: .125rem 0; font-size: .9375rem; font-weight: 700; color: var(--warn-text); }
+.review-list { list-style: none; padding: 0; }
+.review-list > li { border: 2px solid var(--line); border-radius: 6px; padding: .5rem 1rem; margin: .5rem 0; }
+.review-list blockquote { margin: .25rem 0; padding: .25rem .75rem; border-left: 6px solid var(--line); background: var(--muted-bg); overflow-wrap: anywhere; }
+.err { background: var(--err-bg); color: var(--err-text); border-left: 6px solid var(--err-text); padding: .5rem .75rem; margin: .25rem 0; white-space: pre-line; font-weight: 700; }
+
+button { font: inherit; }
+.btn-primary, .btn-secondary, .btn-confirm, .btn-link {
+  min-height: 44px; min-width: 44px; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700;
+}
+.btn-primary { background: var(--primary); color: var(--primary-text); border: 2px solid var(--primary); }
+.btn-secondary { background: var(--bg); color: var(--link); border: 2px solid var(--link); }
+.btn-confirm { background: var(--ok-bg); color: var(--ok-text); border: 2px solid var(--ok-text); }
+.btn-link { background: none; border: none; color: var(--link); text-decoration: underline; padding: 8px 4px; }
+button:disabled, button[aria-disabled="true"] { opacity: 1; background: var(--missing-bg); color: var(--missing-text); border: 2px dashed var(--line); cursor: not-allowed; }
+.fld-actions, .step-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: .5rem 0 1rem; }
+.step-actions { margin-top: 1.5rem; }
+
+/* 状態（記号＋文字＋色） */
+.st { display: inline-block; margin: .125rem 0; padding: 0 .5em; border-radius: 4px; font-weight: 700; border: 1px solid currentColor; }
+.st-confirmed, .st-confirmed_empty { background: var(--ok-bg); color: var(--ok-text); }
+.st-needs_review { background: var(--warn-bg); color: var(--warn-text); }
+.st-missing { background: var(--missing-bg); color: var(--missing-text); }
+.st-error { background: var(--err-bg); color: var(--err-text); }
+p.st { display: block; }
+.legend-states .st { margin-right: .5em; }
+
+/* STEP 3：2カラム */
+.review { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; align-items: start; }
+.review-left { position: sticky; top: calc(var(--header-h) + 8px); max-height: calc(100vh - var(--header-h) - 16px); overflow: auto; border: 2px solid var(--line); padding: 8px 12px; }
+.review-left h2, .review-right h2 { margin-top: 0; }
+@media (max-width: 60em) {
+  .review { grid-template-columns: 1fr; }
+  .review-left { position: static; max-height: none; }
+}
+.pv-nav { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pv-figure { margin: .5rem 0; }
+.pv-figure img, .pv-figure canvas { max-width: 100%; height: auto; border: 1px solid var(--line); }
+.pv-text pre { white-space: pre-wrap; background: var(--muted-bg); padding: .5rem; font-size: .875rem; }
+details > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+
+.gate { border: 3px solid var(--line); padding: .75rem 1rem; margin-bottom: 1rem; background: var(--bg); }
+.gate-progress { font-weight: 700; margin: 0; }
+.gate progress { width: 100%; height: 12px; }
+.gate-list { padding-left: 1.2em; }
+.group { border-top: 3px solid var(--line); padding-top: .75rem; margin-top: 1.25rem; }
+.list-item { border: 2px solid var(--line); border-radius: 6px; margin: .5rem 0; padding: .5rem 1rem; }
+.list-item legend { font-weight: 700; padding: 0 .25rem; }
+
+/* 出力 */
+.out-card { border: 2px solid var(--line); border-radius: 6px; padding: .75rem 1rem; margin: 0 0 1rem; }
+.out-text { font-family: inherit; font-size: .9375rem; }
+.sns-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 12px; }
+.hp-frame { width: 100%; height: 70vh; border: 2px solid var(--line); }
+.hp-frame:focus { outline: 3px solid var(--focus); outline-offset: 3px; }
+.a11y-list, .a11y-manual { padding-left: 1.2em; }
+.a11y-manual input { width: 24px; height: 24px; vertical-align: middle; }
+.a11y-manual label { display: inline; font-weight: 400; }
+.a11y-fail strong { color: var(--err-text); }
+.file-list li { margin: .25rem 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.file-list select { width: auto; }
+.file-list label { display: inline; }
+.more { margin: 1rem 0; border: 2px solid var(--line); padding: 0 1rem; border-radius: 6px; }
+
+dialog { max-width: 36rem; border: 3px solid var(--line); border-radius: 8px; padding: 1rem 1.25rem; color: var(--text); background: var(--bg); }
+dialog::backdrop { background: rgb(0 0 0 / .5); }
+
+.app-footer { border-top: 3px solid var(--line); padding: 1rem 16px; max-width: 80rem; margin: 0 auto; font-size: .9375rem; }
+
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+.pv-stage { position: relative; }
+.pv-stage canvas, .pv-stage img { display: block; width: 100%; height: auto; }
+.pv-mark { position: absolute; border: 4px solid #b00020; outline: 2px solid #ffffff; box-sizing: border-box; pointer-events: none; }
+.method { margin: .125rem 0; font-size: .875rem; font-weight: 700; }
+.method-ocr::before { content: "OCR "; }
+.method-manual::before { content: "✎ "; }
+.hash { display: block; font-size: .8125rem; overflow-wrap: anywhere; }
+.hash code { font-size: .8125rem; }
+.page-list { list-style: none; padding: 0; }
+.page-list > li { border: 2px solid var(--line); border-radius: 6px; padding: .5rem 1rem; margin: .5rem 0; }
+.fld.inline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: .25rem 0; }
+.fld.inline label { display: inline; }
+.fld.inline select { width: auto; }
+.progress-box { border: 2px solid var(--line); padding: .5rem 1rem; margin: .5rem 0; }
+.progress-box progress { width: 100%; height: 14px; }
+.boot-error { margin: .5rem 1rem; }
