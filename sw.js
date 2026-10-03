@@ -1,6 +1,6 @@
 /* のりもの あそび（ゲーム集）のオフライン用。
    ゲームを足したら CORE に1行足すと、最初からオフラインで遊べる。 */
-const CACHE = 'norimono-hub-v1';
+const CACHE = 'norimono-hub-v2';
 const CORE = [
   './',
   './index.html',
@@ -13,7 +13,8 @@ const CORE = [
   './app.js',
   './style.css',
   './vehicles.js',
-  './games/minicar/index.html'
+  './games/minicar/index.html',
+  './games/shapes/index.html'
 ];
 
 self.addEventListener('install', (e) => {
