@@ -24,7 +24,7 @@ h1{font-size:25px;letter-spacing:.04em;color:#103b5e;text-shadow:0 2px 0 rgba(25
 .vehicle.drive{transform:translate(110vw,-50%)}
 .slot,.placed{position:absolute;display:flex;align-items:center;justify-content:center}
 .slot{border:4px dashed rgba(20,69,103,.48);background:rgba(255,255,255,.2)}
-.slot.hot{animation:pulse .75s infinite alternate}
+.slot.hot{animation:pulse .75s infinite alternate;box-shadow:0 0 0 7px rgba(255,218,60,.55),0 0 22px rgba(255,218,60,.9)}
 .placed{filter:drop-shadow(0 4px 2px rgba(0,0,0,.2));animation:pop .22s ease-out}
 .circle{border-radius:50%}
 .square,.rect{border-radius:14%}
@@ -133,14 +133,22 @@ h1{font-size:25px;letter-spacing:.04em;color:#103b5e;text-shadow:0 2px 0 rgba(25
       b.addEventListener('pointerdown',e=>startDrag(e,b));
       tray.appendChild(b);
     });
-    setTimeout(()=>speak(round.voice),180);
+    setTimeout(()=>{
+      const first=tray.querySelector('.piece');
+      if(first){
+        selectPiece(first,false);
+        speak(round.voice+'。ひかっている ところに おいてね');
+      } else {
+        speak(round.voice);
+      }
+    },220);
   }
-  function selectPiece(b){
+  function selectPiece(b,announce=true){
     if(!b || !b.isConnected) return;
     document.querySelectorAll('.piece').forEach(x=>x.classList.remove('selected'));
     selected=b; b.classList.add('selected');
     highlight(b.dataset.kind);
-    speak(shapeName(b.dataset.kind)+'を おいてみよう');
+    if(announce) speak(shapeName(b.dataset.kind)+'を おいてみよう');
   }
   function highlight(kind){
     vehicle.querySelectorAll('.slot').forEach(s=>s.classList.toggle('hot',!filled.has(+s.dataset.i)&&s.dataset.kind===kind));
