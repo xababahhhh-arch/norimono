@@ -3,195 +3,228 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>かたちで のりもの</title>
-<meta name="theme-color" content="#1d5a8a">
+<title>のりもの なおそう</title>
+<meta name="theme-color" content="#7fd3ff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;touch-action:none}
-body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;background:linear-gradient(#8dd8ff 0 64%,#b9e98a 64% 100%);overflow:hidden;color:#123}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;background:linear-gradient(#86d9ff 0 68%,#b8ed7f 68% 100%);color:#123c5a;-webkit-tap-highlight-color:transparent}
 button{font:inherit}
-.app{height:100%;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px);gap:10px}
-.top{display:flex;align-items:center;justify-content:center;min-height:46px;position:relative}
-h1{font-size:25px;letter-spacing:.04em;color:#103b5e;text-shadow:0 2px 0 rgba(255,255,255,.55)}
-.stars{position:absolute;right:4px;top:4px;font-size:20px;letter-spacing:2px;white-space:nowrap}
-.say{min-height:38px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:900;font-size:20px;color:#164e76;background:rgba(255,255,255,.72);border-radius:18px;padding:7px 12px;box-shadow:0 3px 0 rgba(16,59,94,.18)}
-.stage{position:relative;flex:1;min-height:0;border-radius:28px;background:rgba(255,255,255,.22);overflow:hidden;border:3px solid rgba(255,255,255,.5)}
-.road{position:absolute;left:0;right:0;bottom:0;height:30%;background:#59616b}
-.road:after{content:"";position:absolute;left:0;right:0;top:47%;height:8px;background:repeating-linear-gradient(90deg,#ffe45c 0 34px,transparent 34px 62px)}
-.vehicle{position:absolute;left:50%;top:49%;width:min(78vw,390px);height:min(42vw,210px);transform:translate(-50%,-50%);transition:transform .8s cubic-bezier(.32,.72,.19,1)}
-.vehicle.drive{transform:translate(110vw,-50%)}
-.slot,.placed{position:absolute;display:flex;align-items:center;justify-content:center}
-.slot{border:4px dashed rgba(20,69,103,.48);background:rgba(255,255,255,.2)}
-.slot.hot{animation:pulse .75s infinite alternate;box-shadow:0 0 0 7px rgba(255,218,60,.55),0 0 22px rgba(255,218,60,.9)}
-.placed{filter:drop-shadow(0 4px 2px rgba(0,0,0,.2));animation:pop .22s ease-out}
-.circle{border-radius:50%}
-.square,.rect{border-radius:14%}
-.triangle{clip-path:polygon(50% 0,100% 100%,0 100%)}
-.semi{border-radius:999px 999px 12px 12px}
-@keyframes pulse{to{transform:scale(1.08);background:rgba(255,255,255,.5)}}
-@keyframes pop{0%{transform:scale(.45)}80%{transform:scale(1.12)}100%{transform:scale(1)}}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.tray{min-height:122px;display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:center;gap:10px;padding:10px 8px;background:rgba(255,255,255,.78);border-radius:26px;box-shadow:0 6px 0 rgba(25,74,105,.18)}
-.piece{width:82px;height:82px;border:0;background:rgba(255,255,255,.3);border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 0 rgba(21,66,95,.18);touch-action:none}
-.piece:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(21,66,95,.18)}
-.shape{width:58px;height:58px;pointer-events:none;filter:drop-shadow(0 3px 1px rgba(0,0,0,.18))}
-.piece.selected{outline:6px solid #ffda3c;animation:bounce .65s infinite}
-.dragging{position:fixed;z-index:9998;pointer-events:none;opacity:.92;transform:translate(-50%,-50%) scale(1.12);width:88px;height:88px;display:flex;align-items:center;justify-content:center}
-.win{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:50;background:rgba(255,255,255,.1);pointer-events:none}
-.win.show{display:flex}
-.win span{font-size:76px;animation:pop .35s ease-out}
-.help{font-size:12px;text-align:center;font-weight:700;color:#21485f;opacity:.8}
-@media (max-width:430px){.tray{gap:7px}.piece{width:64px;height:64px;border-radius:18px}.shape{width:44px;height:44px}}
-@media (max-height:650px){h1{font-size:21px}.tray{min-height:96px}.piece{width:58px;height:58px}.shape{width:40px;height:40px}.say{font-size:17px;min-height:32px}.vehicle{top:48%}}
+.app{min-height:100%;padding:calc(env(safe-area-inset-top,0px) + 12px) 14px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex;flex-direction:column;gap:12px}
+.top{min-height:52px;display:flex;align-items:center;justify-content:center;position:relative}
+h1{margin:0;font-size:25px;font-weight:900;letter-spacing:.04em;text-align:center}
+.stars{position:absolute;right:2px;top:8px;font-size:20px;letter-spacing:2px;white-space:nowrap}
+.prompt{background:rgba(255,255,255,.86);border-radius:22px;padding:12px 14px;text-align:center;font-size:21px;font-weight:900;box-shadow:0 4px 0 rgba(25,78,110,.15)}
+.stage{position:relative;min-height:430px;flex:1;border-radius:30px;border:4px solid rgba(255,255,255,.7);overflow:hidden;background:linear-gradient(rgba(255,255,255,.15) 0 66%,#606975 66% 100%)}
+.stage:after{content:"";position:absolute;left:0;right:0;bottom:16%;height:8px;background:repeating-linear-gradient(90deg,#ffe36a 0 46px,transparent 46px 82px)}
+.vehicle{position:absolute;left:50%;top:49%;width:min(88%,430px);transform:translate(-50%,-50%);transition:transform .75s cubic-bezier(.2,.7,.2,1)}
+.vehicle.drive{transform:translate(115%,-50%)}
+.vehicle svg{display:block;width:100%;height:auto;filter:drop-shadow(0 7px 3px rgba(0,0,0,.18))}
+.target{position:absolute;border:5px dashed #fff;background:rgba(255,255,255,.18);box-shadow:0 0 0 7px rgba(255,216,60,.62),0 0 28px rgba(255,216,60,.92);display:flex;align-items:center;justify-content:center;color:#fff;font-size:34px;font-weight:900;animation:pulse .65s ease-in-out infinite alternate;z-index:5;touch-action:manipulation}
+.target.circle{border-radius:50%}
+.target.rect{border-radius:16px}
+.target:active{transform:scale(.92)}
+.target.filled{animation:pop .25s ease-out;box-shadow:none;border:0;color:transparent}
+.target.wheel.filled{background:#263441}
+.target.window.filled{background:#2692e8;border:5px solid rgba(255,255,255,.38)}
+.target.light.filled{background:#ffe34f;box-shadow:0 0 26px rgba(255,227,79,.95)}
+.pointer{position:absolute;z-index:6;font-size:48px;filter:drop-shadow(0 3px 2px rgba(0,0,0,.2));animation:point .65s ease-in-out infinite alternate;pointer-events:none}
+.celebrate{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:20;pointer-events:none}
+.celebrate.show{display:flex}
+.celebrate span{font-size:90px;animation:pop .28s ease-out}
+.bottom{background:rgba(255,255,255,.84);border-radius:24px;padding:12px 16px;text-align:center;box-shadow:0 5px 0 rgba(25,78,110,.14)}
+.bottom .big{font-size:20px;font-weight:900}
+.bottom .small{margin-top:4px;font-size:14px;font-weight:700;opacity:.72}
+.restart{display:none;margin:0 auto;border:0;border-radius:20px;padding:14px 24px;background:#195f92;color:white;font-weight:900;font-size:19px;box-shadow:0 5px 0 #0f3c5d}
+.restart.show{display:block}
+@keyframes pulse{to{transform:scale(1.1);background:rgba(255,255,255,.38)}}
+@keyframes point{to{transform:translateY(12px)}}
+@keyframes pop{0%{transform:scale(.45)}80%{transform:scale(1.18)}100%{transform:scale(1)}}
+@media (max-width:430px){.stage{min-height:390px}.prompt{font-size:19px}.stars{font-size:17px}h1{font-size:23px}}
+@media (max-height:700px){.stage{min-height:320px}.bottom{padding:8px 12px}.prompt{padding:9px 12px}}
+@media (prefers-reduced-motion:reduce){.target,.pointer,.celebrate span{animation:none}.vehicle{transition:none}}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="top"><h1>かたちで のりもの</h1><div class="stars" id="stars">☆ ☆ ☆</div></div>
-  <div class="say" id="say">かたちを えらんでね</div>
-  <main class="stage" id="stage" aria-label="のりものをつくる場所">
-    <div class="road"></div>
+  <div class="top">
+    <h1>のりもの なおそう</h1>
+    <div class="stars" id="stars">☆ ☆ ☆</div>
+  </div>
+  <div class="prompt" id="prompt" aria-live="polite">タイヤが ないよ！</div>
+  <main class="stage" id="stage" aria-label="のりものをなおすゲーム">
     <div class="vehicle" id="vehicle"></div>
-    <div class="win" id="win"><span>⭐️</span></div>
+    <div class="celebrate" id="celebrate"><span>⭐️</span></div>
   </main>
-  <div class="tray" id="tray" aria-label="かたちを選ぶ場所"></div>
-  <div class="help">さわって はこぶ ／ かたちをタップ → ばしょをタップ</div>
+  <div class="bottom">
+    <div class="big" id="guide">ひかっている ところを タッチ！</div>
+    <div class="small">1かい タッチするだけで できるよ</div>
+    <button class="restart" id="restart" type="button">もういちど あそぶ</button>
+  </div>
 </div>
+
 <script>
 (() => {
   'use strict';
-  const COLORS={red:'#ff5b4d',blue:'#2588e6',yellow:'#ffd23f',green:'#58bf58',dark:'#263441',white:'#f7fbff'};
-  const ROUNDS=[
-    {name:'くるま',voice:'くるまを つくろう',pieces:[
-      {kind:'rect',x:18,y:47,w:64,h:28,color:'red'},
-      {kind:'semi',x:34,y:28,w:36,h:25,color:'blue'},
-      {kind:'circle',x:24,y:68,w:18,h:18,color:'dark'},
-      {kind:'circle',x:62,y:68,w:18,h:18,color:'dark'}
-    ]},
-    {name:'バス',voice:'バスを つくろう',pieces:[
-      {kind:'rect',x:13,y:27,w:74,h:45,color:'yellow'},
-      {kind:'square',x:23,y:36,w:19,h:19,color:'blue'},
-      {kind:'square',x:47,y:36,w:19,h:19,color:'blue'},
-      {kind:'circle',x:22,y:67,w:18,h:18,color:'dark'},
-      {kind:'circle',x:64,y:67,w:18,h:18,color:'dark'}
-    ]},
-    {name:'でんしゃ',voice:'でんしゃを つくろう',pieces:[
-      {kind:'rect',x:15,y:31,w:68,h:38,color:'green'},
-      {kind:'triangle',x:72,y:31,w:20,h:38,color:'green'},
-      {kind:'square',x:28,y:39,w:18,h:18,color:'white'},
-      {kind:'square',x:51,y:39,w:18,h:18,color:'white'},
-      {kind:'circle',x:27,y:65,w:17,h:17,color:'dark'},
-      {kind:'circle',x:63,y:65,w:17,h:17,color:'dark'}
-    ]}
-  ];
-  const vehicle=document.getElementById('vehicle');
-  const tray=document.getElementById('tray');
-  const say=document.getElementById('say');
-  const stars=document.getElementById('stars');
-  const win=document.getElementById('win');
-  let roundIndex=0, filled=new Set(), selected=null, drag=null, pointerId=null;
 
-  const pct=n=>n+'%';
+  const rounds = [
+    {
+      name:'くるま',
+      prompt:'タイヤが ないよ！',
+      speak:'タイヤが ないよ。ひかっている ところを タッチ！',
+      kind:'wheel',
+      cls:'circle',
+      pos:{left:67,top:61,width:20,height:31},
+      pointer:{left:68,top:45},
+      art:`<svg viewBox="0 0 500 260" aria-hidden="true">
+        <rect x="70" y="110" width="345" height="92" rx="30" fill="#ff5b4d"/>
+        <path d="M150 110 L205 55 H325 L370 110 Z" fill="#ff5b4d"/>
+        <path d="M213 66 H265 V108 H173 Z" fill="#51b8ee"/>
+        <path d="M275 66 H318 L354 108 H275 Z" fill="#51b8ee"/>
+        <circle cx="150" cy="205" r="42" fill="#263441"/>
+        <circle cx="150" cy="205" r="18" fill="#9aa6b2"/>
+        <circle cx="365" cy="205" r="18" fill="#9aa6b2" opacity=".35"/>
+      </svg>`
+    },
+    {
+      name:'バス',
+      prompt:'まどが ないよ！',
+      speak:'まどが ないよ。ひかっている ところを タッチ！',
+      kind:'window',
+      cls:'rect',
+      pos:{left:50,top:29,width:22,height:28},
+      pointer:{left:51,top:11},
+      art:`<svg viewBox="0 0 500 260" aria-hidden="true">
+        <rect x="55" y="52" width="390" height="150" rx="28" fill="#ffd23f"/>
+        <rect x="80" y="78" width="92" height="62" rx="10" fill="#2692e8"/>
+        <rect x="305" y="78" width="90" height="62" rx="10" fill="#2692e8"/>
+        <rect x="404" y="78" width="24" height="62" rx="8" fill="#f7fbff" opacity=".8"/>
+        <circle cx="145" cy="205" r="40" fill="#263441"/>
+        <circle cx="365" cy="205" r="40" fill="#263441"/>
+        <circle cx="145" cy="205" r="16" fill="#9aa6b2"/>
+        <circle cx="365" cy="205" r="16" fill="#9aa6b2"/>
+      </svg>`
+    },
+    {
+      name:'でんしゃ',
+      prompt:'ライトが ないよ！',
+      speak:'ライトが ないよ。ひかっている ところを タッチ！',
+      kind:'light',
+      cls:'circle',
+      pos:{left:72,top:45,width:12,height:19},
+      pointer:{left:69,top:26},
+      art:`<svg viewBox="0 0 500 260" aria-hidden="true">
+        <path d="M65 62 H365 Q420 62 440 118 V190 H65 Z" fill="#58bf58"/>
+        <path d="M365 62 Q420 62 440 118 H365 Z" fill="#469d48"/>
+        <rect x="95" y="82" width="82" height="58" rx="10" fill="#dff5ff"/>
+        <rect x="194" y="82" width="82" height="58" rx="10" fill="#dff5ff"/>
+        <rect x="293" y="82" width="58" height="58" rx="10" fill="#dff5ff"/>
+        <circle cx="155" cy="196" r="37" fill="#263441"/>
+        <circle cx="350" cy="196" r="37" fill="#263441"/>
+        <circle cx="155" cy="196" r="14" fill="#9aa6b2"/>
+        <circle cx="350" cy="196" r="14" fill="#9aa6b2"/>
+      </svg>`
+    }
+  ];
+
+  const vehicle = document.getElementById('vehicle');
+  const prompt = document.getElementById('prompt');
+  const stars = document.getElementById('stars');
+  const celebrate = document.getElementById('celebrate');
+  const guide = document.getElementById('guide');
+  const restart = document.getElementById('restart');
+
+  let index = 0;
+  let locked = false;
+
   function speak(text){
-    say.textContent=text;
     try{
       speechSynthesis.cancel();
-      const u=new SpeechSynthesisUtterance(text.replace(/ /g,''));
-      u.lang='ja-JP'; u.rate=.86; u.pitch=1.08; u.volume=.9;
+      const u = new SpeechSynthesisUtterance(text.replace(/ /g,''));
+      u.lang = 'ja-JP';
+      u.rate = .85;
+      u.pitch = 1.05;
       speechSynthesis.speak(u);
     }catch(e){}
   }
-  function shapeEl(p,extra=''){
-    const d=document.createElement('div');
-    d.className='shape '+p.kind+' '+extra;
-    d.style.background=COLORS[p.color]||p.color;
-    return d;
-  }
-  function renderRound(){
-    filled.clear(); selected=null; drag=null; pointerId=null;
+
+  function render(){
+    locked = false;
+    celebrate.classList.remove('show');
+    restart.classList.remove('show');
+    guide.style.display = '';
     vehicle.classList.remove('drive');
-    vehicle.innerHTML=''; tray.innerHTML=''; win.classList.remove('show');
-    const round=ROUNDS[roundIndex];
-    stars.textContent=ROUNDS.map((_,i)=>i<roundIndex?'★':'☆').join(' ');
-    round.pieces.forEach((p,i)=>{
-      const slot=document.createElement('button');
-      slot.type='button'; slot.className='slot '+p.kind; slot.dataset.i=i; slot.dataset.kind=p.kind;
-      slot.setAttribute('aria-label',p.kind+' の おきば');
-      Object.assign(slot.style,{left:pct(p.x),top:pct(p.y),width:pct(p.w),height:pct(p.h)});
-      slot.addEventListener('click',()=>{ if(selected) tryPlace(selected,slot); });
-      vehicle.appendChild(slot);
+
+    const r = rounds[index];
+    prompt.textContent = r.prompt;
+    stars.textContent = rounds.map((_,i)=>i<index?'★':'☆').join(' ');
+
+    vehicle.innerHTML = r.art;
+
+    const target = document.createElement('button');
+    target.type = 'button';
+    target.className = 'target ' + r.cls + ' ' + r.kind;
+    target.setAttribute('aria-label', r.prompt + ' ここをタッチ');
+    Object.assign(target.style,{
+      left:r.pos.left+'%',
+      top:r.pos.top+'%',
+      width:r.pos.width+'%',
+      height:r.pos.height+'%'
     });
-    const order=[...round.pieces.keys()].sort(()=>Math.random()-.5);
-    order.forEach(i=>{
-      const p=round.pieces[i];
-      const b=document.createElement('button');
-      b.type='button'; b.className='piece'; b.dataset.i=i; b.dataset.kind=p.kind;
-      b.setAttribute('aria-label',p.kind+' の かたち');
-      b.appendChild(shapeEl(p));
-      b.addEventListener('click',()=>selectPiece(b));
-      b.addEventListener('pointerdown',e=>startDrag(e,b));
-      tray.appendChild(b);
-    });
+
+    const pointer = document.createElement('div');
+    pointer.className = 'pointer';
+    pointer.textContent = '👆';
+    pointer.style.left = r.pointer.left + '%';
+    pointer.style.top = r.pointer.top + '%';
+
+    target.addEventListener('click',()=>complete(target,pointer));
+    vehicle.appendChild(target);
+    vehicle.appendChild(pointer);
+
+    setTimeout(()=>speak(r.speak),180);
+  }
+
+  function complete(target,pointer){
+    if(locked) return;
+    locked = true;
+    pointer.remove();
+    target.classList.add('filled');
+
+    const r = rounds[index];
+    prompt.textContent = 'できた！ ' + r.name + '！';
+    guide.textContent = 'できた！';
+    stars.textContent = rounds.map((_,i)=>i<=index?'★':'☆').join(' ');
+    speak('できた！ ' + r.name + '！');
+
+    setTimeout(()=>celebrate.classList.add('show'),180);
     setTimeout(()=>{
-      const first=tray.querySelector('.piece');
-      if(first){
-        selectPiece(first,false);
-        speak(round.voice+'。ひかっている ところに おいてね');
-      } else {
-        speak(round.voice);
+      celebrate.classList.remove('show');
+      vehicle.classList.add('drive');
+    },700);
+
+    setTimeout(()=>{
+      if(index < rounds.length - 1){
+        index += 1;
+        guide.textContent = 'ひかっている ところを タッチ！';
+        render();
+      }else{
+        prompt.textContent = 'ぜんぶ なおせた！';
+        guide.style.display = 'none';
+        restart.classList.add('show');
+        speak('ぜんぶ なおせた！ すごい！');
       }
-    },220);
+    },1650);
   }
-  function selectPiece(b,announce=true){
-    if(!b || !b.isConnected) return;
-    document.querySelectorAll('.piece').forEach(x=>x.classList.remove('selected'));
-    selected=b; b.classList.add('selected');
-    highlight(b.dataset.kind);
-    if(announce) speak(shapeName(b.dataset.kind)+'を おいてみよう');
-  }
-  function highlight(kind){
-    vehicle.querySelectorAll('.slot').forEach(s=>s.classList.toggle('hot',!filled.has(+s.dataset.i)&&s.dataset.kind===kind));
-  }
-  function shapeName(kind){return ({circle:'まる',square:'しかく',rect:'ながしかく',triangle:'さんかく',semi:'まるい かたち'})[kind]||'かたち'}
-  function startDrag(e,b){
-    pointerId=e.pointerId;
-    b.setPointerCapture?.(e.pointerId);
-    selectPiece(b);
-    const ghost=document.createElement('div'); ghost.className='dragging'; ghost.appendChild(b.firstElementChild.cloneNode(true));
-    document.body.appendChild(ghost); drag={ghost,b}; moveGhost(e.clientX,e.clientY);
-    b.addEventListener('pointermove',moveDrag); b.addEventListener('pointerup',endDrag,{once:true}); b.addEventListener('pointercancel',endDrag,{once:true});
-    e.preventDefault();
-  }
-  function moveDrag(e){if(!drag||e.pointerId!==pointerId)return;moveGhost(e.clientX,e.clientY);e.preventDefault()}
-  function moveGhost(x,y){drag.ghost.style.left=x+'px';drag.ghost.style.top=y+'px'}
-  function endDrag(e){
-    if(!drag||e.pointerId!==pointerId)return;
-    const b=drag.b; drag.ghost.remove(); drag=null; pointerId=null;
-    const candidates=[...vehicle.querySelectorAll('.slot')].filter(s=>!filled.has(+s.dataset.i)&&s.dataset.kind===b.dataset.kind);
-    const target=candidates.find(s=>{const r=s.getBoundingClientRect();return e.clientX>=r.left-18&&e.clientX<=r.right+18&&e.clientY>=r.top-18&&e.clientY<=r.bottom+18;});
-    if(target) tryPlace(b,target); else selectPiece(b);
-  }
-  function tryPlace(b,slot){
-    if(!b||!slot||filled.has(+slot.dataset.i)) return;
-    if(b.dataset.kind!==slot.dataset.kind){speak('ちがう かたちだよ');return;}
-    const round=ROUNDS[roundIndex], i=+slot.dataset.i, p=round.pieces[i];
-    filled.add(i); slot.style.visibility='hidden';
-    const placed=shapeEl(p,'placed'); placed.className='placed '+p.kind;
-    Object.assign(placed.style,{left:pct(p.x),top:pct(p.y),width:pct(p.w),height:pct(p.h),background:COLORS[p.color]||p.color});
-    vehicle.appendChild(placed);
-    b.remove(); selected=null; highlight('');
-    if(filled.size===round.pieces.length) finishRound(); else speak('せいかい！');
-  }
-  function finishRound(){
-    stars.textContent=ROUNDS.map((_,i)=>i<=roundIndex?'★':'☆').join(' ');
-    win.classList.add('show'); speak('できた！ '+ROUNDS[roundIndex].name+'！');
-    setTimeout(()=>{win.classList.remove('show');vehicle.classList.add('drive');},650);
-    setTimeout(()=>{roundIndex=(roundIndex+1)%ROUNDS.length;renderRound();},1700);
-  }
-  window.addEventListener('contextmenu',e=>e.preventDefault());
-  renderRound();
+
+  restart.addEventListener('click',()=>{
+    index = 0;
+    guide.textContent = 'ひかっている ところを タッチ！';
+    render();
+  });
+
+  render();
 })();
 </script>
 <script src="../../back.js" data-home="../../index.html"></script>
