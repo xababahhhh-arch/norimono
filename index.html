@@ -47,6 +47,7 @@
   .s{margin-top:6px;font-size:14px;font-weight:600;color:rgba(255,255,255,.72);line-height:1.45}
   .card.quiz{background:#1f5f9e;box-shadow:0 7px 0 #123f6c}
   .card.road{background:#a24400;box-shadow:0 7px 0 #6b2c00}
+  .card.shape{background:#237b66;box-shadow:0 7px 0 #145244}
   .foot{text-align:center;font-size:12px;color:rgba(255,255,255,.45)}
   @media (max-height:600px){ .card svg{width:76px} .t{font-size:20px} }
 </style>
@@ -68,7 +69,8 @@
    ============================================================ */
 const GAMES = [
   { title:'のりもの あてっこ', sub:'のりものの なまえを あてよう', url:'atekko.html', art:'quiz', cls:'quiz' },
-  { title:'ミニカー ロード',   sub:'ミニカーを おいて はしらせよう', url:'games/minicar/index.html', art:'road', cls:'road' }
+  { title:'ミニカー ロード',   sub:'ミニカーを おいて はしらせよう', url:'games/minicar/index.html', art:'road', cls:'road' },
+  { title:'のりもの なおそう', sub:'たりない ぶひんを タッチして なおそう', url:'games/shapes/index.html', art:'shape', cls:'shape' }
 ];
 
 const ART = {
@@ -78,6 +80,12 @@ const ART = {
     <circle cx="32" cy="92" r="11" fill="#0e1620"/><circle cx="62" cy="92" r="11" fill="#0e1620"/>
     <circle cx="88" cy="38" r="26" fill="#ffffff"/>
     <text x="88" y="52" text-anchor="middle" font-size="38" font-weight="800" fill="#1f5f9e">?</text>
+  </svg>`,
+  shape: `<svg viewBox="0 0 120 120" aria-hidden="true">
+    <circle cx="31" cy="34" r="21" fill="#ffd23f"/>
+    <rect x="55" y="14" width="42" height="42" rx="8" fill="#58bf58"/>
+    <path d="M18 105 L47 61 L76 105 Z" fill="#ff6a00"/>
+    <rect x="72" y="67" width="34" height="34" rx="7" fill="#2588e6"/>
   </svg>`,
   road: `<svg viewBox="0 0 120 120" aria-hidden="true">
     <path d="M38 8 L82 8 L96 112 L24 112 Z" fill="#4e535b"/>
