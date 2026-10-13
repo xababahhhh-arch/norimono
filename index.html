@@ -15,58 +15,37 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  body{
-    background:
-      radial-gradient(90% 55% at 8% 0%,rgba(255,255,255,.96) 0%,rgba(255,255,255,0) 72%),
-      linear-gradient(155deg,#f8f4ec 0%,#edf4f3 58%,#e8f0f3 100%);
-    color:#17324a;
-    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
-    -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;overflow:hidden
-  }
-  .wrap{height:100%;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex;flex-direction:column;gap:12px}
-  h1{font-size:26px;font-weight:900;letter-spacing:.06em;text-align:center;color:#17324a;text-shadow:0 1px 0 rgba(255,255,255,.9)}
-  .list{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}
-  .card{
-    min-height:0;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:26px;
-    border:2px solid rgba(255,255,255,.78);color:#17324a;text-align:left;text-decoration:none;
-    box-shadow:0 7px 0 rgba(44,62,80,.14),0 13px 24px rgba(44,62,80,.08);
-    transition:transform .08s ease,box-shadow .08s ease;overflow:hidden;position:relative
-  }
-  .card:before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,0) 52%);pointer-events:none}
-  .card:active{transform:translateY(5px);box-shadow:0 2px 0 rgba(44,62,80,.14),0 6px 12px rgba(44,62,80,.06)}
-  .card svg{flex:none;width:74px;height:auto;position:relative;z-index:1;filter:drop-shadow(0 3px 1px rgba(39,55,68,.12))}
-  .card>span:last-child{flex:1;min-width:0;position:relative;z-index:1}
-  .t,.s{display:block}.t{font-size:20px;font-weight:900;line-height:1.25}.s{margin-top:5px;font-size:12px;font-weight:700;color:#435d70;line-height:1.4}
-  .card.quiz{background:linear-gradient(145deg,#c8e2ed,#a9d1df)}
-  .card.road{background:linear-gradient(145deg,#f6d1b8,#edb48d)}
-  .card.shape{background:linear-gradient(145deg,#c7e3cf,#a8cfb4)}
-  .card.nakama{background:linear-gradient(145deg,#ddd2eb,#c3b2dc)}
-  .foot{text-align:center;font-size:12px;font-weight:700;color:#607487}
-  @media(max-width:430px){.wrap{gap:10px;padding-left:10px;padding-right:10px}.list{gap:10px}.card{padding:10px;gap:8px;border-radius:22px}.card svg{width:62px}.t{font-size:17px}.s{font-size:11px}}
-  @media(max-height:620px){h1{font-size:22px}.card svg{width:54px}.t{font-size:16px}.s{font-size:10px}}
+  body{background:radial-gradient(90% 55% at 8% 0%,rgba(255,255,255,.96) 0%,rgba(255,255,255,0) 72%),linear-gradient(155deg,#f8f4ec 0%,#edf4f3 58%,#e8f0f3 100%);color:#17324a;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;overflow:hidden}
+  .wrap{height:100%;padding:calc(env(safe-area-inset-top,0px) + 14px) 12px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;flex-direction:column;gap:10px}
+  h1{font-size:24px;font-weight:900;letter-spacing:.06em;text-align:center;color:#17324a}
+  .list{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);gap:9px;min-height:0}
+  .card{min-height:0;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:22px;border:2px solid rgba(255,255,255,.78);color:#17324a;text-align:left;text-decoration:none;box-shadow:0 5px 0 rgba(44,62,80,.12);transition:transform .08s ease,box-shadow .08s ease;overflow:hidden;position:relative}
+  .card:before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,0) 52%);pointer-events:none}.card:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(44,62,80,.12)}
+  .card svg{flex:none;width:58px;height:auto;position:relative;z-index:1}.card>span:last-child{flex:1;min-width:0;position:relative;z-index:1}.t,.s{display:block}.t{font-size:16px;font-weight:900;line-height:1.2}.s{margin-top:4px;font-size:10px;font-weight:700;color:#435d70;line-height:1.35}
+  .card.quiz{background:linear-gradient(145deg,#c8e2ed,#a9d1df)}.card.road{background:linear-gradient(145deg,#f6d1b8,#edb48d)}.card.shape{background:linear-gradient(145deg,#c7e3cf,#a8cfb4)}.card.nakama{background:linear-gradient(145deg,#ddd2eb,#c3b2dc)}.card.shadow{background:linear-gradient(145deg,#d7dfe8,#b9c7d6)}
+  .card.last{grid-column:1 / -1}.card.last svg{width:64px}.card.last .t{font-size:17px}
+  .foot{text-align:center;font-size:11px;font-weight:700;color:#607487}
+  @media(max-width:380px){.wrap{padding-left:8px;padding-right:8px}.list{gap:7px}.card{padding:8px;gap:7px}.card svg{width:50px}.t{font-size:14px}.s{font-size:9px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>のりもの あそび</h1>
-  <div class="list" id="list"></div>
-  <p class="foot">あそびたい ほうを えらんでね</p>
-</div>
+<div class="wrap"><h1>のりもの あそび</h1><div class="list" id="list"></div><p class="foot">あそびたい ゲームを えらんでね</p></div>
 <script>
 const GAMES=[
-  {title:'のりもの あてっこ',sub:'のりものの なまえを あてよう',url:'atekko.html',art:'quiz',cls:'quiz'},
-  {title:'ミニカー ロード',sub:'ミニカーを おいて はしらせよう',url:'games/minicar/index.html',art:'road',cls:'road'},
-  {title:'のりもの なおそう',sub:'たりない ぶひんを タッチして なおそう',url:'games/shapes/index.html',art:'shape',cls:'shape'},
-  {title:'なかまわけ',sub:'おなじ なかまを さがそう',url:'games/nakamawake/index.html',art:'nakama',cls:'nakama'}
+  {title:'のりもの あてっこ',sub:'なまえを あてよう',url:'atekko.html',art:'quiz',cls:'quiz'},
+  {title:'ミニカー ロード',sub:'ミニカーを はしらせよう',url:'games/minicar/index.html',art:'road',cls:'road'},
+  {title:'のりもの なおそう',sub:'たりない ぶひんを なおそう',url:'games/shapes/index.html',art:'shape',cls:'shape'},
+  {title:'なかまわけ',sub:'おなじ なかまを さがそう',url:'games/nakamawake/index.html',art:'nakama',cls:'nakama'},
+  {title:'のりもの かげあて',sub:'おなじ かげを みつけよう',url:'games/shadow/index.html',art:'shadow',cls:'shadow last'}
 ];
 const ART={
-  quiz:`<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="16" y="34" width="62" height="54" rx="14" fill="#f3c84b"/><rect x="24" y="44" width="46" height="20" rx="7" fill="#35566c"/><circle cx="32" cy="92" r="11" fill="#24323d"/><circle cx="62" cy="92" r="11" fill="#24323d"/><circle cx="88" cy="38" r="26" fill="#fffaf2"/><text x="88" y="52" text-anchor="middle" font-size="38" font-weight="800" fill="#487b97">?</text></svg>`,
-  shape:`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="31" cy="34" r="21" fill="#f1c84c"/><rect x="55" y="14" width="42" height="42" rx="8" fill="#76b991"/><path d="M18 105 L47 61 L76 105 Z" fill="#df8c62"/><rect x="72" y="67" width="34" height="34" rx="7" fill="#6e9fc1"/></svg>`,
-  road:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M38 8 L82 8 L96 112 L24 112 Z" fill="#5d6870"/><g fill="#f1c84c"><rect x="56" y="12" width="8" height="18"/><rect x="56" y="40" width="8" height="18"/><rect x="56" y="68" width="8" height="18"/><rect x="56" y="96" width="8" height="16"/></g><g transform="translate(60,62)"><rect x="-30" y="-20" width="12" height="18" rx="4" fill="#27333b"/><rect x="18" y="-20" width="12" height="18" rx="4" fill="#27333b"/><rect x="-30" y="6" width="12" height="20" rx="4" fill="#27333b"/><rect x="18" y="6" width="12" height="20" rx="4" fill="#27333b"/><path d="M0 -36 C12 -36 22 -26 22 -12 C22 4 24 16 18 30 L-18 30 C-24 16 -22 4 -22 -12 C-22 -26 -12 -36 0 -36 Z" fill="#df8c62" stroke="#fffaf2" stroke-width="3"/><path d="M-11 -2 L11 -2 L15 16 L-15 16 Z" fill="#34444f"/></g></svg>`,
-  nakama:`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="34" cy="38" r="21" fill="#f1c84c"/><circle cx="84" cy="38" r="21" fill="#76b991"/><rect x="18" y="72" width="34" height="34" rx="8" fill="#6e9fc1"/><rect x="68" y="72" width="34" height="34" rx="8" fill="#9f86bd"/><path d="M52 49h16M43 89h25" stroke="#fffaf2" stroke-width="7" stroke-linecap="round"/></svg>`
+ quiz:`<svg viewBox="0 0 120 120"><rect x="16" y="34" width="62" height="54" rx="14" fill="#f3c84b"/><rect x="24" y="44" width="46" height="20" rx="7" fill="#35566c"/><circle cx="32" cy="92" r="11" fill="#24323d"/><circle cx="62" cy="92" r="11" fill="#24323d"/><circle cx="88" cy="38" r="26" fill="#fffaf2"/><text x="88" y="52" text-anchor="middle" font-size="38" font-weight="800" fill="#487b97">?</text></svg>`,
+ road:`<svg viewBox="0 0 120 120"><path d="M38 8 L82 8 L96 112 L24 112 Z" fill="#5d6870"/><g fill="#f1c84c"><rect x="56" y="12" width="8" height="18"/><rect x="56" y="40" width="8" height="18"/><rect x="56" y="68" width="8" height="18"/><rect x="56" y="96" width="8" height="16"/></g><path d="M60 30c13 0 23 11 23 25v33H37V55c0-14 10-25 23-25z" fill="#df8c62"/></svg>`,
+ shape:`<svg viewBox="0 0 120 120"><circle cx="31" cy="34" r="21" fill="#f1c84c"/><rect x="55" y="14" width="42" height="42" rx="8" fill="#76b991"/><path d="M18 105 L47 61 L76 105 Z" fill="#df8c62"/><rect x="72" y="67" width="34" height="34" rx="7" fill="#6e9fc1"/></svg>`,
+ nakama:`<svg viewBox="0 0 120 120"><circle cx="34" cy="38" r="21" fill="#f1c84c"/><circle cx="84" cy="38" r="21" fill="#76b991"/><rect x="18" y="72" width="34" height="34" rx="8" fill="#6e9fc1"/><rect x="68" y="72" width="34" height="34" rx="8" fill="#9f86bd"/><path d="M52 49h16M43 89h25" stroke="#fffaf2" stroke-width="7" stroke-linecap="round"/></svg>`,
+ shadow:`<svg viewBox="0 0 120 120"><path d="M15 78c0-12 7-18 20-20l21-4 16-16c5-5 11-7 19-7h12c6 0 11 3 14 8l8 14 16 4c8 2 12 7 12 15v12H15z" fill="#405364"/><circle cx="39" cy="86" r="12" fill="#24323d"/><circle cx="94" cy="86" r="12" fill="#24323d"/><circle cx="91" cy="28" r="15" fill="#fffaf2"/><text x="91" y="35" text-anchor="middle" font-size="20" font-weight="900" fill="#405364">?</text></svg>`
 };
-document.getElementById('list').innerHTML=GAMES.map(g=>`<a class="card ${g.cls||''}" href="${g.url}">${ART[g.art]||''}<span><span class="t">${g.title}</span><span class="s">${g.sub}</span></span></a>`).join('');
+document.getElementById('list').innerHTML=GAMES.map(g=>`<a class="card ${g.cls}" href="${g.url}">${ART[g.art]}<span><span class="t">${g.title}</span><span class="s">${g.sub}</span></span></a>`).join('');
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
-</body>
-</html>
+</body></html>
