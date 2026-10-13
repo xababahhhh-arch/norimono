@@ -40,9 +40,68 @@
     document.body.appendChild(s);
   }
 
+  /* かげあて：正解後の次問題への移動は、読み上げが終わるまで待つ。
+     ゲーム本体の「1550ms後に次へ」というタイマーだけを包み、
+     speechSynthesis がまだ話していれば待機 → 終了後400ms空ける。 */
+  function installShadowVoiceGap() {
+    if (!/\/games\/shadow\//.test(location.pathname)) return;
+    if (window.__shadowVoiceGapInstalled) return;
+    window.__shadowVoiceGapInstalled = true;
+
+    var nativeSetTimeout = window.setTimeout.bind(window);
+    window.setTimeout = function (fn, delay) {
+      var args = Array.prototype.slice.call(arguments, 2);
+      if (delay !== 1550 || typeof fn !== 'function') {
+        return nativeSetTimeout.apply(window, [fn, delay].concat(args));
+      }
+
+      return nativeSetTimeout(function waitForVoice() {
+        var synth = window.speechSynthesis;
+        if (synth && (synth.speaking || synth.pending)) {
+          nativeSetTimeout(waitForVoice, 100);
+          return;
+        }
+        nativeSetTimeout(function () { fn.apply(window, args); }, 400);
+      }, delay);
+    };
+  }
+
+  /* かげあて：間違えて押した乗り物名を読み上げる。
+     ゲーム本体が wrong クラスを付けた直後に、元の「もういちど」を
+     「○○だよ。もういちど…」へ差し替える。 */
+  function installShadowWrongVoice() {
+    if (!/\/games\/shadow\//.test(location.pathname)) return;
+    if (!('MutationObserver' in window) || !('speechSynthesis' in window)) return;
+
+    var box = document.getElementById('choices');
+    if (!box || box.dataset.wrongVoiceReady === '1') return;
+    box.dataset.wrongVoiceReady = '1';
+
+    var observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (m) {
+        var el = m.target;
+        if (!el || !el.classList || !el.classList.contains('choice') || !el.classList.contains('wrong')) return;
+        var name = el.getAttribute('aria-label') || '';
+        if (!name) return;
+        try {
+          speechSynthesis.cancel();
+          var u = new SpeechSynthesisUtterance(name + 'だよ。もういちど、かげを よくみてね');
+          u.lang = 'ja-JP';
+          u.rate = 0.86;
+          u.pitch = 1.05;
+          speechSynthesis.speak(u);
+        } catch (_) { }
+      });
+    });
+
+    observer.observe(box, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  }
+
   function init() {
     add();
     loadMinicarKidsSound();
+    installShadowVoiceGap();
+    installShadowWrongVoice();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
