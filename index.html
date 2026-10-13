@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>のりもの あそび</title>
-<meta name="theme-color" content="#123a5e">
+<meta name="theme-color" content="#f3efe7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="のりもの あそび">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/menu-180.png">
@@ -15,18 +15,34 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  body{background:radial-gradient(120% 90% at 50% 0%,#1d5686 0%,#123a5e 60%,#0d2942 100%);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;overflow:hidden}
+  body{
+    background:
+      radial-gradient(90% 55% at 8% 0%,rgba(255,255,255,.96) 0%,rgba(255,255,255,0) 72%),
+      linear-gradient(155deg,#f8f4ec 0%,#edf4f3 58%,#e8f0f3 100%);
+    color:#17324a;
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
+    -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;overflow:hidden
+  }
   .wrap{height:100%;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 18px);display:flex;flex-direction:column;gap:12px}
-  h1{font-size:26px;font-weight:800;letter-spacing:.06em;text-align:center;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+  h1{font-size:26px;font-weight:900;letter-spacing:.06em;text-align:center;color:#17324a;text-shadow:0 1px 0 rgba(255,255,255,.9)}
   .list{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}
-  .card{min-height:0;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:24px;border:0;background:#1b4c79;color:#fff;text-align:left;text-decoration:none;box-shadow:0 7px 0 rgba(0,0,0,.35);transition:transform .06s linear,box-shadow .06s linear}
-  .card:active{transform:translateY(6px);box-shadow:0 1px 0 rgba(0,0,0,.35)}
-  .card svg{flex:none;width:74px;height:auto}
-  .card>span:last-child{flex:1;min-width:0}
-  .t,.s{display:block}.t{font-size:20px;font-weight:800;line-height:1.25}.s{margin-top:5px;font-size:12px;font-weight:600;color:rgba(255,255,255,.72);line-height:1.4}
-  .card.quiz{background:#1f5f9e;box-shadow:0 7px 0 #123f6c}.card.road{background:#a24400;box-shadow:0 7px 0 #6b2c00}.card.shape{background:#237b66;box-shadow:0 7px 0 #145244}.card.nakama{background:#6a4aa3;box-shadow:0 7px 0 #452f70}
-  .foot{text-align:center;font-size:12px;color:rgba(255,255,255,.45)}
-  @media(max-width:430px){.wrap{gap:10px;padding-left:10px;padding-right:10px}.list{gap:10px}.card{padding:10px;gap:8px}.card svg{width:62px}.t{font-size:17px}.s{font-size:11px}}
+  .card{
+    min-height:0;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:26px;
+    border:2px solid rgba(255,255,255,.78);color:#17324a;text-align:left;text-decoration:none;
+    box-shadow:0 7px 0 rgba(44,62,80,.14),0 13px 24px rgba(44,62,80,.08);
+    transition:transform .08s ease,box-shadow .08s ease;overflow:hidden;position:relative
+  }
+  .card:before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,0) 52%);pointer-events:none}
+  .card:active{transform:translateY(5px);box-shadow:0 2px 0 rgba(44,62,80,.14),0 6px 12px rgba(44,62,80,.06)}
+  .card svg{flex:none;width:74px;height:auto;position:relative;z-index:1;filter:drop-shadow(0 3px 1px rgba(39,55,68,.12))}
+  .card>span:last-child{flex:1;min-width:0;position:relative;z-index:1}
+  .t,.s{display:block}.t{font-size:20px;font-weight:900;line-height:1.25}.s{margin-top:5px;font-size:12px;font-weight:700;color:#435d70;line-height:1.4}
+  .card.quiz{background:linear-gradient(145deg,#c8e2ed,#a9d1df)}
+  .card.road{background:linear-gradient(145deg,#f6d1b8,#edb48d)}
+  .card.shape{background:linear-gradient(145deg,#c7e3cf,#a8cfb4)}
+  .card.nakama{background:linear-gradient(145deg,#ddd2eb,#c3b2dc)}
+  .foot{text-align:center;font-size:12px;font-weight:700;color:#607487}
+  @media(max-width:430px){.wrap{gap:10px;padding-left:10px;padding-right:10px}.list{gap:10px}.card{padding:10px;gap:8px;border-radius:22px}.card svg{width:62px}.t{font-size:17px}.s{font-size:11px}}
   @media(max-height:620px){h1{font-size:22px}.card svg{width:54px}.t{font-size:16px}.s{font-size:10px}}
 </style>
 </head>
@@ -44,10 +60,10 @@ const GAMES=[
   {title:'なかまわけ',sub:'おなじ なかまを さがそう',url:'games/nakamawake/index.html',art:'nakama',cls:'nakama'}
 ];
 const ART={
-  quiz:`<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="16" y="34" width="62" height="54" rx="14" fill="#ffd23f"/><rect x="24" y="44" width="46" height="20" rx="7" fill="#123a5e"/><circle cx="32" cy="92" r="11" fill="#0e1620"/><circle cx="62" cy="92" r="11" fill="#0e1620"/><circle cx="88" cy="38" r="26" fill="#fff"/><text x="88" y="52" text-anchor="middle" font-size="38" font-weight="800" fill="#1f5f9e">?</text></svg>`,
-  shape:`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="31" cy="34" r="21" fill="#ffd23f"/><rect x="55" y="14" width="42" height="42" rx="8" fill="#58bf58"/><path d="M18 105 L47 61 L76 105 Z" fill="#ff6a00"/><rect x="72" y="67" width="34" height="34" rx="7" fill="#2588e6"/></svg>`,
-  road:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M38 8 L82 8 L96 112 L24 112 Z" fill="#4e535b"/><g fill="#ffcf33"><rect x="56" y="12" width="8" height="18"/><rect x="56" y="40" width="8" height="18"/><rect x="56" y="68" width="8" height="18"/><rect x="56" y="96" width="8" height="16"/></g><g transform="translate(60,62)"><rect x="-30" y="-20" width="12" height="18" rx="4" fill="#0e1620"/><rect x="18" y="-20" width="12" height="18" rx="4" fill="#0e1620"/><rect x="-30" y="6" width="12" height="20" rx="4" fill="#0e1620"/><rect x="18" y="6" width="12" height="20" rx="4" fill="#0e1620"/><path d="M0 -36 C12 -36 22 -26 22 -12 C22 4 24 16 18 30 L-18 30 C-24 16 -22 4 -22 -12 C-22 -26 -12 -36 0 -36 Z" fill="#ff6a00" stroke="#fff" stroke-width="3"/><path d="M-11 -2 L11 -2 L15 16 L-15 16 Z" fill="#16202c"/></g></svg>`,
-  nakama:`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="34" cy="38" r="21" fill="#ffd23f"/><circle cx="84" cy="38" r="21" fill="#58bf58"/><rect x="18" y="72" width="34" height="34" rx="8" fill="#2588e6"/><rect x="68" y="72" width="34" height="34" rx="8" fill="#2588e6"/><path d="M52 49h16M43 89h25" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg>`
+  quiz:`<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="16" y="34" width="62" height="54" rx="14" fill="#f3c84b"/><rect x="24" y="44" width="46" height="20" rx="7" fill="#35566c"/><circle cx="32" cy="92" r="11" fill="#24323d"/><circle cx="62" cy="92" r="11" fill="#24323d"/><circle cx="88" cy="38" r="26" fill="#fffaf2"/><text x="88" y="52" text-anchor="middle" font-size="38" font-weight="800" fill="#487b97">?</text></svg>`,
+  shape:`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="31" cy="34" r="21" fill="#f1c84c"/><rect x="55" y="14" width="42" height="42" rx="8" fill="#76b991"/><path d="M18 105 L47 61 L76 105 Z" fill="#df8c62"/><rect x="72" y="67" width="34" height="34" rx="7" fill="#6e9fc1"/></svg>`,
+  road:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M38 8 L82 8 L96 112 L24 112 Z" fill="#5d6870"/><g fill="#f1c84c"><rect x="56" y="12" width="8" height="18"/><rect x="56" y="40" width="8" height="18"/><rect x="56" y="68" width="8" height="18"/><rect x="56" y="96" width="8" height="16"/></g><g transform="translate(60,62)"><rect x="-30" y="-20" width="12" height="18" rx="4" fill="#27333b"/><rect x="18" y="-20" width="12" height="18" rx="4" fill="#27333b"/><rect x="-30" y="6" width="12" height="20" rx="4" fill="#27333b"/><rect x="18" y="6" width="12" height="20" rx="4" fill="#27333b"/><path d="M0 -36 C12 -36 22 -26 22 -12 C22 4 24 16 18 30 L-18 30 C-24 16 -22 4 -22 -12 C-22 -26 -12 -36 0 -36 Z" fill="#df8c62" stroke="#fffaf2" stroke-width="3"/><path d="M-11 -2 L11 -2 L15 16 L-15 16 Z" fill="#34444f"/></g></svg>`,
+  nakama:`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="34" cy="38" r="21" fill="#f1c84c"/><circle cx="84" cy="38" r="21" fill="#76b991"/><rect x="18" y="72" width="34" height="34" rx="8" fill="#6e9fc1"/><rect x="68" y="72" width="34" height="34" rx="8" fill="#9f86bd"/><path d="M52 49h16M43 89h25" stroke="#fffaf2" stroke-width="7" stroke-linecap="round"/></svg>`
 };
 document.getElementById('list').innerHTML=GAMES.map(g=>`<a class="card ${g.cls||''}" href="${g.url}">${ART[g.art]||''}<span><span class="t">${g.title}</span><span class="s">${g.sub}</span></span></a>`).join('');
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
