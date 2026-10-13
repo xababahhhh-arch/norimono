@@ -1,5 +1,6 @@
 /* ミニカーロード用：子ども向けの「おもちゃの車」サウンド。
-   実車エンジンの再現ではなく、やわらかく・低音ゴロゴロや路面ノイズなしで作る。 */
+   実車エンジンの再現ではなく、やわらかく・低音ゴロゴロや路面ノイズなしで作る。
+   ニトロ音は既存実装をそのまま使う。 */
 (function () {
   'use strict';
 
@@ -9,7 +10,6 @@
   var engineSeg = document.getElementById('engineSeg');
   var speedVal = document.getElementById('speedVal');
   var btnSound = document.getElementById('btnSound');
-  var padNitro = document.getElementById('padNitro');
   if (!engineOn || !engineSeg || !speedVal) return;
 
   /* 既存のリアル系エンジン音だけを先に止める。
@@ -36,12 +36,10 @@
     lastChirpAt: 0
   };
 
-  /* どれも「車種らしさ」は残すが、実車の爆音にはしない。
-     triangle / sine のみ。ノイズ源と矩形波は使わない。 */
   var PROFILES = {
-    sports:    { base: 150, range: 120, level: 0.030, shine: 0.006, cut: 1250 }, // きゅいーん
-    sedan:     { base: 105, range:  78, level: 0.026, shine: 0.004, cut:  900 }, // やさしい ぶーん
-    ambulance: { base: 125, range:  72, level: 0.027, shine: 0.005, cut: 1000 }  // ふんわり ぶーん
+    sports:    { base: 150, range: 120, level: 0.030, shine: 0.006, cut: 1250 },
+    sedan:     { base: 105, range:  78, level: 0.026, shine: 0.004, cut:  900 },
+    ambulance: { base: 125, range:  72, level: 0.027, shine: 0.005, cut: 1000 }
   };
 
   function soundIsOn() {
@@ -116,23 +114,6 @@
     o.start(now); o.stop(now + 0.25);
   }
 
-  function sparkle() {
-    if (!ensureAudio() || !audio.enabled || !soundIsOn()) return;
-    var ctx = audio.ctx;
-    var notes = [740, 930, 1175];
-    notes.forEach(function (f, i) {
-      var o = ctx.createOscillator();
-      var g = ctx.createGain();
-      var at = ctx.currentTime + i * 0.055;
-      o.type = 'sine'; o.frequency.value = f;
-      g.gain.setValueAtTime(0.0001, at);
-      g.gain.exponentialRampToValueAtTime(0.022, at + 0.012);
-      g.gain.exponentialRampToValueAtTime(0.0001, at + 0.17);
-      o.connect(g); g.connect(audio.master);
-      o.start(at); o.stop(at + 0.19);
-    });
-  }
-
   function update() {
     if (audio.ready) {
       var ctx = audio.ctx;
@@ -142,8 +123,6 @@
       var p = PROFILES[audio.profile] || PROFILES.sports;
       var active = audio.enabled && soundIsOn() && speed > 2;
 
-      /* 走行音は小さく、速度が上がるほど少し明るくなるだけ。
-         アイドリング騒音は出さない。 */
       audio.master.gain.setTargetAtTime(active ? 0.82 : 0, now, 0.08);
       audio.main.frequency.setTargetAtTime(p.base + p.range * norm, now, 0.09);
       audio.shine.frequency.setTargetAtTime((p.base + p.range * norm) * 2.02, now, 0.09);
@@ -151,8 +130,6 @@
       audio.shineGain.gain.setTargetAtTime(active ? p.shine * (0.45 + norm * 0.55) : 0, now, 0.12);
       audio.filter.frequency.setTargetAtTime(p.cut + norm * 420, now, 0.12);
 
-      /* 一定速度に達した時だけ短い「できた！」感のある音。
-         連続音にしないので、騒がしくなりにくい。 */
       var stage = speed >= 105 ? 2 : speed >= 65 ? 1 : speed >= 30 ? 0 : -1;
       if (stage > audio.lastStage && performance.now() - audio.lastChirpAt > 1000) {
         var starts = [520, 620, 740];
@@ -164,11 +141,9 @@
     requestAnimationFrame(update);
   }
 
-  /* 最初のタップでだけAudioContextを起動。自動再生はしない。 */
   document.addEventListener('pointerdown', function () { ensureAudio(); }, { passive: true });
   document.addEventListener('touchstart', function () { ensureAudio(); }, { passive: true });
 
-  /* 既存のリアル系エンジン音が再度ONにならないよう、設定UIをこの音に乗っ取る。 */
   document.addEventListener('change', function (e) {
     if (e.target !== engineOn) return;
     e.stopImmediatePropagation();
@@ -193,8 +168,6 @@
       audio.profile === 'sports' ? 820 : audio.profile === 'sedan' ? 650 : 720, 0.025);
   }, true);
 
-  if (padNitro) padNitro.addEventListener('pointerdown', sparkle, { passive: true });
-
   document.addEventListener('visibilitychange', function () {
     if (!audio.ready) return;
     if (document.hidden) {
@@ -203,7 +176,6 @@
     }
   });
 
-  /* 設定名だけ、子ども向けの意図が分かるように少し柔らかくする。 */
   var title = engineSeg.parentElement && engineSeg.parentElement.querySelector('span');
   if (title) title.textContent = 'たのしい はしる音';
   var small = engineOn.parentElement && engineOn.parentElement.querySelector('small');
