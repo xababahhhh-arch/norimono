@@ -31,6 +31,20 @@
     document.body.appendChild(a);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add);
-  else add();
+  function loadMinicarKidsSound() {
+    if (!/\/games\/minicar\//.test(location.pathname)) return;
+    if (document.querySelector('script[data-minicar-kids-sound]')) return;
+    var s = document.createElement('script');
+    s.src = '../../minicar-kids-sound.js';
+    s.dataset.minicarKidsSound = '1';
+    document.body.appendChild(s);
+  }
+
+  function init() {
+    add();
+    loadMinicarKidsSound();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
