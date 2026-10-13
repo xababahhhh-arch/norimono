@@ -40,9 +40,16 @@
     document.body.appendChild(s);
   }
 
-  /* かげあて：正解後の次問題への移動は、読み上げが終わるまで待つ。
-     ゲーム本体の「1550ms後に次へ」というタイマーだけを包み、
-     speechSynthesis がまだ話していれば待機 → 終了後400ms空ける。 */
+  function loadClassicBgm() {
+    if (/\/games\/minicar\//.test(location.pathname)) return;
+    if (document.querySelector('script[data-classic-bgm]')) return;
+    var s = document.createElement('script');
+    s.src = /\/games\//.test(location.pathname) ? '../../classic-bgm.js' : 'classic-bgm.js';
+    s.dataset.classicBgm = '1';
+    document.body.appendChild(s);
+  }
+
+  /* かげあて：正解後の次問題への移動は、読み上げが終わるまで待つ。 */
   function installShadowVoiceGap() {
     if (!/\/games\/shadow\//.test(location.pathname)) return;
     if (window.__shadowVoiceGapInstalled) return;
@@ -66,9 +73,7 @@
     };
   }
 
-  /* かげあて：間違えて押した乗り物名を読み上げる。
-     ゲーム本体が wrong クラスを付けた直後に、元の「もういちど」を
-     「○○だよ。もういちど…」へ差し替える。 */
+  /* かげあて：間違えて押した乗り物名を読み上げる。 */
   function installShadowWrongVoice() {
     if (!/\/games\/shadow\//.test(location.pathname)) return;
     if (!('MutationObserver' in window) || !('speechSynthesis' in window)) return;
@@ -100,6 +105,7 @@
   function init() {
     add();
     loadMinicarKidsSound();
+    loadClassicBgm();
     installShadowVoiceGap();
     installShadowWrongVoice();
   }
