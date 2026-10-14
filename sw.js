@@ -1,12 +1,14 @@
 /* のりもの あそび（ゲーム集）のオフライン用。
    ゲームを足したら CORE に1行足すと、最初からオフラインで遊べる。 */
-const CACHE = 'norimono-hub-v9';
+const CACHE = 'norimono-hub-v10';
 const CORE = [
   './',
   './index.html',
   './manifest.webmanifest',
   './back.js',
   './classic-bgm.js',
+  './game-feedback.js',
+  './shadow-polish.js',
   './icons/menu-180.png',
   './icons/menu-192.png',
   './icons/menu-512.png',
