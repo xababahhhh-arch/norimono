@@ -49,6 +49,66 @@
     document.body.appendChild(s);
   }
 
+  /* なかまわけで好評だった「正解音・間違い音・短い祝福」を他ゲームでも共通化。 */
+  function loadSharedFeedback() {
+    if (!/\/games\/(shadow|shapes)\//.test(location.pathname)) return;
+    if (window.NoriFeedback) { afterFeedbackReady(); return; }
+    var old = document.querySelector('script[data-game-feedback]');
+    if (old) { old.addEventListener('load', afterFeedbackReady, { once:true }); return; }
+    var s = document.createElement('script');
+    s.src = '../../game-feedback.js';
+    s.dataset.gameFeedback = '1';
+    s.addEventListener('load', afterFeedbackReady, { once:true });
+    document.body.appendChild(s);
+  }
+
+  function afterFeedbackReady() {
+    loadShadowPolish();
+    installShapesFeedback();
+  }
+
+  function loadShadowPolish() {
+    if (!/\/games\/shadow\//.test(location.pathname)) return;
+    if (document.querySelector('script[data-shadow-polish]')) return;
+    var s = document.createElement('script');
+    s.src = '../../shadow-polish.js';
+    s.dataset.shadowPolish = '1';
+    document.body.appendChild(s);
+  }
+
+  function installShapesFeedback() {
+    if (!/\/games\/shapes\//.test(location.pathname)) return;
+    if (window.__shapesFeedbackInstalled || !window.NoriFeedback) return;
+    window.__shapesFeedbackInstalled = true;
+    var celebrate = document.getElementById('celebrate');
+    var restart = document.getElementById('restart');
+    var vehicle = document.getElementById('vehicle');
+    if (celebrate) {
+      new MutationObserver(function(){
+        if (celebrate.classList.contains('show')) {
+          if (celebrate.dataset.fxDone === '1') return;
+          celebrate.dataset.fxDone = '1';
+          NoriFeedback.correct();
+          var r = vehicle ? vehicle.getBoundingClientRect() : celebrate.getBoundingClientRect();
+          NoriFeedback.burst(r.left + r.width/2, r.top + r.height/2, 12);
+        } else {
+          delete celebrate.dataset.fxDone;
+        }
+      }).observe(celebrate,{attributes:true,attributeFilter:['class']});
+    }
+    if (restart) {
+      new MutationObserver(function(){
+        if (restart.classList.contains('show')) {
+          if (restart.dataset.endFx === '1') return;
+          restart.dataset.endFx = '1';
+          NoriFeedback.fanfare();
+        } else {
+          delete restart.dataset.endFx;
+        }
+      }).observe(restart,{attributes:true,attributeFilter:['class']});
+    }
+  }
+
   /* かげあて：正解後の次問題への移動は、読み上げが終わるまで待つ。 */
   function installShadowVoiceGap() {
     if (!/\/games\/shadow\//.test(location.pathname)) return;
@@ -61,7 +121,6 @@
       if (delay !== 1550 || typeof fn !== 'function') {
         return nativeSetTimeout.apply(window, [fn, delay].concat(args));
       }
-
       return nativeSetTimeout(function waitForVoice() {
         var synth = window.speechSynthesis;
         if (synth && (synth.speaking || synth.pending)) {
@@ -98,7 +157,6 @@
         } catch (_) { }
       });
     });
-
     observer.observe(box, { subtree: true, attributes: true, attributeFilter: ['class'] });
   }
 
@@ -106,6 +164,7 @@
     add();
     loadMinicarKidsSound();
     loadClassicBgm();
+    loadSharedFeedback();
     installShadowVoiceGap();
     installShadowWrongVoice();
   }
