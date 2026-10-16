@@ -1,11 +1,24 @@
-/* ゲームの画面に「← もどる」ボタンを出す。
-   使い方：ゲームのHTMLの </body> の直前に次の1行を入れる。
-     <script src="back.js"></script>
-   ゲームが下のフォルダにある場合は、戻り先を指定する。
-     <script src="../../back.js" data-home="../../index.html"></script>  */
+/* ゲーム共通UI：戻るボタン、音、フィードバック、iPhone向け基本レイアウト */
 (function () {
   var me = document.currentScript;
   var home = (me && me.dataset && me.dataset.home) ? me.dataset.home : 'index.html';
+
+  function installLayoutGuard() {
+    if (document.getElementById('norimonoSharedLayout')) return;
+    document.documentElement.classList.add('norimono-game');
+    document.body.classList.add('norimono-game-body');
+    var style = document.createElement('style');
+    style.id = 'norimonoSharedLayout';
+    style.textContent = [
+      ':root{--nori-edge:12px;--nori-radius:22px;--nori-shadow:0 5px 0 rgba(0,0,0,.12)}',
+      'html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}',
+      'button,a,[role="button"]{touch-action:manipulation}',
+      'button{font-family:inherit}',
+      '#backToMenu{min-width:88px!important;min-height:44px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0 14px!important;border-radius:16px!important;font-size:15px!important;line-height:1!important}',
+      '@media(max-width:390px){#backToMenu{left:calc(env(safe-area-inset-left,0px) + 8px)!important;top:calc(env(safe-area-inset-top,0px) + 8px)!important;min-width:84px!important;min-height:42px!important;font-size:14px!important}}'
+    ].join('\n');
+    document.head.appendChild(style);
+  }
 
   function add() {
     if (document.getElementById('backToMenu')) return;
@@ -13,20 +26,21 @@
     a.id = 'backToMenu';
     a.href = home;
     a.textContent = '← もどる';
+    a.setAttribute('aria-label', 'メニューにもどる');
     a.style.cssText = [
       'position:fixed',
       'left:calc(env(safe-area-inset-left,0px) + 10px)',
       'top:calc(env(safe-area-inset-top,0px) + 10px)',
       'z-index:9999',
       'padding:10px 14px',
-      'border-radius:14px',
-      'background:rgba(10,14,20,.68)',
+      'border-radius:16px',
+      'background:rgba(10,14,20,.72)',
       'color:#fff',
-      'font:700 14px/1 -apple-system,BlinkMacSystemFont,"Hiragino Sans",system-ui,sans-serif',
+      'font:800 15px/1 -apple-system,BlinkMacSystemFont,"Hiragino Sans",system-ui,sans-serif',
       'text-decoration:none',
-      '-webkit-backdrop-filter:blur(6px)',
-      'backdrop-filter:blur(6px)',
-      'box-shadow:0 2px 8px rgba(0,0,0,.3)'
+      '-webkit-backdrop-filter:blur(8px)',
+      'backdrop-filter:blur(8px)',
+      'box-shadow:0 3px 10px rgba(0,0,0,.28)'
     ].join(';');
     document.body.appendChild(a);
   }
@@ -49,7 +63,6 @@
     document.body.appendChild(s);
   }
 
-  /* なかまわけで好評だった「正解音・間違い音・短い祝福」を他ゲームでも共通化。 */
   function loadSharedFeedback() {
     if (!/\/games\/(shadow|shapes)\//.test(location.pathname)) return;
     if (window.NoriFeedback) { afterFeedbackReady(); return; }
@@ -91,9 +104,7 @@
           NoriFeedback.correct();
           var r = vehicle ? vehicle.getBoundingClientRect() : celebrate.getBoundingClientRect();
           NoriFeedback.burst(r.left + r.width/2, r.top + r.height/2, 12);
-        } else {
-          delete celebrate.dataset.fxDone;
-        }
+        } else delete celebrate.dataset.fxDone;
       }).observe(celebrate,{attributes:true,attributeFilter:['class']});
     }
     if (restart) {
@@ -102,46 +113,34 @@
           if (restart.dataset.endFx === '1') return;
           restart.dataset.endFx = '1';
           NoriFeedback.fanfare();
-        } else {
-          delete restart.dataset.endFx;
-        }
+        } else delete restart.dataset.endFx;
       }).observe(restart,{attributes:true,attributeFilter:['class']});
     }
   }
 
-  /* かげあて：正解後の次問題への移動は、読み上げが終わるまで待つ。 */
   function installShadowVoiceGap() {
     if (!/\/games\/shadow\//.test(location.pathname)) return;
     if (window.__shadowVoiceGapInstalled) return;
     window.__shadowVoiceGapInstalled = true;
-
     var nativeSetTimeout = window.setTimeout.bind(window);
     window.setTimeout = function (fn, delay) {
       var args = Array.prototype.slice.call(arguments, 2);
-      if (delay !== 1550 || typeof fn !== 'function') {
-        return nativeSetTimeout.apply(window, [fn, delay].concat(args));
-      }
+      if (delay !== 1550 || typeof fn !== 'function') return nativeSetTimeout.apply(window, [fn, delay].concat(args));
       return nativeSetTimeout(function waitForVoice() {
         var synth = window.speechSynthesis;
-        if (synth && (synth.speaking || synth.pending)) {
-          nativeSetTimeout(waitForVoice, 100);
-          return;
-        }
+        if (synth && (synth.speaking || synth.pending)) { nativeSetTimeout(waitForVoice, 100); return; }
         nativeSetTimeout(function () { fn.apply(window, args); }, 400);
       }, delay);
     };
   }
 
-  /* かげあて：間違えて押した乗り物名を読み上げる。 */
   function installShadowWrongVoice() {
     if (!/\/games\/shadow\//.test(location.pathname)) return;
     if (!('MutationObserver' in window) || !('speechSynthesis' in window)) return;
-
     var box = document.getElementById('choices');
     if (!box || box.dataset.wrongVoiceReady === '1') return;
     box.dataset.wrongVoiceReady = '1';
-
-    var observer = new MutationObserver(function (mutations) {
+    new MutationObserver(function (mutations) {
       mutations.forEach(function (m) {
         var el = m.target;
         if (!el || !el.classList || !el.classList.contains('choice') || !el.classList.contains('wrong')) return;
@@ -150,17 +149,14 @@
         try {
           speechSynthesis.cancel();
           var u = new SpeechSynthesisUtterance(name + 'だよ。もういちど、かげを よくみてね');
-          u.lang = 'ja-JP';
-          u.rate = 0.86;
-          u.pitch = 1.05;
-          speechSynthesis.speak(u);
+          u.lang = 'ja-JP';u.rate = 0.86;u.pitch = 1.05;speechSynthesis.speak(u);
         } catch (_) { }
       });
-    });
-    observer.observe(box, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    }).observe(box, { subtree:true, attributes:true, attributeFilter:['class'] });
   }
 
   function init() {
+    installLayoutGuard();
     add();
     loadMinicarKidsSound();
     loadClassicBgm();
