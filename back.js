@@ -73,7 +73,7 @@
       window.__noriInteractionStarted = true;
       gate.remove();
       try { document.dispatchEvent(new Event('norimono-started')); } catch (_) {}
-      if (/\/games\/(shapes|shadow)\//.test(path)) {
+      if (/\/games\/shapes\//.test(path)) {
         var replay = document.getElementById('voice');
         if (replay) setTimeout(function(){ replay.click(); }, 350);
       }
@@ -128,16 +128,12 @@
     if(celebrate)new MutationObserver(function(){if(celebrate.classList.contains('show')){if(celebrate.dataset.fxDone==='1')return;celebrate.dataset.fxDone='1';NoriFeedback.correct();var r=vehicle?vehicle.getBoundingClientRect():celebrate.getBoundingClientRect();NoriFeedback.burst(r.left+r.width/2,r.top+r.height/2,12)}else delete celebrate.dataset.fxDone}).observe(celebrate,{attributes:true,attributeFilter:['class']});
     if(restart)new MutationObserver(function(){if(restart.classList.contains('show')){if(restart.dataset.endFx==='1')return;restart.dataset.endFx='1';NoriFeedback.fanfare()}else delete restart.dataset.endFx}).observe(restart,{attributes:true,attributeFilter:['class']});
   }
-  function installShadowVoiceGap(){
-    if(!/\/games\/shadow\//.test(location.pathname)||window.__shadowVoiceGapInstalled)return;
-    window.__shadowVoiceGapInstalled=true;var nativeSetTimeout=window.setTimeout.bind(window);
-    window.setTimeout=function(fn,delay){var args=Array.prototype.slice.call(arguments,2);if(delay!==1550||typeof fn!=='function')return nativeSetTimeout.apply(window,[fn,delay].concat(args));return nativeSetTimeout(function waitForVoice(){var synth=window.speechSynthesis;if(synth&&(synth.speaking||synth.pending)){nativeSetTimeout(waitForVoice,100);return}nativeSetTimeout(function(){fn.apply(window,args)},400)},delay)};
+  function installVoiceGap(pathMatch,delay) {
+    if(!pathMatch.test(location.pathname))return;
+    var key='__noriVoiceGap'+delay;if(window[key])return;window[key]=true;
+    var nativeSetTimeout=window.setTimeout.bind(window);
+    window.setTimeout=function(fn,wait){var args=Array.prototype.slice.call(arguments,2);if(wait!==delay||typeof fn!=='function')return nativeSetTimeout.apply(window,[fn,wait].concat(args));return nativeSetTimeout(function waitForVoice(){var synth=window.speechSynthesis;if(synth&&(synth.speaking||synth.pending)){nativeSetTimeout(waitForVoice,100);return}nativeSetTimeout(function(){fn.apply(window,args)},400)},wait)};
   }
-  function installShadowWrongVoice(){
-    if(!/\/games\/shadow\//.test(location.pathname)||!('MutationObserver'in window)||!('speechSynthesis'in window))return;
-    var box=document.getElementById('choices');if(!box||box.dataset.wrongVoiceReady==='1')return;box.dataset.wrongVoiceReady='1';
-    new MutationObserver(function(ms){ms.forEach(function(m){var el=m.target;if(!el||!el.classList||!el.classList.contains('choice')||!el.classList.contains('wrong'))return;var name=el.getAttribute('aria-label')||'';if(!name)return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(name+'だよ。もういちど、かげを よくみてね');u.lang='ja-JP';u.rate=.86;u.pitch=1.05;speechSynthesis.speak(u)}catch(_){}})}).observe(box,{subtree:true,attributes:true,attributeFilter:['class']});
-  }
-  function init(){installLayoutGuard();add();installStartupVoice();loadMinicarKidsSound();loadClassicBgm();loadSharedFeedback();installShadowVoiceGap();installShadowWrongVoice()}
+  function init(){installLayoutGuard();add();installStartupVoice();loadMinicarKidsSound();loadClassicBgm();loadSharedFeedback();installVoiceGap(/\/games\/shadow\//,1550);installVoiceGap(/\/games\/shapes\//,1650)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
