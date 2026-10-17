@@ -20,10 +20,17 @@
       'button,a,[role="button"]{touch-action:manipulation}',
       'button{font-family:inherit}',
       '#backToMenu{min-width:88px!important;min-height:44px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0 14px!important;border-radius:16px!important;font-size:15px!important;line-height:1!important}',
+      '#noriVoiceGate{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 70px) 20px calc(env(safe-area-inset-bottom,0px) + 24px);background:rgba(240,249,255,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}',
+      '#noriVoiceGate button{width:min(78vw,330px);min-height:190px;border:0;border-radius:34px;background:#fff;color:#17324a;box-shadow:0 9px 0 rgba(23,50,74,.16),0 18px 42px rgba(23,50,74,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-weight:900}',
+      '#noriVoiceGate .nori-gate-icons{font-size:68px;line-height:1;animation:noriGateTap .9s ease-in-out infinite alternate}',
+      '#noriVoiceGate .nori-gate-main{font-size:25px}',
+      '#noriVoiceGate .nori-gate-sub{font-size:15px;opacity:.7}',
+      '#noriVoiceGate.listening .nori-gate-icons{animation:none}',
+      '@keyframes noriGateTap{to{transform:translateY(8px) scale(1.04)}}',
       '.nori-minicar .controls{bottom:calc(env(safe-area-inset-bottom,0px) + 16px)!important}',
       '.nori-minicar .hud{top:var(--nm-back-h)!important}',
       '.nori-atekko #screen-start{padding-top:calc(env(safe-area-inset-top,0px) + 58px)!important}',
-      '@media(max-width:390px){#backToMenu{left:calc(env(safe-area-inset-left,0px) + 8px)!important;top:calc(env(safe-area-inset-top,0px) + 8px)!important;min-width:84px!important;min-height:42px!important;font-size:14px!important}.nori-minicar .hud{left:calc(env(safe-area-inset-left,0px) + 8px)!important;right:calc(env(safe-area-inset-right,0px) + 8px)!important;gap:8px!important}.nori-minicar .controls{left:calc(env(safe-area-inset-left,0px) + 8px)!important;right:calc(env(safe-area-inset-right,0px) + 8px)!important}}'
+      '@media(max-width:390px){#backToMenu{left:calc(env(safe-area-inset-left,0px) + 8px)!important;top:calc(env(safe-area-inset-top,0px) + 8px)!important;min-width:84px!important;min-height:42px!important;font-size:14px!important}#noriVoiceGate button{min-height:170px;border-radius:28px}#noriVoiceGate .nori-gate-icons{font-size:58px}#noriVoiceGate .nori-gate-main{font-size:22px}.nori-minicar .hud{left:calc(env(safe-area-inset-left,0px) + 8px)!important;right:calc(env(safe-area-inset-right,0px) + 8px)!important;gap:8px!important}.nori-minicar .controls{left:calc(env(safe-area-inset-left,0px) + 8px)!important;right:calc(env(safe-area-inset-right,0px) + 8px)!important}}'
     ].join('\n');
     document.head.appendChild(style);
   }
@@ -39,6 +46,57 @@
       'position:fixed','left:calc(env(safe-area-inset-left,0px) + 10px)','top:calc(env(safe-area-inset-top,0px) + 10px)','z-index:9999','padding:10px 14px','border-radius:16px','background:rgba(10,14,20,.72)','color:#fff','font:800 15px/1 -apple-system,BlinkMacSystemFont,"Hiragino Sans",system-ui,sans-serif','text-decoration:none','-webkit-backdrop-filter:blur(8px)','backdrop-filter:blur(8px)','box-shadow:0 3px 10px rgba(0,0,0,.28)'
     ].join(';');
     document.body.appendChild(a);
+  }
+
+  function installStartupVoice() {
+    var path = location.pathname || '';
+    var intro = '';
+    if (/\/games\/shapes\//.test(path)) intro = 'のりものを なおそう。ひかっている ところを タッチして、のりものを なおしてね。';
+    else if (/\/games\/shadow\//.test(path)) intro = 'のりもの かげあて。かげと おなじ のりものを タッチしてね。';
+    else if (/\/games\/nakamawake\//.test(path)) intro = 'なかまわけ。おなじ なかまを えらんでね。';
+    else if (/\/games\/signal\//.test(path)) intro = 'しんごう できるかな。あかは とまる。あおになったら くるまを タッチしてね。';
+    else if (/\/games\/garage\//.test(path)) intro = 'おうちに かえそう。のりものが かえる ばしょを えらんでね。';
+    else if (/\/games\/sound\//.test(path)) intro = 'おとで あてよう。おとを きいて、おなじ のりものを タッチしてね。';
+    if (!intro || document.getElementById('noriVoiceGate')) return;
+
+    try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (_) {}
+    window.__noriInteractionStarted = false;
+
+    var gate = document.createElement('div');
+    gate.id = 'noriVoiceGate';
+    gate.innerHTML = '<button type="button" aria-label="タップして はじめる"><span class="nori-gate-icons">👆 🔊</span><span class="nori-gate-main">タップして はじめる</span><span class="nori-gate-sub">おとを きいてね</span></button>';
+    var btn = gate.querySelector('button');
+    var used = false;
+
+    function finishGate() {
+      if (window.__noriInteractionStarted) return;
+      window.__noriInteractionStarted = true;
+      gate.remove();
+      try { document.dispatchEvent(new Event('norimono-started')); } catch (_) {}
+      if (/\/games\/(shapes|shadow)\//.test(path)) {
+        var replay = document.getElementById('voice');
+        if (replay) setTimeout(function(){ replay.click(); }, 350);
+      }
+    }
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();e.stopPropagation();
+      if (used) return;used = true;gate.classList.add('listening');
+      btn.querySelector('.nori-gate-icons').textContent = '🔊';
+      btn.querySelector('.nori-gate-main').textContent = 'きいてね';
+      if (!('speechSynthesis' in window)) { setTimeout(finishGate, 500); return; }
+      try {
+        speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(intro);
+        u.lang = 'ja-JP';u.rate = .84;u.pitch = 1.04;
+        var ended = false;
+        var done = function(){ if(ended)return;ended=true;setTimeout(finishGate,300); };
+        u.onend = done;u.onerror = function(){setTimeout(done,500)};
+        speechSynthesis.speak(u);
+        setTimeout(function(){if(!ended)done()},15000);
+      } catch (_) { setTimeout(finishGate, 700); }
+    });
+    document.body.appendChild(gate);
   }
 
   function loadMinicarKidsSound() {
@@ -80,6 +138,6 @@
     var box=document.getElementById('choices');if(!box||box.dataset.wrongVoiceReady==='1')return;box.dataset.wrongVoiceReady='1';
     new MutationObserver(function(ms){ms.forEach(function(m){var el=m.target;if(!el||!el.classList||!el.classList.contains('choice')||!el.classList.contains('wrong'))return;var name=el.getAttribute('aria-label')||'';if(!name)return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(name+'だよ。もういちど、かげを よくみてね');u.lang='ja-JP';u.rate=.86;u.pitch=1.05;speechSynthesis.speak(u)}catch(_){}})}).observe(box,{subtree:true,attributes:true,attributeFilter:['class']});
   }
-  function init(){installLayoutGuard();add();loadMinicarKidsSound();loadClassicBgm();loadSharedFeedback();installShadowVoiceGap();installShadowWrongVoice()}
+  function init(){installLayoutGuard();add();installStartupVoice();loadMinicarKidsSound();loadClassicBgm();loadSharedFeedback();installShadowVoiceGap();installShadowWrongVoice()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
