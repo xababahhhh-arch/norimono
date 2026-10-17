@@ -1,5 +1,5 @@
 /* のりもの あそび（ゲーム集）のオフライン用。 */
-const CACHE = 'norimono-hub-v17';
+const CACHE = 'norimono-hub-v18';
 const CORE = ['./','./index.html','./manifest.webmanifest','./back.js','./classic-bgm.js','./game-feedback.js','./shadow-polish.js','./icons/menu-180.png','./icons/menu-192.png','./icons/menu-512.png','./atekko.html','./app.js','./style.css','./vehicles.js','./games/minicar/index.html','./games/shapes/index.html','./games/shadow/index.html','./games/signal/index.html','./games/garage/index.html','./games/sound/index.html','./games/common/core.js','./games/nakamawake/index.html','./games/nakamawake/style.css','./games/nakamawake/nakama-data.js','./games/nakamawake/nakamawake.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
