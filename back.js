@@ -1,15 +1,86 @@
-/* ゲーム共通UI：戻るボタン、音声開始、iPhone向け基本レイアウト */
-(function(){
-'use strict';
-var me=document.currentScript;
-var home=(me&&me.dataset&&me.dataset.home)?me.dataset.home:'index.html';
-function style(){if(document.getElementById('norimonoSharedLayout'))return;var s=document.createElement('style');s.id='norimonoSharedLayout';s.textContent='html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}button,a,[role="button"]{touch-action:manipulation}#backToMenu{min-width:88px!important;min-height:44px!important;display:flex!important;align-items:center!important;justify-content:center!important}#noriVoiceGate{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 70px) 20px calc(env(safe-area-inset-bottom,0px) + 24px);background:rgba(240,249,255,.88);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}#noriVoiceGate button{width:min(78vw,330px);min-height:185px;border:0;border-radius:34px;background:#fff;color:#17324a;box-shadow:0 9px 0 rgba(23,50,74,.16),0 18px 42px rgba(23,50,74,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-weight:900}#noriVoiceGate .icons{font-size:66px;line-height:1;animation:noriTap .9s ease-in-out infinite alternate}#noriVoiceGate .main{font-size:25px}#noriVoiceGate .sub{font-size:15px;opacity:.7}@keyframes noriTap{to{transform:translateY(8px) scale(1.04)}}@media(max-width:390px){#noriVoiceGate button{min-height:165px;border-radius:28px}#noriVoiceGate .icons{font-size:56px}#noriVoiceGate .main{font-size:22px}}';document.head.appendChild(s)}
-function addBack(){if(document.getElementById('backToMenu'))return;var a=document.createElement('a');a.id='backToMenu';a.href=home;a.textContent='← もどる';a.setAttribute('aria-label','メニューにもどる');a.style.cssText='position:fixed;left:calc(env(safe-area-inset-left,0px) + 10px);top:calc(env(safe-area-inset-top,0px) + 10px);z-index:9999;padding:10px 14px;border-radius:16px;background:rgba(10,14,20,.72);color:#fff;font:800 15px/1 -apple-system,BlinkMacSystemFont,"Hiragino Sans",system-ui,sans-serif;text-decoration:none;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 3px 10px rgba(0,0,0,.28)';document.body.appendChild(a)}
-function japaneseVoice(){if(!('speechSynthesis'in window))return null;var bad=/Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley|Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Kathy|Ralph/i;var vs=(speechSynthesis.getVoices()||[]).filter(function(v){return /^ja([-_]|$)/i.test(v.lang||'')&&!bad.test(v.name)});function score(v){var n=0;if(/premium|プレミアム/i.test(v.name))n+=100;if(/enhanced|拡張/i.test(v.name))n+=60;if(/Kyoko|O-ren|Otoya|Hattori|Google/i.test(v.name))n+=20;return n}vs.sort(function(a,b){return score(b)-score(a)});return vs[0]||null}
-function introFor(path){if(/\/games\/shapes\//.test(path))return'のりものを なおそう。ひかっている ところを タッチして、のりものを なおしてね。';if(/\/games\/shadow\//.test(path))return'のりもの かげあて。かげと おなじ のりものを タッチしてね。';if(/\/games\/nakamawake\//.test(path))return'なかまわけ。おなじ なかまを えらんでね。';if(/\/games\/signal\//.test(path))return'しんごう できるかな。あかは とまる。あおになったら くるまを タッチしてね。';if(/\/games\/garage\//.test(path))return'おうちに かえそう。のりものが かえる ばしょを えらんでね。';if(/\/games\/sound\//.test(path))return'おとで あてよう。おとを きいて、おなじ のりものを タッチしてね。';if(/\/games\/route\//.test(path))return'どっちの みち。じゃまものが ない、あいている みちを タッチしてね。';if(/\/games\/count\//.test(path))return'なんだい いるかな。まると おなじ かずの くるまを タッチしてね。';return''}
-function gate(){var path=location.pathname||'',intro=introFor(path);if(!intro||document.getElementById('noriVoiceGate'))return;try{speechSynthesis.cancel()}catch(e){}window.__noriInteractionStarted=false;var g=document.createElement('div');g.id='noriVoiceGate';g.innerHTML='<button type="button" aria-label="タップして はじめる"><span class="icons">👆 🔊</span><span class="main">タップして はじめる</span><span class="sub">おとを きいてね</span></button>';var b=g.querySelector('button'),used=false;function finish(){if(window.__noriInteractionStarted)return;window.__noriInteractionStarted=true;g.remove();try{document.dispatchEvent(new Event('norimono-started'))}catch(e){}}b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();if(used)return;used=true;b.querySelector('.icons').textContent='🔊';b.querySelector('.main').textContent='きいてね';if(!('speechSynthesis'in window)){setTimeout(finish,400);return}try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(intro);u.lang='ja-JP';u.rate=.96;u.pitch=1;u.volume=.86;var v=japaneseVoice();if(v)u.voice=v;var ended=false;var done=function(){if(ended)return;ended=true;setTimeout(finish,320)};u.onend=done;u.onerror=done;speechSynthesis.speak(u);setTimeout(function(){if(!ended&&!speechSynthesis.speaking)done()},12000)}catch(_){setTimeout(finish,600)}});document.body.appendChild(g)}
-function load(src,key){if(document.querySelector('script['+key+']'))return;var s=document.createElement('script');s.src=src;s.setAttribute(key,'1');document.body.appendChild(s)}
-function extras(){var p=location.pathname;if(/\/games\/minicar\//.test(p))load('../../minicar-kids-sound.js','data-minicar-kids-sound');else load(/\/games\//.test(p)?'../../classic-bgm.js':'classic-bgm.js','data-classic-bgm');if(/\/games\/(shadow|shapes)\//.test(p))load('../../game-feedback.js','data-game-feedback');if(/\/games\/shadow\//.test(p))load('../../shadow-polish.js','data-shadow-polish')}
-function init(){style();addBack();gate();extras()}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+/* ゲーム共通UI：戻るボタン、音、フィードバック、iPhone向け基本レイアウト */
+(function () {
+  var me = document.currentScript;
+  var home = (me && me.dataset && me.dataset.home) ? me.dataset.home : 'index.html';
+
+  function installLayoutGuard() {
+    if (document.getElementById('norimonoSharedLayout')) return;
+    document.documentElement.classList.add('norimono-game');
+    document.body.classList.add('norimono-game-body');
+    var path = location.pathname || '';
+    if (/\/games\/minicar\//.test(path)) document.body.classList.add('nori-minicar');
+    if (/\/atekko\.html$/.test(path)) document.body.classList.add('nori-atekko');
+    document.documentElement.style.setProperty('--nm-back-h', 'calc(env(safe-area-inset-top,0px) + 62px)');
+    document.documentElement.style.setProperty('--nm-back-w', 'calc(env(safe-area-inset-left,0px) + 112px)');
+    var style = document.createElement('style');
+    style.id = 'norimonoSharedLayout';
+    style.textContent = [
+      ':root{--nori-edge:12px;--nori-radius:22px;--nori-shadow:0 5px 0 rgba(0,0,0,.12)}',
+      'html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}',
+      'button,a,[role="button"]{touch-action:manipulation}',
+      'button{font-family:inherit}',
+      '#backToMenu{min-width:88px!important;min-height:44px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0 14px!important;border-radius:16px!important;font-size:15px!important;line-height:1!important}',
+      '#noriVoiceGate{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 70px) 20px calc(env(safe-area-inset-bottom,0px) + 24px);background:rgba(240,249,255,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}',
+      '#noriVoiceGate button{width:min(78vw,330px);min-height:190px;border:0;border-radius:34px;background:#fff;color:#17324a;box-shadow:0 9px 0 rgba(23,50,74,.16),0 18px 42px rgba(23,50,74,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-weight:900}',
+      '#noriVoiceGate .nori-gate-icons{font-size:68px;line-height:1;animation:noriGateTap .9s ease-in-out infinite alternate}',
+      '#noriVoiceGate .nori-gate-main{font-size:25px}',
+      '#noriVoiceGate .nori-gate-sub{font-size:15px;opacity:.7}',
+      '#noriVoiceGate.listening .nori-gate-icons{animation:none}',
+      '@keyframes noriGateTap{to{transform:translateY(8px) scale(1.04)}}',
+      '.nori-minicar .controls{bottom:calc(env(safe-area-inset-bottom,0px) + 16px)!important}',
+      '.nori-minicar .hud{top:var(--nm-back-h)!important}',
+      '.nori-atekko #screen-start{padding-top:calc(env(safe-area-inset-top,0px) + 58px)!important}',
+      '@media(max-width:390px){#backToMenu{left:calc(env(safe-area-inset-left,0px) + 8px)!important;top:calc(env(safe-area-inset-top,0px) + 8px)!important;min-width:84px!important;min-height:42px!important;font-size:14px!important}#noriVoiceGate button{min-height:170px;border-radius:28px}#noriVoiceGate .nori-gate-icons{font-size:58px}#noriVoiceGate .nori-gate-main{font-size:22px}.nori-minicar .hud{left:calc(env(safe-area-inset-left,0px) + 8px)!important;right:calc(env(safe-area-inset-right,0px) + 8px)!important;gap:8px!important}.nori-minicar .controls{left:calc(env(safe-area-inset-left,0px) + 8px)!important;right:calc(env(safe-area-inset-right,0px) + 8px!important)}}'
+    ].join('\n');
+    document.head.appendChild(style);
+  }
+
+  function add() {
+    if (document.getElementById('backToMenu')) return;
+    var a = document.createElement('a');
+    a.id = 'backToMenu'; a.href = home; a.textContent = '← もどる'; a.setAttribute('aria-label', 'メニューにもどる');
+    a.style.cssText = ['position:fixed','left:calc(env(safe-area-inset-left,0px) + 10px)','top:calc(env(safe-area-inset-top,0px) + 10px)','z-index:9999','padding:10px 14px','border-radius:16px','background:rgba(10,14,20,.72)','color:#fff','font:800 15px/1 -apple-system,BlinkMacSystemFont,"Hiragino Sans",system-ui,sans-serif','text-decoration:none','-webkit-backdrop-filter:blur(8px)','backdrop-filter:blur(8px)','box-shadow:0 3px 10px rgba(0,0,0,.28)'].join(';');
+    document.body.appendChild(a);
+  }
+
+  function naturalJapaneseVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    var bad = /Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley|Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Kathy|Ralph/i;
+    var voices = (speechSynthesis.getVoices() || []).filter(function(v){ return /^ja([-_]|$)/i.test(v.lang || '') && !bad.test(v.name); });
+    function score(v){ var n=0; if(/premium|プレミアム/i.test(v.name))n+=100; if(/enhanced|拡張/i.test(v.name))n+=60; if(/Kyoko|O-ren|Otoya|Hattori|Google/i.test(v.name))n+=20; return n; }
+    voices.sort(function(a,b){ return score(b)-score(a); });
+    return voices[0] || null;
+  }
+
+  function installStartupVoice() {
+    var path = location.pathname || '';
+    var intro = '';
+    if (/\/games\/shapes\//.test(path)) intro = 'のりものを なおそう。ひかっている ところを タッチして、のりものを なおしてね。';
+    else if (/\/games\/shadow\//.test(path)) intro = 'のりもの かげあて。かげと おなじ のりものを タッチしてね。';
+    else if (/\/games\/nakamawake\//.test(path)) intro = 'なかまわけ。おなじ なかまを えらんでね。';
+    else if (/\/games\/signal\//.test(path)) intro = 'しんごう できるかな。あかは とまる。あおになったら くるまを タッチしてね。';
+    else if (/\/games\/garage\//.test(path)) intro = 'おうちに かえそう。のりものが かえる ばしょを えらんでね。';
+    else if (/\/games\/sound\//.test(path)) intro = 'おとで あてよう。おとを きいて、おなじ のりものを タッチしてね。';
+    else if (/\/games\/route\//.test(path)) intro = 'どっちの みち。じゃまものが ない、あいている みちを タッチしてね。';
+    else if (/\/games\/count\//.test(path)) intro = 'なんだい いるかな。まると おなじ かずの くるまを タッチしてね。';
+    if (!intro || document.getElementById('noriVoiceGate')) return;
+    try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (_) {}
+    window.__noriInteractionStarted = false;
+    var gate = document.createElement('div'); gate.id = 'noriVoiceGate';
+    gate.innerHTML = '<button type="button" aria-label="タップして はじめる"><span class="nori-gate-icons">👆 🔊</span><span class="nori-gate-main">タップして はじめる</span><span class="nori-gate-sub">おとを きいてね</span></button>';
+    var btn = gate.querySelector('button'); var used = false;
+    function finishGate(){ if(window.__noriInteractionStarted)return; window.__noriInteractionStarted=true; gate.remove(); try{document.dispatchEvent(new Event('norimono-started'));}catch(_){} if(/\/games\/shapes\//.test(path)){var replay=document.getElementById('voice');if(replay)setTimeout(function(){replay.click();},350);} }
+    btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(used)return; used=true; gate.classList.add('listening'); btn.querySelector('.nori-gate-icons').textContent='🔊'; btn.querySelector('.nori-gate-main').textContent='きいてね'; if(!('speechSynthesis' in window)){setTimeout(finishGate,500);return;} try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(intro);u.lang='ja-JP';u.rate=.96;u.pitch=1;u.volume=.86;var v=naturalJapaneseVoice();if(v)u.voice=v;var ended=false;var done=function(){if(ended)return;ended=true;setTimeout(finishGate,300);};u.onend=done;u.onerror=function(){setTimeout(done,300);};speechSynthesis.speak(u);setTimeout(function(){if(!ended&&!speechSynthesis.speaking)done();},12000);}catch(_){setTimeout(finishGate,700);} });
+    document.body.appendChild(gate);
+  }
+
+  function loadMinicarKidsSound(){if(!/\/games\/minicar\//.test(location.pathname))return;if(document.querySelector('script[data-minicar-kids-sound]'))return;var s=document.createElement('script');s.src='../../minicar-kids-sound.js';s.dataset.minicarKidsSound='1';document.body.appendChild(s);}
+  function loadClassicBgm(){if(/\/games\/minicar\//.test(location.pathname))return;if(document.querySelector('script[data-classic-bgm]'))return;var s=document.createElement('script');s.src=/\/games\//.test(location.pathname)?'../../classic-bgm.js':'classic-bgm.js';s.dataset.classicBgm='1';document.body.appendChild(s);}
+  function loadSharedFeedback(){if(!/\/games\/(shadow|shapes)\//.test(location.pathname))return;if(window.NoriFeedback){afterFeedbackReady();return;}var old=document.querySelector('script[data-game-feedback]');if(old){old.addEventListener('load',afterFeedbackReady,{once:true});return;}var s=document.createElement('script');s.src='../../game-feedback.js';s.dataset.gameFeedback='1';s.addEventListener('load',afterFeedbackReady,{once:true});document.body.appendChild(s);}
+  function afterFeedbackReady(){loadShadowPolish();installShapesFeedback();}
+  function loadShadowPolish(){if(!/\/games\/shadow\//.test(location.pathname))return;if(document.querySelector('script[data-shadow-polish]'))return;var s=document.createElement('script');s.src='../../shadow-polish.js';s.dataset.shadowPolish='1';document.body.appendChild(s);}
+  function installShapesFeedback(){if(!/\/games\/shapes\//.test(location.pathname))return;if(window.__shapesFeedbackInstalled||!window.NoriFeedback)return;window.__shapesFeedbackInstalled=true;var celebrate=document.getElementById('celebrate'),restart=document.getElementById('restart'),vehicle=document.getElementById('vehicle');if(celebrate)new MutationObserver(function(){if(celebrate.classList.contains('show')){if(celebrate.dataset.fxDone==='1')return;celebrate.dataset.fxDone='1';NoriFeedback.correct();var r=vehicle?vehicle.getBoundingClientRect():celebrate.getBoundingClientRect();NoriFeedback.burst(r.left+r.width/2,r.top+r.height/2,12);}else delete celebrate.dataset.fxDone;}).observe(celebrate,{attributes:true,attributeFilter:['class']});if(restart)new MutationObserver(function(){if(restart.classList.contains('show')){if(restart.dataset.endFx==='1')return;restart.dataset.endFx='1';NoriFeedback.fanfare();}else delete restart.dataset.endFx;}).observe(restart,{attributes:true,attributeFilter:['class']});}
+  function installVoiceGap(pathMatch,delay){if(!pathMatch.test(location.pathname))return;var key='__noriVoiceGap'+delay;if(window[key])return;window[key]=true;var nativeSetTimeout=window.setTimeout.bind(window);window.setTimeout=function(fn,wait){var args=Array.prototype.slice.call(arguments,2);if(wait!==delay||typeof fn!=='function')return nativeSetTimeout.apply(window,[fn,wait].concat(args));return nativeSetTimeout(function waitForVoice(){var synth=window.speechSynthesis;if(synth&&(synth.speaking||synth.pending)){nativeSetTimeout(waitForVoice,100);return;}nativeSetTimeout(function(){fn.apply(window,args);},400);},wait);};}
+  function init(){installLayoutGuard();add();installStartupVoice();loadMinicarKidsSound();loadClassicBgm();loadSharedFeedback();installVoiceGap(/\/games\/shadow\//,1550);installVoiceGap(/\/games\/shapes\//,1650);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
