@@ -62,7 +62,7 @@
     else if (/\/games\/garage\//.test(path)) intro = 'おうちに かえそう。のりものが かえる ばしょを えらんでね。';
     else if (/\/games\/sound\//.test(path)) intro = 'おとで あてよう。おとを きいて、おなじ のりものを タッチしてね。';
     else if (/\/games\/route\//.test(path)) intro = 'どっちの みち。じゃまものが ない、あいている みちを タッチしてね。';
-    else if (/\/games\/count\//.test(path)) intro = 'なんだい いるかな。まると おなじ かずの くるまを タッチしてね。';
+    else if (/\/games\/count\//.test(path)) intro = 'なんこ あるかな。ひかっている まると、おなじ かずの えを えらんでね。';
     if (!intro || document.getElementById('noriVoiceGate')) return;
     try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (_) {}
     window.__noriInteractionStarted = false;
