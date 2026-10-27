@@ -1,1 +1,10 @@
-{"private":true,"scripts":{"test":"node play-smoke.cjs"},"devDependencies":{"playwright":"1.62.1"}}
+{
+  "private": true,
+  "scripts": {
+    "test": "node play-smoke.cjs",
+    "test:rail": "node --test rail-geometry.test.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

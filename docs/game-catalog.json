@@ -311,7 +311,7 @@
     "status": "実装済み・ブラウザ検証",
     "souDeviceTest": "未実施",
     "commercialCandidate": "候補・実機評価前",
-    "notes": "実音声、指の大きさ、初見理解を実機確認",
+    "notes": "線路断線を修正。単一SVG上で全端点・走行軌道を検査。分岐の一方は車止めつき行き止まり。実児童・実端末未確認。",
     "url": "games/play/rail.html"
   },
   {
