@@ -52,30 +52,8 @@
       this.voice = (settings.voiceName && ja.find((v) => v.name === settings.voiceName)) || ja[0] || null;
     },
     // 話し終わったら（または一定時間で）resolve する
-    say(text) {
-      if (!this.ok || !settings.voice) return Promise.resolve();
-      const synth = window.speechSynthesis;
-      return new Promise((resolve) => {
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'ja-JP';
-        if (this.voice) u.voice = this.voice;
-        u.rate = Number(settings.rate) || 0.95;
-        u.pitch = 1; // 高さを変えると不自然になるので そのまま
-        let done = false;
-        const finish = () => { if (!done) { done = true; resolve(); } };
-        u.onend = finish;
-        u.onerror = finish;
-        setTimeout(finish, 1200 + text.length * 260); // 念のための時間切れ
-        this.current = u; // iOS/Chrome で途中で消えないよう参照を保持
-        if (synth.speaking || synth.pending) {
-          synth.cancel();
-          setTimeout(() => synth.speak(u), 60);
-        } else {
-          synth.speak(u);
-        }
-      });
-    },
-    stop() { if (this.ok) window.speechSynthesis.cancel(); }
+    say(text) { if(!settings.voice)return Promise.resolve();return NoriVoice.speak(text); },
+    stop() { NoriVoice.stop(); }
   };
   if (speech.ok) {
     speech.pickVoice();

@@ -6,13 +6,33 @@
     "mechanics": "名称選択",
     "development": "なまえを あてよう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "car",
+      "bus",
+      "fire",
+      "ambulance",
+      "police",
+      "truck",
+      "garbage",
+      "excavator",
+      "dump",
+      "tractor",
+      "forklift",
+      "train",
+      "shinkansen",
+      "locomotive",
+      "plane",
+      "helicopter",
+      "boat",
+      "bicycle",
+      "motorbike",
+      "taxi",
+      "rocket"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
-    "url": "atekko.html"
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "商品向け共通素材・発音処理を使用。atekko.htmlは従来版として保持。 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
+    "url": "atekko-v2.html"
   },
   {
     "no": 2,
@@ -20,12 +40,10 @@
     "ages": "2–4（既存・要再評価）",
     "mechanics": "自由走行",
     "development": "ミニカーを はしらせよう",
-    "vehicles": [
-      "legacy（既存個別データ参照）"
-    ],
-    "status": "既存維持",
+    "vehicles": [],
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
     "notes": "旧素材は商品利用の適否を別途監査",
     "url": "games/minicar/index.html"
   },
@@ -36,12 +54,17 @@
     "mechanics": "部品修理",
     "development": "たりない ぶひんを なおそう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "bus",
+      "train",
+      "fire",
+      "ambulance",
+      "police",
+      "plane"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/shapes/index.html"
   },
   {
@@ -51,12 +74,27 @@
     "mechanics": "分類",
     "development": "おなじ なかまを さがそう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "train",
+      "shinkansen",
+      "locomotive",
+      "bus",
+      "truck",
+      "fire",
+      "ambulance",
+      "police",
+      "excavator",
+      "garbage",
+      "dump",
+      "plane",
+      "helicopter",
+      "boat",
+      "bicycle",
+      "car"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/nakamawake/index.html"
   },
   {
@@ -66,12 +104,17 @@
     "mechanics": "影合わせ",
     "development": "おなじ かげを みつけよう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "police",
+      "bus",
+      "train",
+      "fire",
+      "ambulance",
+      "garbage"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/shadow/index.html"
   },
   {
@@ -81,12 +124,12 @@
     "mechanics": "信号操作",
     "development": "あおは すすめ・あかは とまれ",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "car"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/signal/index.html"
   },
   {
@@ -96,12 +139,17 @@
     "mechanics": "場所記憶",
     "development": "のりものの ばしょを おぼえよう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "fire",
+      "bus",
+      "ambulance",
+      "police",
+      "train",
+      "garbage"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/garage/index.html"
   },
   {
@@ -111,12 +159,17 @@
     "mechanics": "音の認識",
     "development": "おとを きいて えらぼう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "fire",
+      "ambulance",
+      "police",
+      "train",
+      "bus",
+      "garbage"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/sound/index.html"
   },
   {
@@ -126,12 +179,18 @@
     "mechanics": "大小比較",
     "development": "おおきさを みくらべよう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "police",
+      "ambulance",
+      "fire",
+      "bus",
+      "garbage",
+      "train",
+      "plane"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/size/index.html"
   },
   {
@@ -141,12 +200,12 @@
     "mechanics": "経路選択",
     "development": "じゃまものを みて みちを えらぼう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "car"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/route/index.html"
   },
   {
@@ -156,12 +215,17 @@
     "mechanics": "数量対応",
     "development": "おなじ かずを みつけよう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "car",
+      "bus",
+      "bicycle",
+      "locomotive",
+      "plane",
+      "boat"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/count/index.html"
   },
   {
@@ -170,13 +234,11 @@
     "ages": "2–4（既存・要再評価）",
     "mechanics": "リズム模倣",
     "development": "リズムを まねして たたこう",
-    "vehicles": [
-      "legacy（既存個別データ参照）"
-    ],
-    "status": "既存維持",
+    "vehicles": [],
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/taiko/index.html"
   },
   {
@@ -185,13 +247,11 @@
     "ages": "2–4（既存・要再評価）",
     "mechanics": "音高比較",
     "development": "おとの たかさを ききわけよう",
-    "vehicles": [
-      "legacy（既存個別データ参照）"
-    ],
-    "status": "既存維持",
+    "vehicles": [],
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/highlow/index.html"
   },
   {
@@ -200,13 +260,11 @@
     "ages": "2–4（既存・要再評価）",
     "mechanics": "音の順序",
     "development": "きこえた じゅんに タッチ",
-    "vehicles": [
-      "legacy（既存個別データ参照）"
-    ],
-    "status": "既存維持",
+    "vehicles": [],
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/order/index.html"
   },
   {
@@ -215,13 +273,11 @@
     "ages": "2–4（既存・要再評価）",
     "mechanics": "音量比較",
     "development": "おとの つよさを ききわけよう",
-    "vehicles": [
-      "legacy（既存個別データ参照）"
-    ],
-    "status": "既存維持",
+    "vehicles": [],
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/loudsoft/index.html"
   },
   {
@@ -231,12 +287,13 @@
     "mechanics": "速度比較",
     "development": "うごきの はやさを みわけよう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "car",
+      "tractor"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/fastslow/index.html"
   },
   {
@@ -246,12 +303,19 @@
     "mechanics": "配列合わせ",
     "development": "うえと おなじ じゅんばんを みつけよう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "car",
+      "bus",
+      "bicycle",
+      "locomotive",
+      "fire",
+      "ambulance",
+      "taxi",
+      "tractor"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/samepattern/index.html"
   },
   {
@@ -261,12 +325,12 @@
     "mechanics": "順序判断",
     "development": "できごとの じゅんばんを かんがえよう",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "car"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/whichfirst/index.html"
   },
   {
@@ -276,12 +340,18 @@
     "mechanics": "位置認識",
     "development": "ひだり・まんなか・みぎ",
     "vehicles": [
-      "legacy（既存個別データ参照）"
+      "car",
+      "bus",
+      "bicycle",
+      "taxi",
+      "tractor",
+      "ambulance",
+      "fire"
     ],
-    "status": "既存維持",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "素材・操作監査前",
-    "notes": "旧素材は商品利用の適否を別途監査",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "旧素材は商品利用の適否を別途監査 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/position/index.html"
   },
   {
@@ -293,10 +363,10 @@
     "vehicles": [
       "fire"
     ],
-    "status": "実装済み・ブラウザ検証",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "候補・実機評価前",
-    "notes": "実音声、指の大きさ、初見理解を実機確認",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "実音声、指の大きさ、初見理解を実機確認 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/play/fire.html"
   },
   {
@@ -308,10 +378,10 @@
     "vehicles": [
       "train"
     ],
-    "status": "実装済み・ブラウザ検証",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "候補・実機評価前",
-    "notes": "線路断線を修正。単一SVG上で全端点・走行軌道を検査。分岐の一方は車止めつき行き止まり。実児童・実端末未確認。",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "線路断線を修正。単一SVG上で全端点・走行軌道を検査。分岐の一方は車止めつき行き止まり。実児童・実端末未確認。 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/play/rail.html"
   },
   {
@@ -326,10 +396,10 @@
       "truck",
       "fire"
     ],
-    "status": "実装済み・ブラウザ検証",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "候補・実機評価前",
-    "notes": "実音声、指の大きさ、初見理解を実機確認",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "実音声、指の大きさ、初見理解を実機確認 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/play/wash.html"
   },
   {
@@ -341,10 +411,10 @@
     "vehicles": [
       "truck"
     ],
-    "status": "実装済み・ブラウザ検証",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "候補・実機評価前",
-    "notes": "実音声、指の大きさ、初見理解を実機確認",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "実音声、指の大きさ、初見理解を実機確認 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/play/truck.html"
   },
   {
@@ -357,15 +427,29 @@
       "car",
       "bus",
       "fire",
+      "ambulance",
+      "police",
       "truck",
+      "garbage",
+      "excavator",
+      "dump",
+      "tractor",
+      "forklift",
       "train",
+      "shinkansen",
+      "locomotive",
       "plane",
-      "boat"
+      "helicopter",
+      "boat",
+      "bicycle",
+      "motorbike",
+      "taxi",
+      "rocket"
     ],
-    "status": "実装済み・ブラウザ検証",
+    "status": "共通素材・発音処理に移行／実機発音確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "候補・実機評価前",
-    "notes": "実音声、指の大きさ、初見理解を実機確認",
+    "commercialCandidate": "候補・固定音声と実機評価は未完了",
+    "notes": "実音声、指の大きさ、初見理解を実機確認 商品版はshared/の共通SVG・発音文を使用。実聴承認前。",
     "url": "games/play/night.html"
   },
   {

@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "test": "node play-smoke.cjs",
-    "test:rail": "node --test rail-geometry.test.mjs"
+    "test:rail": "node --test rail-geometry.test.mjs",
+    "test:product": "node --test product.test.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"

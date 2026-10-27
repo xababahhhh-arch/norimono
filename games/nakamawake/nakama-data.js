@@ -282,3 +282,5 @@ var NAKAMA_QUESTIONS = [
   { id: 'kaburu', group: 'みにつける', text: 'あたまに かぶるのは どれ？', say: '頭にかぶるのは、どれ？', tags: ['headwear'],
     answers: ['hat', 'helmet'], wrongs: ['car', 'dog', 'apple', 'bus', 'cat', 'banana'] }
 ];
+
+Object.assign(NAKAMA_ITEMS.car,{svg:NoriVehicles.artwork("car")});

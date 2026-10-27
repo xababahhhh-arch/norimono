@@ -72,7 +72,7 @@ export function mountRail({ stage, tools, hint, round, art, sound, speak, later,
     const train = document.createElementNS(ns, 'g');
     train.classList.add('rail-train');
     // Put the wheel contact line on the route; the body sits above it.
-    train.innerHTML = `<g transform="translate(-42 -42)"><svg width="84" height="52" viewBox="0 0 260 160">${art('train')}</svg></g>`;
+    train.innerHTML = `<g transform="translate(-42 ${-NoriVehicles.anchors.train.wheelContactY*42/160})"><svg width="84" height="42" viewBox="0 0 320 160">${art('train')}</svg></g>`;
     board.append(train);
     const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1800 : length * 7;
     let started;

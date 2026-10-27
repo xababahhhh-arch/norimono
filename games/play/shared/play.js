@@ -6,12 +6,12 @@ const kind=document.body.dataset.game;
 const configs={fire:['しょうぼうしゃで ひを けそう','しょうぼうしゃを タッチ。ついたら、火を タッチして 水をかけよう。','fire'],rail:['せんろを つなごう','ひかる すきまに、せんろを つなごう。下の せんろを タッチしてね。できたら でんしゃが はしるよ。','train'],wash:['ピカピカ せんしゃじょう','よごれを タッチして あらおう。水、あわ、ブラシ、水で ピカピカにしよう。','car'],truck:['トラックに のせよう','にもつを タッチして、トラックに のせよう。ぜんぶ のったら しゅっぱつ！','truck'],night:['くらやみ のりものさがし','くらい まちを タッチして てらそう。のりものを みつけたら タッチしてね。','plane']};
 const [title,instruction,preview]=configs[kind];
 $('#title').textContent=title;document.title=title;
-let generation=0,timers=new Set(),round=0,busy=false,ctx,utterance,voiceResolve,voiceTimer,voiceVersion=0,voicePending=Promise.resolve();
+let generation=0,timers=new Set(),round=0,busy=false,ctx,voicePending=Promise.resolve();
 const art=id=>vehicle(id,data[id]);
 const name=id=>(data[id]||vehicles[id]).name;
 function later(fn,ms){const g=generation;const t=setTimeout(()=>{timers.delete(t);if(g===generation)fn();},ms);timers.add(t);return t;}
-function cancelVoice(){voiceVersion++;clearTimeout(voiceTimer);if('speechSynthesis'in window)speechSynthesis.cancel();if(voiceResolve)voiceResolve();voiceResolve=null;utterance=null;}
-function speak(text){cancelVoice();voicePending=new Promise(resolve=>{if(!('speechSynthesis'in window)){resolve();return;}let done=false;const version=voiceVersion;voiceResolve=resolve;utterance=new SpeechSynthesisUtterance(text);utterance.lang='ja-JP';utterance.rate=.88;const finish=()=>{if(done)return;done=true;if(version===voiceVersion){clearTimeout(voiceTimer);voiceResolve=null;}resolve();};utterance.onend=finish;utterance.onerror=finish;speechSynthesis.speak(utterance);voiceTimer=setTimeout(()=>{speechSynthesis.cancel();finish();},Math.max(6000,text.length*350));});return voicePending;}
+function cancelVoice(){NoriVoice.stop();}
+function speak(text){voicePending=NoriVoice.speak(text);return voicePending;}
 function unlock(){try{ctx??=new(window.AudioContext||window.webkitAudioContext)();ctx.resume();}catch{}}
 function sound(final=false){unlock();if(!ctx)return;const notes=final?[523,659,784,1047,784,1047]:[660,880];notes.forEach((f,i)=>{const t=ctx.currentTime+i*(final?.15:.09),o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.09,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+.2);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.22);});}
 function reset(){$('#repeat').disabled=false;generation++;timers.forEach(clearTimeout);timers.clear();cancelVoice();busy=false;stage.className='';stage.innerHTML='';tools.innerHTML='';}
@@ -30,6 +30,45 @@ function rail(){mountRail({stage,tools,hint,round,art,sound,speak,later,win,butt
 function wash(){const id=['car','bus','truck','fire'][Math.floor(Math.random()*4)];let phase=0,hits=0;const labels=['みずで ぬらそう','あわを つけよう','ブラシで こすろう','みずで ながそう'];stage.innerHTML='<div class="wash-sign"></div><button class="washzone" aria-label="くるまを あらう"><div class="vehicle">'+art(id)+'</div></button>';const zone=$('.washzone');const positions=Array.from({length:10},(_,i)=>[12+i%5*16,38+Math.floor(i/5)*18]);function setup(){hits=0;hint.textContent=labels[phase];$('.wash-sign').textContent=['みず','あわ','ブラシ','みず'][phase];zone.querySelectorAll('.dirt,.foam').forEach(e=>e.remove());positions.forEach(([x,y],i)=>{const d=document.createElement('i');d.className=phase===1||phase===3?'foam':'dirt';d.style.cssText=`left:${x}%;top:${y}%;width:11%;height:13%;opacity:${phase===0?1:phase===2?.6:phase===1?0:1}`;d.dataset.spot=i;zone.append(d);});speak(hint.textContent);}
 function scrub(e){if(busy)return;const r=zone.getBoundingClientRect();let spots=[...zone.querySelectorAll('[data-spot]:not([data-done])')];if(!spots.length)return;spots.sort((a,b)=>{const d=n=>{const q=n.getBoundingClientRect();return Math.hypot(q.left+q.width/2-e.clientX,q.top+q.height/2-e.clientY);};return d(a)-d(b);});const d=spots[0];d.dataset.done='1';d.style.opacity=phase===1?'1':'0';d.style.transform='scale(1.2)';hits++;sound();if(hits===10){busy=true;later(()=>{phase++;if(phase===4){hint.textContent='ピカピカ！ ありがとう';zone.querySelectorAll('.dirt,.foam').forEach(n=>n.remove());$('.vehicle').classList.add('drive');busy=false;win();}else{busy=false;setup();}},450);}}
 let down=false,last=0;zone.onpointerdown=e=>{down=true;zone.setPointerCapture(e.pointerId);scrub(e);};zone.onpointermove=e=>{if(down&&Date.now()-last>90){last=Date.now();scrub(e);}};zone.onpointerup=zone.onpointercancel=()=>down=false;setup();}
-function truck(){let loaded=0;const total=3+round;hint.textContent='にもつを タッチして のせよう';stage.innerHTML='<div class="road"></div><div class="vehicle" style="width:96%;left:2%;bottom:3%">'+art('truck')+'</div>';const cargo=[];for(let i=0;i<total;i++){const b=document.createElement('button');b.className='crate';b.setAttribute('aria-label',`にもつ ${i+1} を のせる`);const size=i%2?60:74;b.style.cssText=`left:${8+(i%3)*30}%;top:${10+Math.floor(i/3)*25}%;width:${size}px;height:${size}px;background:${['#ed936b','#e4bb52','#70ae9a','#899ac7','#d68b9d'][(i+round)%5]}`;stage.append(b);cargo.push(b);b.onclick=()=>{if(b.disabled||busy)return;b.disabled=true;const slot=loaded++;b.style.left=`${7+slot%3*15}%`;b.style.top=`${68-Math.floor(slot/3)*12}%`;b.style.transform='scale(.65)';sound();if(loaded===total){busy=true;hint.textContent='いっぱい！ しゅっぱつ！';speak('いっぱい のったね。しゅっぱつ！');later(()=>{$('.vehicle').classList.add('drive');cargo.forEach(c=>c.style.transform='translateX(600px) scale(.65)');},600);later(()=>{busy=false;win();},1700);}};}speak(hint.textContent);}
+function truck(){
+  let loaded=0;
+  const total=3+round;
+  const bed=vehicles.truck.anchors.bed;
+  hint.textContent='にもつを タッチして のせよう';
+  stage.innerHTML='<div class="road"></div><div class="vehicle" style="width:96%;left:2%;bottom:3%">'+art('truck')+'</div>';
+  const car=$('.vehicle');
+  for(let i=0;i<total;i++){
+    const box=document.createElement('button');
+    box.className='crate';box.setAttribute('aria-label',`にもつ ${i+1} を のせる`);
+    const initialSize=i%2?60:74;
+    box.style.cssText=`left:${8+(i%3)*30}%;top:${10+Math.floor(i/3)*25}%;width:${initialSize}px;height:${initialSize}px;background:${['#ed936b','#e4bb52','#70ae9a','#899ac7','#d68b9d'][(i+round)%5]}`;
+    stage.append(box);
+    box.onclick=()=>{
+      if(box.disabled||busy)return;
+      box.disabled=true;
+      const slot=loaded++,size=i%2?36:42;
+      const from=box.getBoundingClientRect(),vehicleRect=car.getBoundingClientRect();
+      // Move the box into the truck's coordinate system before flying it aboard.
+      // This keeps the cargo on the real bed on short and tall phone screens alike.
+      car.append(box);
+      box.style.left=`${from.left-vehicleRect.left}px`;
+      box.style.top=`${from.top-vehicleRect.top}px`;
+      box.style.transform='none';
+      box.getBoundingClientRect();
+      box.style.left=`${(bed.x+12+(slot%3)*(bed.width-13)/3)/320*100}%`;
+      box.style.top=`${(bed.floorY-size-Math.floor(slot/3)*(bed.height+2))/160*100}%`;
+      box.style.width=`${size/320*100}%`;
+      box.style.height=`${size/160*100}%`;
+      sound();
+      if(loaded===total){
+        busy=true;hint.textContent='いっぱい！ しゅっぱつ！';
+        speak('いっぱい のったね。しゅっぱつ！');
+        later(()=>car.classList.add('drive'),600);
+        later(()=>{busy=false;win();},1700);
+      }
+    };
+  }
+  speak(hint.textContent);
+}
 function night(){const count=3+round;let found=0;stage.className='night';hint.textContent='さわって てらして みつけよう';stage.innerHTML='<div class="night-ground"></div><div class="moon"></div><div class="darkness"></div><div class="found-name"></div>';const ids=Object.keys(vehicles).sort(()=>Math.random()-.5).slice(0,count),slots=[[4,18],[55,18],[4,44],[55,44],[30,70]].sort(()=>Math.random()-.5);let lastVoice=Promise.resolve();ids.forEach((id,i)=>{const b=document.createElement('button');b.className='hidden-vehicle';b.setAttribute('aria-label','かくれた のりもの');b.style.cssText=`left:${slots[i][0]+Math.random()*3}%;top:${slots[i][1]}%`;b.innerHTML=art(id);stage.append(b);b.onclick=e=>{if(b.classList.contains('found')||busy)return;const r=stage.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top;const prev=stage._light||[r.width*.5,r.height*.5];if(Math.hypot(x-prev[0],y-prev[1])>90){light(e);return;}light(e);b.classList.add('found');b.setAttribute('aria-label',name(id));$('.found-name').textContent=name(id);found++;sound();sparkle(slots[i][0]+18,slots[i][1]);hint.textContent=`みつけた！ ${found} / ${count}`;const g=generation;lastVoice=lastVoice.then(()=>g===generation?speak((data[id]||vehicles[id]).say):null);if(found===count){busy=true;lastVoice.then(()=>{if(g===generation)later(()=>{busy=false;win();},300);});}};});function light(e){const r=stage.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;stage.style.setProperty('--lx',`${x}px`);stage.style.setProperty('--ly',`${y}px`);stage._light=[x,y];}stage.onpointerdown=light;stage.onpointermove=e=>{if(e.buttons||e.pointerType==='touch')light(e);};speak(hint.textContent);}
 window.addEventListener('pagehide',()=>{reset();ctx?.suspend();});document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelVoice();ctx?.suspend();}});intro();

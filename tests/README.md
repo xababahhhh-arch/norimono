@@ -11,3 +11,8 @@
 - `node --test tests/rail-geometry.test.mjs`: 経路・分岐・行き止まりの接続判定。
 - 確認サーバーで `http://localhost:8765/tests/rail-browser.html` を開く: 4画面サイズの実際の描画座標と走行を検査。最後に `ALL PASS` を確認。
 従来の通し操作テストだけではカーブの見た目の断線を検出できなかったため、上記を必須とする。
+
+## 商品素材・発音文の見直し
+`node --test tests/product.test.cjs` で発音文と中断処理を検査。
+`tests/product-browser.html` は全24本の表示・最初の操作・音声接続、`tests/play-browser.html` は新作5本の全ステージを確認する。
+`tests/product-review.html` は実際の端末で発音・アクセントを確認するページ。前2つのテストの音声はスタブであり、発音の実聴確認ではない。
