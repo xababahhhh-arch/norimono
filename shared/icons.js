@@ -62,6 +62,7 @@
  const pattern=new RegExp(keys.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'gu');
  function svg(key){key=key.replace(/[\ufe0e\ufe0f]/g,'');if(vehicleMap[key])return root.NoriVehicles.artwork(vehicleMap[key]).replace('<svg ','<svg class="nori-glyph nori-vehicle-glyph" ');return `<svg class="nori-glyph" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-nori-icon="${key}">${symbols[key]||symbols['⭐']}</svg>`;}
  function apply(container){
+  if(!container)return;
   const walker=document.createTreeWalker(container,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
   for(const node of nodes){const parent=node.parentElement;if(!parent||parent.closest('script,style,textarea,svg,[data-nori-icon],[data-nori-vehicle],.nori-glyph'))continue;
    pattern.lastIndex=0;if(!pattern.test(node.nodeValue))continue;pattern.lastIndex=0;
@@ -70,7 +71,7 @@
    fragment.append(node.nodeValue.slice(at).replace(/[\ufe0e\ufe0f]/g,''));node.replaceWith(fragment);
   }
  }
- function start(){apply(document.body);new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')apply(record.target.parentElement);else for(const node of record.addedNodes){if(node.nodeType===1)apply(node);else if(node.nodeType===3&&node.parentElement)apply(node.parentElement);}}}).observe(document.body,{childList:true,subtree:true,characterData:true});}
+ function start(){const body=document.body;if(!body)return;apply(body);new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')apply(record.target.parentElement);else for(const node of record.addedNodes){if(node.nodeType===1)apply(node);else if(node.nodeType===3&&node.parentElement)apply(node.parentElement);}}}).observe(body,{childList:true,subtree:true,characterData:true});}
  root.NoriIcons={svg,apply,vehicleMap};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })(globalThis);

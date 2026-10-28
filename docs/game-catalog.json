@@ -454,81 +454,95 @@
   },
   {
     "no": 25,
-    "name": "未企画",
-    "ages": "2–5",
-    "mechanics": "未定",
-    "development": "未定",
-    "vehicles": [],
-    "status": "未着手",
+    "name": "ふみきり まてるかな？",
+    "ages": "2〜5（3歳中心）",
+    "mechanics": "待機・開通後の発進",
+    "development": "危険予測・待つ",
+    "vehicles": [
+      "train",
+      "car"
+    ],
+    "status": "実装済み・ブラウザ検証／実機と発音の実聴確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "未評価",
-    "notes": "既存メカニクスとの重複を企画時に確認",
-    "url": null
+    "commercialCandidate": "候補・実機と発音評価は未完了",
+    "notes": "自作SVG・大きなタップ領域。評価はdocs/NEW-GAMES-26-30.md。",
+    "url": "games/play/crossing.html"
   },
   {
     "no": 26,
-    "name": "未企画",
-    "ages": "2–5",
-    "mechanics": "未定",
-    "development": "未定",
-    "vehicles": [],
-    "status": "未着手",
+    "name": "ごみしゅうしゅうしゃで あつめよう",
+    "ages": "2〜5（3歳中心）",
+    "mechanics": "回収・圧縮",
+    "development": "因果関係・数量",
+    "vehicles": [
+      "garbage"
+    ],
+    "status": "実装済み・ブラウザ検証／実機と発音の実聴確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "未評価",
-    "notes": "既存メカニクスとの重複を企画時に確認",
-    "url": null
+    "commercialCandidate": "候補・実機と発音評価は未完了",
+    "notes": "自作SVG・大きなタップ領域。評価はdocs/NEW-GAMES-26-30.md。",
+    "url": "games/play/garbage.html"
   },
   {
     "no": 27,
-    "name": "未企画",
-    "ages": "2–5",
-    "mechanics": "未定",
-    "development": "未定",
-    "vehicles": [],
-    "status": "未着手",
+    "name": "ショベルカーで あなをうめよう",
+    "ages": "2〜5（3歳中心）",
+    "mechanics": "すくう・投入・地形変化",
+    "development": "手順・空間認識",
+    "vehicles": [
+      "excavator",
+      "car"
+    ],
+    "status": "実装済み・ブラウザ検証／実機と発音の実聴確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "未評価",
-    "notes": "既存メカニクスとの重複を企画時に確認",
-    "url": null
+    "commercialCandidate": "候補・実機と発音評価は未完了",
+    "notes": "自作SVG・大きなタップ領域。評価はdocs/NEW-GAMES-26-30.md。",
+    "url": "games/play/dig.html"
   },
   {
     "no": 28,
-    "name": "未企画",
-    "ages": "2–5",
-    "mechanics": "未定",
-    "development": "未定",
-    "vehicles": [],
-    "status": "未着手",
+    "name": "ふねと すいもん",
+    "ages": "2〜5（3歳中心）",
+    "mechanics": "水位調整・門の操作",
+    "development": "因果関係・順序",
+    "vehicles": [
+      "boat"
+    ],
+    "status": "実装済み・ブラウザ検証／実機と発音の実聴確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "未評価",
-    "notes": "既存メカニクスとの重複を企画時に確認",
-    "url": null
+    "commercialCandidate": "候補・実機と発音評価は未完了",
+    "notes": "自作SVG・大きなタップ領域。評価はdocs/NEW-GAMES-26-30.md。",
+    "url": "games/play/lock.html"
   },
   {
     "no": 29,
-    "name": "未企画",
-    "ages": "2–5",
-    "mechanics": "未定",
-    "development": "未定",
-    "vehicles": [],
-    "status": "未着手",
+    "name": "ひこうき そらへ",
+    "ages": "2〜5（3歳中心）",
+    "mechanics": "加速・離陸・雲探索",
+    "development": "反応・目標探索",
+    "vehicles": [
+      "plane"
+    ],
+    "status": "実装済み・ブラウザ検証／実機と発音の実聴確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "未評価",
-    "notes": "既存メカニクスとの重複を企画時に確認",
-    "url": null
+    "commercialCandidate": "候補・実機と発音評価は未完了",
+    "notes": "自作SVG・大きなタップ領域。評価はdocs/NEW-GAMES-26-30.md。",
+    "url": "games/play/flight.html"
   },
   {
     "no": 30,
-    "name": "未企画",
-    "ages": "2–5",
-    "mechanics": "未定",
-    "development": "未定",
-    "vehicles": [],
-    "status": "未着手",
+    "name": "バスに のって しゅっぱつ",
+    "ages": "2〜5（3歳中心）",
+    "mechanics": "ドア開閉・乗客の乗車",
+    "development": "数量・手順",
+    "vehicles": [
+      "bus"
+    ],
+    "status": "実装済み・ブラウザ検証／実機と発音の実聴確認待ち",
     "souDeviceTest": "未実施",
-    "commercialCandidate": "未評価",
-    "notes": "既存メカニクスとの重複を企画時に確認",
-    "url": null
+    "commercialCandidate": "候補・実機と発音評価は未完了",
+    "notes": "自作SVG・大きなタップ領域。評価はdocs/NEW-GAMES-26-30.md。",
+    "url": "games/play/busride.html"
   },
   {
     "no": 31,
