@@ -50,6 +50,7 @@
   .foot{text-align:center;font-size:12px;color:rgba(255,255,255,.45)}
   @media (max-height:600px){ .card svg{width:76px} .t{font-size:20px} }
 </style>
+<link rel="stylesheet" href="games/driving/menu-entry.css">
 </head>
 <body>
 <div class="wrap">
@@ -106,5 +107,6 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 </script>
+<script type="module" src="games/driving/menu-entry.js"></script>
 </body>
 </html>

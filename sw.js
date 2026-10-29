@@ -1,7 +1,20 @@
 /* のりもの あそび（ゲーム集）のオフライン用。
    ゲームを足したら CORE に1行足すと、最初からオフラインで遊べる。 */
-const CACHE = 'norimono-hub-v1';
+const CACHE = 'norimono-hub-driving-v2';
 const CORE = [
+  './games/driving/index.html',
+  './games/driving/menu-entry.js',
+  './games/driving/catalog.js',
+  './games/driving/menu-entry.css',
+  './games/driving/shared/audio.js',
+  './games/driving/shared/narration.js',
+  './games/driving/train/index.html',
+  './games/driving/train/scene.js',
+  './games/driving/train/train.css',
+  './games/driving/train/model.js',
+  './games/driving/train/art.js',
+  './games/driving/train/train.js',
+
   './',
   './index.html',
   './manifest.webmanifest',
@@ -34,7 +47,7 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  if (e.request.method !== 'GET') return;
+  if (e.request.method !== 'GET' || new URL(e.request.url).pathname.includes('/tests/')) return;
   e.respondWith(
     caches.match(e.request, { ignoreSearch: true }).then((hit) => {
       if (hit) return hit;
@@ -42,7 +55,7 @@ self.addEventListener('fetch', (e) => {
         const copy = res.clone();
         caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => { });
         return res;
-      }).catch(() => caches.match('./index.html'));
+      }).catch(() => e.request.mode === 'navigate' ? caches.match('./index.html') : Response.error());
     })
   );
 });

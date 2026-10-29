@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#264c57">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="../../../manifest.webmanifest">
+<title>でんしゃを うんてん！｜なりきり・運転シリーズ</title>
+<link rel="stylesheet" href="train.css">
+</head>
+<body>
+<main id="cab" data-phase="intro">
+ <header class="cab-header">
+  <a id="home" class="icon-button" href="../index.html" aria-label="運転シリーズへ戻る"></a>
+  <div class="identity"><span>なりきり・運転シリーズ</span><h1>でんしゃを うんてん！</h1></div>
+  <nav id="route" aria-label="3つの駅"></nav>
+  <button id="mute" class="icon-button" aria-label="音を消す" aria-pressed="false"></button>
+  <button id="pause" class="icon-button" aria-label="ひとやすみ"></button>
+ </header>
+ <div class="workspace">
+  <section class="cab-main" aria-label="前方の景色と計器">
+   <div id="window" class="windshield">
+    <canvas id="scenery" aria-label="電車の前方。家、木、踏切、川、橋、トンネル、駅が流れる"></canvas>
+    <div class="destination"><span>つぎは</span><strong id="station-name">ひだまり</strong><span class="destination-dot"></span></div>
+    <div id="cue" class="cue" role="status" aria-live="polite"></div>
+    <div id="stop-guide" class="stop-guide" hidden><span>ここに とまろう</span><div class="stop-track"><i class="stop-zone"></i><i id="stop-train"></i></div></div>
+    <div id="door-scene" class="door-scene" aria-hidden="true"></div>
+    <div id="arrival" class="arrival" hidden><span class="arrival-star"></span><strong id="arrival-text"></strong></div>
+    <div id="confetti" aria-hidden="true"></div>
+   </div>
+   <div class="dashboard">
+    <div class="meter"><span class="meter-title">はやさ</span><div><output id="speed">0</output><small>km/h</small></div><div class="speed-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="distance-meter"><span class="meter-title">えきまで</span><div><output id="distance">360</output><small>m</small></div><div class="journey-line"><i id="journey-progress"></i></div></div>
+    <button id="door" class="door-button"><span class="door-icon"></span><span id="door-label">ドアを しめる</span></button>
+   </div>
+  </section>
+  <aside class="console" aria-label="運転の操作">
+   <div id="master" class="master" role="group" aria-label="マスコン。上で加速、真ん中で惰行、下でブレーキ">
+    <div class="lever-track" aria-hidden="true"></div><div id="handle" class="handle" aria-hidden="true"><i></i></div>
+    <button class="notch power" data-notch="1" aria-label="加速。レバーを上へ" aria-pressed="false"><span class="symbol"></span><span>はしる</span></button>
+    <button class="notch coast" data-notch="0" aria-label="惰行。レバーを真ん中へ" aria-pressed="true"><span class="symbol"></span><span>そのまま</span></button>
+    <button class="notch brake" data-notch="-1" aria-label="ブレーキ。レバーを下へ" aria-pressed="false"><span class="symbol"></span><span>ブレーキ</span></button>
+   </div>
+   <button id="horn" class="horn"><span class="horn-icon"></span><span>ポーーン！</span></button>
+  </aside>
+ </div>
+ <div id="overlay" class="overlay"></div>
+</main>
+<script type="module" src="train.js"></script>
+</body>
+</html>
