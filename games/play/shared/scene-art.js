@@ -3,9 +3,9 @@ export const colors=['#e98465','#69a9bc','#e9ba52','#a58cc4','#82b57d','#e895af'
 export function art(id,x,y,width,cls=''){
   let source=NoriVehicles.artwork(id);
   if(id==='excavator')source=source.replace(/<path d="M180 88[\s\S]*<\/svg>$/,'</svg>');
-  // Flight-game correction: the shared airplane's near wing was swept toward the nose.
-  // Redraw it swept toward the tail so the wing direction reads correctly at a glance.
-  if(id==='plane')source=source.replace(/<g data-nori-part="wing">[\s\S]*?<\/g>/,'<g data-nori-part="wing"><path d="M156 103l-58 36H61l55-39Z" fill="#7da3bc"/><rect x="104" y="112" width="36" height="13" rx="6" fill="#a8bcc5"/></g>');
+  // Flight game: replace the shared side-view airplane with a simple top/three-quarter
+  // silhouette whose nose is unmistakably on the right and whose main wings sweep back.
+  if(id==='plane')source=`<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg"><g stroke="#35515c" stroke-opacity=".2" stroke-width="2" stroke-linejoin="round"><path d="M18 83C18 74 32 69 52 68L219 61L274 69C298 72 310 78 310 84C310 91 298 97 274 100L219 107L52 100C32 99 18 93 18 83Z" fill="#f7f5e8"/><path d="M132 68L82 25H48L91 72Z" fill="#7da3bc"/><path d="M132 100L82 143H48L91 96Z" fill="#7da3bc"/><path d="M55 69L30 48H17L40 73Z" fill="#7da3bc"/><path d="M55 99L30 120H17L40 95Z" fill="#7da3bc"/></g><path d="M50 84H272" stroke="#dc986d" stroke-width="4" stroke-linecap="round"/><g fill="#42778a"><circle cx="166" cy="76" r="4"/><circle cx="184" cy="75" r="4"/><circle cx="202" cy="74" r="4"/><path d="M271 74Q291 77 298 84Q289 91 270 94Z"/></g></svg>`;
   return `<g class="next-art ${cls}"><svg x="${x}" y="${y}" width="${width}" height="${width/2}" viewBox="0 0 320 160">${source.replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'')}</svg></g>`;
 }
 export function target(action,index,x,y,w,h,body,cue=false,label=''){return `<g role="button" tabindex="0" aria-label="${label}" data-action="${action}" data-index="${index??''}" data-cue="${cue}"><rect class="${cue?'cue':'hit'}" x="${x}" y="${y}" width="${w}" height="${h}" rx="20"/>${body}<rect class="hit" x="${x}" y="${y}" width="${w}" height="${h}" rx="20"/></g>`;}
