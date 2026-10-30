@@ -10,3 +10,16 @@ test('manual braking can stop precisely, and results distinguish early / late st
 test('overshoot is remembered while the train gently aligns back to its station',()=>{const t=new TrainJourney();t.leg=2;t.phase='ready';t.setNotch(1);until(t,()=>t.phase==='aligning');const over=t.position;assert.ok(t.stopOffset>24);advance(t,1);assert.ok(t.position<over);assert.ok(t.speed<0);until(t,()=>t.phase==='arrived');assert.ok(Math.abs(t.position-ROUTE[2].length)<.2);assert.equal(t.result,'overrun');});
 test('long frame gaps and invalid dt do not teleport the train',()=>{const t=new TrainJourney();depart(t);const x=t.position;t.step(3600);assert.ok(t.position-x<.1);t.step(NaN);t.step(-1);assert.ok(Number.isFinite(t.position));});
 test('one door press cannot skip boarding or duplicate a station',()=>{const t=new TrainJourney();depart(t);until(t,()=>t.phase==='arrived');t.door();for(let i=0;i<20;i++)assert.equal(t.door(),false);advance(t,.8);assert.equal(t.phase,'boarding');advance(t,2.2);assert.equal(t.phase,'doors-open');assert.equal(t.visited.length,1);t.door();advance(t,1.2);assert.equal(t.leg,1);assert.equal(t.position,0);assert.equal(t.phase,'ready');});
+
+test('power starts and restarts at 30, 60, 90, 120 and 144 Hz',()=>{
+ for(const hz of [30,60,90,120,144]){
+  const t=new TrainJourney();depart(t);
+  for(let i=0;i<hz;i++)t.step(1/hz);
+  assert.ok(t.speed>2,`${hz} Hz must accelerate from rest, got ${t.speed}`);
+  assert.ok(t.position>1,`${hz} Hz must move`);
+  t.setNotch(-1);for(let i=0;i<hz*2;i++)t.step(1/hz);
+  assert.equal(t.speed,0);t.setNotch(1);
+  for(let i=0;i<hz;i++)t.step(1/hz);
+  assert.ok(t.speed>2,`${hz} Hz must restart after braking`);
+ }
+});

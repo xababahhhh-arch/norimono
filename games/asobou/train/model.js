@@ -77,7 +77,8 @@ export class TrainJourney {
     const before=this.speed;
     this.speed=clamp(this.speed+acceleration*dt,0,this.route.limit);
     this.position+=(before+this.speed)*.5*dt;
-    if(this.speed<.04){
+    // Snap only while slowing: the first powered frame is below .04 m/s at 60+ Hz.
+    if(this.speed<.04&&acceleration<=0){
       this.speed=0;
       if(this.distance<=28){this.stop();return;}
       if(this.notch!==1){this.idle+=dt;if(this.idle>1.5&&!this.earlyHint){this.earlyHint=true;this.emit('early-stop');}}
