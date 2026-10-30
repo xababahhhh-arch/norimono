@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {TrainJourney,BRAKE,classifyStop,ROUTE} from '../games/asobou/train/model.js';
+function advance(t,seconds){for(let i=0;i<Math.ceil(seconds/.02);i++)t.step(.02);}
+function depart(t){assert.equal(t.door(),true);advance(t,1.2);assert.equal(t.phase,'ready');t.setNotch(1);}
+function until(t,condition,seconds=180){for(let i=0;i<seconds/.02;i++){if(condition())return;t.step(.02);}assert.fail(`timed out: ${t.phase}, distance ${t.distance}, speed ${t.speed}`);}
+test('doors interlock, acceleration, coasting inertia and gradual braking',()=>{const t=new TrainJourney();assert.equal(t.setNotch(1),false);advance(t,3);assert.equal(t.position,0);depart(t);advance(t,4);assert.ok(t.speed>8&&t.speed<10);const v=t.speed;t.setNotch(0);advance(t,1);assert.ok(t.speed<v&&t.speed>v*.95);t.setNotch(-1);advance(t,1);assert.ok(t.speed>0&&t.speed<v-2);advance(t,4);assert.equal(t.speed,0);assert.equal(t.phase,'running');assert.equal(t.door(),false);t.setNotch(1);advance(t,1);assert.ok(t.speed>0);});
+test('an unattended power handle reaches all three stations without a dead end',()=>{const t=new TrainJourney();for(let leg=0;leg<3;leg++){depart(t);until(t,()=>t.phase==='arrived');assert.equal(t.visited.length,leg+1);assert.equal(t.speed,0);assert.equal(t.setNotch(1),false);assert.equal(t.door(),true);advance(t,3);assert.equal(t.phase,leg===2?'complete':'doors-open');}assert.equal(t.visited.length,3);assert.equal(t.leg,2);});
+test('manual braking can stop precisely, and results distinguish early / late stops',()=>{const t=new TrainJourney();t.leg=1;t.phase='ready';t.setNotch(1);until(t,()=>t.distance<=t.speed*t.speed/(2*BRAKE));t.setNotch(-1);until(t,()=>t.phase==='arrived');assert.ok(Math.abs(t.stopOffset)<1,`offset ${t.stopOffset}`);assert.equal(t.result,'perfect');assert.equal(classifyStop(-18),'arrival');assert.equal(classifyStop(21),'overrun');assert.equal(classifyStop(0,true),'arrival');});
+test('overshoot is remembered while the train gently aligns back to its station',()=>{const t=new TrainJourney();t.leg=2;t.phase='ready';t.setNotch(1);until(t,()=>t.phase==='aligning');const over=t.position;assert.ok(t.stopOffset>24);advance(t,1);assert.ok(t.position<over);assert.ok(t.speed<0);until(t,()=>t.phase==='arrived');assert.ok(Math.abs(t.position-ROUTE[2].length)<.2);assert.equal(t.result,'overrun');});
+test('long frame gaps and invalid dt do not teleport the train',()=>{const t=new TrainJourney();depart(t);const x=t.position;t.step(3600);assert.ok(t.position-x<.1);t.step(NaN);t.step(-1);assert.ok(Number.isFinite(t.position));});
+test('one door press cannot skip boarding or duplicate a station',()=>{const t=new TrainJourney();depart(t);until(t,()=>t.phase==='arrived');t.door();for(let i=0;i<20;i++)assert.equal(t.door(),false);advance(t,.8);assert.equal(t.phase,'boarding');advance(t,2.2);assert.equal(t.phase,'doors-open');assert.equal(t.visited.length,1);t.door();advance(t,1.2);assert.equal(t.leg,1);assert.equal(t.position,0);assert.equal(t.phase,'ready');});
+
+test('power starts and restarts at 30, 60, 90, 120 and 144 Hz',()=>{
+ for(const hz of [30,60,90,120,144]){
+  const t=new TrainJourney();depart(t);
+  for(let i=0;i<hz;i++)t.step(1/hz);
+  assert.ok(t.speed>2,`${hz} Hz must accelerate from rest, got ${t.speed}`);
+  assert.ok(t.position>1,`${hz} Hz must move`);
+  t.setNotch(-1);for(let i=0;i<hz*2;i++)t.step(1/hz);
+  assert.equal(t.speed,0);t.setNotch(1);
+  for(let i=0;i<hz;i++)t.step(1/hz);
+  assert.ok(t.speed>2,`${hz} Hz must restart after braking`);
+ }
+});
