@@ -10,8 +10,8 @@
 
 ## 登録・拡張
 
-- `games/driving/catalog.js`: 独立したシリーズID `driving`、ゲームID `train-driver`。知育100本の通し番号とは別管理。
-- `games/driving/index.html`: 運転シリーズの入口。
+- `games/asobou/catalog.js`: 独立したシリーズID `driving`、ゲームID `train-driver`。知育100本の通し番号とは別管理。
+- `games/asobou/index.html`: 運転シリーズの入口。
 - `menu-entry.js / menu-entry.css`: 既存の `#list` を保持して独立したシリーズ入口を加える。あてっこ等の登録データに介入しない。
 - `train/model.js`: 距離・慣性・加速・制動・停車結果・乗降・復帰を扱う純粋な状態機械。
 - `train/scene.js`: 同じ距離座標に基づいた前方のCanvas描画。レール・枕木・ホーム・停止目標が走行距離に連動する。
@@ -55,3 +55,14 @@
 - 実時間のブラウザ操作でも発進、警笛、景色、初回の停車補助を確認。844×390の実画面を目視確認。
 - 既存ゲーム本体（あてっこ・ミニカー・app/style/back/vehicles）はmainと完全一致。rootの一覧に独立したシリーズ入口を追加。
 - 実機OSの音声・発音、実児童による遊びやすさは未検証。上記は開発ブラウザと画面サイズによる確認であり、端末検証の代わりではない。
+
+
+## 2026-10-30 入口の分離
+
+全体トップ index.html → 知育ゲーム learning.html / あそぼう games/asobou/index.html の2入口に変更。知育一覧は origin/codex/sou-shape-builder の ba89176 の一覧を保持（30件・順番とリンクを維持）。同ブランチのゲーム群をこの作業ブランチに取り込んだ。mainと知育用ブランチ自体は変更しない。
+
+電車とその専用素材・音・カタログは games/asobou/ に集約。シリーズ表示名は「あそぼう」、IDはasobou。電車→専用メニュー→全体トップの階層。知育側の戻り先はlearning.htmlへ変更。従来のgames/drivingへの直接リンクは新しいURLへ置き換える。
+
+Service Workerは両シリーズ全ファイルとlearning.htmlをキャッシュし、世代を更新。manifestは全体トップを起点にする。知育の操作ロジックは変更せず戻り先のみ整理。
+
+確認結果: 入口・電車起動・両階層の戻る操作・あてっこ開始をブラウザで確認。320×568で横はみ出しなし。キャッシュ対象83件HTTP200。モデル18テストPASS。知育ゲームの取り込み元との差分は戻り先のみと検証。実iPhoneのSafe Area・回転・発音は端末で要確認。

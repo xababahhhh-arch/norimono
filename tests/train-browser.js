@@ -5,7 +5,7 @@ function log(text){lines.push(text);results.textContent=lines.join('\n');}
 async function wait(fn,message,timeout=20000){const start=Date.now();while(!fn()){if(Date.now()-start>timeout)throw Error(message+' timeout');await sleep(15);}return fn();}
 async function run(width,height){
  const f=document.createElement('iframe');f.width=width;f.height=height;f.title=`train ${width}×${height}`;f.style.maxWidth='none';
- const base=new URL('../games/driving/train/',location.href).href;
+ const base=new URL('../games/asobou/train/',location.href).href;
  const source=await(await fetch(base+'index.html')).text();
  const boot=`<script>window.__errors=[];addEventListener('error',e=>__errors.push(e.message));addEventListener('unhandledrejection',e=>__errors.push(String(e.reason)));let tick=0;window.requestAnimationFrame=cb=>setTimeout(()=>cb(tick+=50),4);window.cancelAnimationFrame=clearTimeout;window.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};window.__speech=[];window.__active=null;window.__overlap=false;speechSynthesis.getVoices=()=>[{name:'test',lang:'ja-JP'}];speechSynthesis.cancel=()=>{__active=null;};speechSynthesis.speak=u=>{if(__active)__overlap=true;__active=u;__speech.push(u.text);setTimeout(()=>{if(__active===u){__active=null;u.onend?.();}},10);};<\/script>`;
  f.srcdoc=source.replace('<head>',`<head><base href="${base}">`).replace('<script type="module"',boot+'<script type="module"');frames.replaceChildren(f);await new Promise(resolve=>f.onload=resolve);
@@ -32,7 +32,7 @@ async function run(width,height){
  await wait(()=>phase()==='complete','finish');fit();assert($('#overlay').textContent.includes('うんてん ありがとう'),'no final celebration');click('#again');assert(phase()==='doors-open'&&cab().dataset.arrivals==='0','replay not reset');
  assert(w.__errors.length===0,w.__errors.join('; '));assert(!w.__overlap,'voice overlap');
  const canvas=$('#scenery'),pixels=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;assert(pixels.some((v,i)=>i%4===0&&v!==pixels[0]),'blank scene');
- click('#home');await wait(()=>f.contentWindow.location.pathname.endsWith('/games/driving/index.html'),'return to driving menu');
+ click('#home');await wait(()=>f.contentWindow.location.pathname.endsWith('/games/asobou/index.html'),'return to driving menu');
  log(`PASS ${width}×${height}: 説明/スキップ・ドア連動・タッチレバー・加速/惰行/ブレーキ・警笛操作・一時停止・3駅・停止結果・乗降・完走・再プレイ・ホーム・画面内/コンソール`);f.remove();
 }
 document.querySelector('#run').onclick=async()=>{document.querySelector('#run').disabled=true;lines.length=0;try{const q=new URLSearchParams(location.search);const sizes=q.has('w')?[[Number(q.get('w')),Number(q.get('h'))]]:[[568,320],[844,390],[1024,768],[320,568]];for(const [w,h]of sizes)await run(w,h);log('ALL PASS');document.body.dataset.result='pass';}catch(e){log('FAIL '+e.stack);document.body.dataset.result='fail';}finally{document.querySelector('#run').disabled=false;}};

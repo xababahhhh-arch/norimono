@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {TrainJourney,BRAKE,classifyStop,ROUTE} from '../games/driving/train/model.js';
+import {TrainJourney,BRAKE,classifyStop,ROUTE} from '../games/asobou/train/model.js';
 function advance(t,seconds){for(let i=0;i<Math.ceil(seconds/.02);i++)t.step(.02);}
 function depart(t){assert.equal(t.door(),true);advance(t,1.2);assert.equal(t.phase,'ready');t.setNotch(1);}
 function until(t,condition,seconds=180){for(let i=0;i<seconds/.02;i++){if(condition())return;t.step(.02);}assert.fail(`timed out: ${t.phase}, distance ${t.distance}, speed ${t.speed}`);}

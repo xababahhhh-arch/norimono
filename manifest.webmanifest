@@ -1,7 +1,7 @@
 {
   "name": "のりもの あそび",
   "short_name": "のりもの",
-  "description": "知育シリーズと、なりきり・運転シリーズの乗り物ゲーム集",
+  "description": "知育ゲームと、乗り物を操作して遊ぶ「あそぼう」",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
