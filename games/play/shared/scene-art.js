@@ -3,32 +3,6 @@ export const colors=['#e98465','#69a9bc','#e9ba52','#a58cc4','#82b57d','#e895af'
 export function art(id,x,y,width,cls=''){
   let source=NoriVehicles.artwork(id);
   if(id==='excavator')source=source.replace(/<path d="M180 88[\s\S]*<\/svg>$/,'</svg>');
-  // Flight game: child-readable side-view airliner. Nose is RIGHT, tail is LEFT.
-  // Main wing root is at fuselage center and the wing tip is swept BACK toward LEFT/tail.
-  if(id==='plane')source=`<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
-    <g stroke="#35515c" stroke-opacity=".24" stroke-width="2" stroke-linejoin="round">
-      <!-- fuselage -->
-      <path d="M22 79Q28 68 52 67L230 62Q260 62 282 72L304 82Q313 87 305 94Q297 101 276 104L53 113Q29 114 22 102Q18 91 22 79Z" fill="#f7f5e8"/>
-      <!-- rear vertical fin -->
-      <path d="M71 72L43 36H25L49 75Z" fill="#7da3bc"/>
-      <!-- rear horizontal stabilizer -->
-      <path d="M78 103L42 123H22L56 101Z" fill="#9ab7c9"/>
-      <!-- main wing: leading/root edge begins near x190, tip points back to x78 -->
-      <path d="M194 96L151 101L76 151H119L207 101Z" fill="#6f9bb7"/>
-    </g>
-    <path d="M54 95L258 89" stroke="#dc986d" stroke-width="4" stroke-linecap="round"/>
-    <g fill="#42778a">
-      <circle cx="106" cy="83" r="4"/><circle cx="126" cy="82" r="4"/><circle cx="146" cy="82" r="4"/><circle cx="166" cy="81" r="4"/><circle cx="186" cy="80" r="4"/><circle cx="206" cy="80" r="4"/>
-      <path d="M265 72Q286 75 300 85L270 88Z"/>
-    </g>
-    <!-- one engine under the visible main wing -->
-    <g fill="#a8bcc5" stroke="#607984" stroke-width="2">
-      <path d="M128 117Q143 113 155 118L165 126Q166 132 157 134H133Q124 131 125 124Z"/>
-    </g>
-    <g stroke="#607984" stroke-width="4" stroke-linecap="round">
-      <path d="M91 109v15M225 103v15"/><path d="M82 125h18M216 119h18"/>
-    </g>
-  </svg>`;
   return `<g class="next-art ${cls}"><svg x="${x}" y="${y}" width="${width}" height="${width/2}" viewBox="0 0 320 160">${source.replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'')}</svg></g>`;
 }
 export function target(action,index,x,y,w,h,body,cue=false,label=''){return `<g role="button" tabindex="0" aria-label="${label}" data-action="${action}" data-index="${index??''}" data-cue="${cue}"><rect class="${cue?'cue':'hit'}" x="${x}" y="${y}" width="${w}" height="${h}" rx="20"/>${body}<rect class="hit" x="${x}" y="${y}" width="${w}" height="${h}" rx="20"/></g>`;}
