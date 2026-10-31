@@ -1,5 +1,5 @@
-import {scenes} from './scene-registry.js?v=beeab7cb';
-import {colors} from './scene-art.js?v=8eedbce0';
+import {scenes} from './scene-registry.js?v=flight-20261031-63fe4f4d';
+import {colors} from './scene-art.js?v=flight-20261031-63fe4f4d';
 import {definitions,createState,act,prompt} from './next-models.js';
 const kind=document.body.dataset.game,config=definitions[kind],$=s=>document.querySelector(s),stage=$('#stage'),hint=$('#hint');
 let round=0,state,busy=false,generation=0,timers=new Set(),ctx,lastPrompt='';
