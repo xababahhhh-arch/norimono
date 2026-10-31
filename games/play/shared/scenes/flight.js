@@ -1,4 +1,4 @@
-import {art,target,village,colors,person,cloud} from '../scene-art.js?v=a450b36a';
+import {art,target,village,colors,person,cloud} from '../scene-art.js?v=8eedbce0';
 export function render(state,round,transient){
  let svg=village;const done=state.done,vehicleClass=done?'leave':transient?'roll':'';
   const sky=state.phase!=='runway';
