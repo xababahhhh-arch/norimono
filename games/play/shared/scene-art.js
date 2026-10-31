@@ -3,29 +3,31 @@ export const colors=['#e98465','#69a9bc','#e9ba52','#a58cc4','#82b57d','#e895af'
 export function art(id,x,y,width,cls=''){
   let source=NoriVehicles.artwork(id);
   if(id==='excavator')source=source.replace(/<path d="M180 88[\s\S]*<\/svg>$/,'</svg>');
-  // Flight game uses a dedicated, child-readable side-view airliner.
-  // Nose points right. One visible main wing sweeps back toward the tail;
-  // the vertical fin and horizontal tailplane are clearly separated.
+  // Flight game: simple side-view airliner, nose right / tail left.
+  // The main wing is attached around the middle of the fuselage and sweeps BACK toward the tail (left).
   if(id==='plane')source=`<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
-    <g stroke="#35515c" stroke-opacity=".22" stroke-width="2" stroke-linejoin="round">
-      <path d="M20 91Q22 77 47 73L226 61Q253 59 277 69L300 79Q311 84 307 91Q303 98 285 102L244 108L52 119Q27 120 20 108Q16 101 20 91Z" fill="#f7f5e8"/>
-      <path d="M86 75L48 39H28L54 79Z" fill="#7da3bc"/>
-      <path d="M67 75L48 55H38L51 79Z" fill="#9ab7c9"/>
-      <path d="M157 105L111 145H75L126 107Z" fill="#7da3bc"/>
-      <path d="M142 106L122 126H105L128 107Z" fill="#9ab7c9"/>
-      <path d="M57 114L39 134H22L43 112Z" fill="#7da3bc"/>
+    <g stroke="#35515c" stroke-opacity=".24" stroke-width="2" stroke-linejoin="round">
+      <!-- fuselage -->
+      <path d="M24 82Q29 70 52 68L232 62Q258 62 281 72L302 82Q311 87 304 94Q296 101 276 104L54 113Q31 114 24 103Q19 94 24 82Z" fill="#f7f5e8"/>
+      <!-- vertical tail fin: rear/left -->
+      <path d="M72 72L43 35H25L48 75Z" fill="#7da3bc"/>
+      <!-- horizontal tailplane: rear/left -->
+      <path d="M75 105L43 127H24L55 104Z" fill="#9ab7c9"/>
+      <!-- MAIN WING: root near center, tip swept backward toward LEFT/tail -->
+      <path d="M184 99L105 145H66L145 101Z" fill="#6f9bb7"/>
     </g>
-    <path d="M52 101L257 90" stroke="#dc986d" stroke-width="4" stroke-linecap="round"/>
+    <path d="M54 96L258 89" stroke="#dc986d" stroke-width="4" stroke-linecap="round"/>
     <g fill="#42778a">
-      <circle cx="105" cy="88" r="4"/><circle cx="124" cy="87" r="4"/><circle cx="143" cy="86" r="4"/><circle cx="162" cy="85" r="4"/><circle cx="181" cy="84" r="4"/><circle cx="200" cy="83" r="4"/>
-      <path d="M263 72Q284 73 298 84L269 87Z"/>
+      <circle cx="106" cy="84" r="4"/><circle cx="126" cy="83" r="4"/><circle cx="146" cy="82" r="4"/><circle cx="166" cy="82" r="4"/><circle cx="186" cy="81" r="4"/><circle cx="206" cy="80" r="4"/>
+      <path d="M265 72Q286 75 300 85L270 88Z"/>
     </g>
+    <!-- engines beneath main wing -->
     <g fill="#a8bcc5" stroke="#607984" stroke-width="2">
-      <path d="M120 110Q133 108 142 113L151 121Q153 126 145 128H124Q117 126 118 120Z"/>
-      <path d="M188 106Q200 104 209 109L217 116Q220 121 212 123H192Q185 121 186 115Z"/>
+      <path d="M119 118Q132 114 143 118L151 125Q153 131 145 133H124Q116 130 117 124Z"/>
+      <path d="M160 108Q173 105 184 109L192 116Q194 122 186 124H165Q157 121 158 115Z"/>
     </g>
     <g stroke="#607984" stroke-width="4" stroke-linecap="round">
-      <path d="M95 116v13M220 108v14"/><path d="M86 130h18M211 123h18"/>
+      <path d="M91 110v15M224 103v15"/><path d="M82 126h18M215 119h18"/>
     </g>
   </svg>`;
   return `<g class="next-art ${cls}"><svg x="${x}" y="${y}" width="${width}" height="${width/2}" viewBox="0 0 320 160">${source.replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'')}</svg></g>`;
