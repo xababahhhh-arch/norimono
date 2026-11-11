@@ -5,7 +5,7 @@ const { spawn } = require('node:child_process');
 const http = require('node:http');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const games = ['count-cargo','shape-port','color-light','memory-garage','sound-horn','direction-rocket','order-station','odd-vehicle','weather-helper','steer-path'];
+const games = ['bridge-planks','fuel-match','mirror-bus','traffic-pause','repair-wheels','tunnel-echo','delivery-map','shadow-cloud','boat-current','rescue-priority'];
 const pause = ms => new Promise(resolve => setTimeout(resolve,ms));
 async function ready() {
   for(let i=0;i<60;i++) {
@@ -23,7 +23,7 @@ async function testGame(page,id) {
     assert.equal(response.status(),200);
     await page.getByRole('button',{name:/はじめる/}).click();
     for(let round=0;round<3;round++) {
-      const count=id==='order-station'?round+2:1;
+      const count=(id==='tunnel-echo'||id==='delivery-map')?round+2:1;
       for(let step=0;step<count;step++) {
         await page.waitForFunction(()=>document.querySelector('#progress')?.textContent.includes('/ 3')&&document.querySelectorAll('#choices button').length>0);
         await pause(380);
