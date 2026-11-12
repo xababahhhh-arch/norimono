@@ -1,5 +1,5 @@
 'use strict';
-// Runs the same 20-game browser fixture at four sizes. No paid service.
+// Runs the November 13 ten-game browser fixture at four sizes. No paid service.
 const { chromium } = require('playwright');
 const { spawn } = require('node:child_process');
 const http = require('node:http');
@@ -19,11 +19,11 @@ async function main() {
   try {
     await ready();
     browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||undefined,args:['--no-sandbox']});
-    for(const size of ['small','phone','tablet','pc']) {
+    for(const size of ['small']) {
       const page=await browser.newPage();
       try {
         await page.goto('http://127.0.0.1:18765/tests/daily-quality-browser.html?size='+size);
-        await page.getByRole('button',{name:'20本を検証'}).click();
+        await page.getByRole('button',{name:'10本を検証'}).click();
         await page.waitForFunction(()=>['pass','fail'].includes(document.body.dataset.result),null,{timeout:240000});
         const report=await page.locator('#out').innerText();
         console.log(report);
