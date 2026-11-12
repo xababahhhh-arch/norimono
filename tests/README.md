@@ -21,6 +21,14 @@
 
 `npm run test:next` は操作順序と完了条件を検証します。`next-browser.html?w=320&h=568` は実画面のタップ中心・遮蔽・地形・水面と船・乗客の移動、説明／スキップ、3ステージ、再プレイ、ホームを通し操作します。390×844、412×915も同じクエリで指定できます。音声終了だけをスタブ化しているため発音・アクセントの承認はできません。`next-gallery.html` は見た目と実操作のレビュー用です。
 
-## 毎日10本の無料ブラウザテスト
+## 毎日追加ゲームの品質検査
 
-リポジトリをローカルに取得後、`cd tests && npm install && npx playwright install chromium && npm run test:daily` を実行。Playwrightは無料。ローカルHTTPサーバーを自動起動し、当日の10本を320×568 / 390×844 / 768×1024で開始→各3ステージ（正解まで選択肢を試す）→クリア→リトライまで検査する。JavaScript例外と横はみ出しも検査。音声は終了イベントのスタブであり、実際のiPhoneの発声や音質は保証しない。GitHub Actionsは有効化していないため、Actions課金は発生しない。テストを追加しただけでは実行済みにならない。新作10本が変わる場合は `daily-ten-smoke.cjs` のゲームIDも更新する。
+`daily-quality-browser.html?size=small` を開き「20本を検証」を押す。sizeはsmall(320×568)、phone(390×844)、tablet(768×1024)、pc(1366×768)。数字のDOM順、44px以上の入力領域、画面内配置、説明・問題音声の文、具体的な不正解ヒント、全3ステージ、クリア、再プレイ、音声中のやり直し、JSエラーを確認する。正解は画面の絵・指示文から決定し、毎ステップ不正解も試す。
+
+既存のCLI入口は `cd tests && npm install && npx playwright install chromium && npm run test:daily`。同じブラウザ検証をPlaywrightから実行する。今回の実行記録はブラウザ内の検証結果であり、CLIラッパーの実行記録ではない。
+
+`node --test tests/daily-quality.test.cjs` は数字・数字文字列の並びと、音声キャンセル後に古い処理が進まないことを検査する。新作もdaily-quality.jsのordered/speak/cancelを使用し、ブラウザ検証のIDと固有の操作を追加する。ゲームごとに数字をshuffleしない。名前→押す対象を明記し、選択肢を数字へ置き換える位置暗記問題を避ける。
+
+`rescue-quality-browser.html` は消防・はしごの3サイズ通し検査。`rail-browser.html` は6サイズの線路接続と電車軌道を検査する。
+
+音声終了はスタブ。実際の発音・音質・iOS/Androidの音声制限や幼児の自力操作はこの検証では保証しない。

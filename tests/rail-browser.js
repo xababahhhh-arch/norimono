@@ -100,7 +100,7 @@ async function check(width, height) {
   log(`PASS ${width}×${height}: クリア・もういっかい`);
 }
 try {
-  await Promise.all([[320, 568], [375, 667], [390, 844], [412, 915]].map(size => check(...size)));
-  log('ALL PASS: 12ステージ・4回の再挑戦。実端末の音声と操作は別途確認。');
+  await Promise.all([[320, 568], [375, 667], [390, 844], [412, 915], [768,1024], [1366,768]].map(size => check(...size)));
+  log('ALL PASS: 18ステージ・6回の再挑戦。実端末の音声と操作は別途確認。');
   document.title = 'PASS — 線路の接続・走行検証';
 } catch (e) { log(`FAIL: ${e.message}`); document.title = 'FAIL — 線路の接続・走行検証'; }

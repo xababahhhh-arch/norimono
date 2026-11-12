@@ -40,7 +40,8 @@
     else if(id==='motorbike'){s=wheel(78,120,27)+wheel(244,120,27)+path('M96 110 131 72h68l27 36h-46l-22-24-25 32Z',c,bodyStroke)+circle(156,96,24,'#657d87')+circle(156,96,13,'#b8c6c2')+line('M198 72l27-25 25 7M126 73l-19-23','#536b76',7)+rect(118,60,47,9,4,'#3f5866');}
     else if(id==='rocket'){s=path('M160 13q48 36 48 90l-21 28h-54l-21-28q0-54 48-90Z','#f4eee0',bodyStroke)+path('M160 14q30 23 41 54h-82q11-31 41-54',c)+circle(160,82,20,palette.glass)+circle(160,82,13,'#d9edf0')+path('M132 109 96 142l9-45 25-15m58 27 36 33-9-45-25-15',c)+path('M145 131h30l-15 28Z','#e5a159');}
     else if(id==='locomotive'){s=rect(56,63,169,62,5,'#46565c',bodyStroke)+rect(81,34,93,32,4,'#53666b')+rect(99,42,24,18,3,'#b8d4d3')+rect(131,42,24,18,3,'#b8d4d3')+path('M221 84h56l24 41h-80Z','#495a60')+rect(231,48,26,38,4,'#52666b')+rect(235,32,18,18,3,'#44565c')+circle(79,129,24,'#334950')+circle(140,129,24,'#334950')+circle(204,129,24,'#334950')+circle(265,129,15,'#334950')+line('M79 129h126','#d6aa64',7)+rect(29,116,30,10,4,'#c46652');}
-    return `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${v[1]}">${s}</svg>`;
+    return `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" role="img" data-nori-vehicle="${id}" aria-label="${v[0]}">${s}</svg>`;
   }
-  root.NoriVehicles={catalog,anchors,artwork};
-})(window);
+  function get(id){const v=catalog[id];if(!v)throw Error('Unknown vehicle: '+id);return {id,name:v[0],say:v[1],category:v[2],color:v[3],image:'',sound:'',anchors:anchors[id]||{},svg:artwork(id)};}
+  root.NoriVehicles={catalog,anchors,artwork,get,list:()=>Object.keys(catalog).map(get)};
+})(globalThis);
