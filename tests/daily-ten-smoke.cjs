@@ -27,8 +27,8 @@ await page.addInitScript(()=>{window.speechSynthesis={cancel(){},speak(u){setTim
 const response=await page.goto('http://127.0.0.1:18765/games/play/daily-20261114.html?id='+id);assert.equal(response.status(),200);
 await page.getByRole('button',{name:'▶️ はじめる'}).click();
 for(let round=0;round<3;round++){const seq=answers[id][round];await page.waitForFunction(n=>document.querySelector('#progress')?.textContent.startsWith((n+1)+' / 3'),round);
-const wrong=await page.locator('#choices button').allTextContents();const bad=wrong.find(x=>x!==seq[0]);if(bad){await page.locator('#choices button').filter({hasText:bad}).first().click();await page.waitForFunction(()=>document.querySelector('#hint')?.textContent.includes('これは'));await page.waitForTimeout(100)}
-for(const answer of seq){await page.locator('#choices button').filter({hasText:answer}).first().click();await page.waitForTimeout(100)}
+const wrong=await page.locator('#choices button').allTextContents();const bad=wrong.find(x=>x!==seq[0]);if(bad){await page.locator('#choices button').filter({hasText:bad}).first().click();await page.waitForFunction(()=>document.querySelector('#hint')?.textContent.includes('これは'));await page.waitForTimeout(300)}
+for(const answer of seq){await page.locator('#choices button').filter({hasText:answer}).first().click();await page.waitForTimeout(350)}
 }
 await page.getByRole('button',{name:'🔁 もういちど'}).waitFor({timeout:12000});
 const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2);assert.equal(overflow,false,'horizontal overflow');
