@@ -1,22 +1,22 @@
 'use strict';
-// Free local Playwright smoke test for the ten November 14 games.
+// Free local Playwright smoke test for the ten November 15 games.
 const {chromium}=require('playwright');
 const {spawn}=require('node:child_process');
 const http=require('node:http');
 const path=require('node:path');
 const assert=require('node:assert/strict');
-const ids=['ticket-count','shape-ferry','color-bus','memory-ship','sound-station','rocket-target','delivery-steps','find-garage','rain-wiper','crane-operator'];
+const ids=['bus-stop-count','roof-builder','signal-painter','hide-helicopter','drum-boat','submarine-steer','train-car-order','vehicle-spotlight','wind-sock','snow-loader'];
 const answers={
-'ticket-count':[['2'],['3'],['4']],
-'shape-ferry':[['●'],['▲'],['■']],
-'color-bus':[['🔴'],['🔵'],['🟡']],
-'memory-ship':[['🍎'],['🍌'],['🍇']],
-'sound-station':[['2'],['3'],['4']],
-'rocket-target':[['⬆️'],['➡️'],['⬅️']],
-'delivery-steps':[['🏠','🏫'],['🏠','🏫','🏥'],['🏠','🏫','🏥','🌳']],
-'find-garage':[['2'],['3'],['4']],
-'rain-wiper':[['よわい'],['ふつう'],['つよい']],
-'crane-operator':[['おろす','おろす'],['おろす','おろす','おろす'],['おろす','おろす','おろす','おろす']]
+'bus-stop-count':[['2'],['3'],['4']],
+'roof-builder':[['▲'],['■'],['●']],
+'signal-painter':[['🔴'],['🟡'],['🟢']],
+'hide-helicopter':[['ひだり'],['まんなか'],['みぎ']],
+'drum-boat':[['🥁','🥁'],['👏','👏','👏'],['🔔','🔔','🔔','🔔']],
+'submarine-steer':[['⬆️'],['➡️'],['⬇️']],
+'train-car-order':[['🔴','🟡'],['🔴','🟡','🟢'],['🔴','🟡','🟢','🔵']],
+'vehicle-spotlight':[['🚁'],['🚓'],['🚜']],
+'wind-sock':[['よわい'],['ふつう'],['つよい']],
+'snow-loader':[['つむ','つむ'],['つむ','つむ','つむ'],['つむ','つむ','つむ','つむ']]
 };
 const sleep=t=>new Promise(r=>setTimeout(r,t));
 async function ready(){for(let i=0;i<80;i++){try{await new Promise((ok,no)=>http.get('http://127.0.0.1:18765/index.html',r=>{r.resume();r.statusCode===200?ok():no(Error('HTTP '+r.statusCode))}).on('error',no));return}catch{await sleep(100)}}throw Error('Local HTTP server not ready')}
@@ -24,7 +24,7 @@ async function main(){const server=spawn('python3',['-m','http.server','18765','
 try{await ready();browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||undefined,args:['--no-sandbox']});
 for(const width of [320,390,768])for(const id of ids){const page=await browser.newPage({viewport:{width,height:width===768?1024:700}});const errors=[];page.on('pageerror',e=>errors.push(e.message));try{
 await page.addInitScript(()=>{window.speechSynthesis={cancel(){},speak(u){setTimeout(()=>u.onend?.(),0)},getVoices(){return[]}};window.SpeechSynthesisUtterance=class{constructor(text){this.text=text}}});
-const response=await page.goto('http://127.0.0.1:18765/games/play/daily-20261114.html?id='+id);assert.equal(response.status(),200);
+const response=await page.goto('http://127.0.0.1:18765/games/play/daily-20261115.html?id='+id);assert.equal(response.status(),200);
 await page.getByRole('button',{name:'▶️ はじめる'}).click();
 for(let round=0;round<3;round++){const seq=answers[id][round];await page.waitForFunction(n=>document.querySelector('#progress')?.textContent.startsWith((n+1)+' / 3'),round);
 const wrong=await page.locator('#choices button').allTextContents();const bad=wrong.find(x=>x!==seq[0]);if(bad){await page.locator('#choices button').filter({hasText:bad}).first().click();await page.waitForFunction(()=>document.querySelector('#hint')?.textContent.includes('これは'));await page.waitForTimeout(300)}
