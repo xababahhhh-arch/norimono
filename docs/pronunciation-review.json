@@ -1,0 +1,296 @@
+[
+  {
+    "id": "car",
+    "display": "くるま",
+    "spokenText": "車",
+    "examples": [
+      "車",
+      "車はどれかな？",
+      "車を見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "bus",
+    "display": "バス",
+    "spokenText": "バス",
+    "examples": [
+      "バス",
+      "バスはどれかな？",
+      "バスを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "fire",
+    "display": "しょうぼうしゃ",
+    "spokenText": "消防車",
+    "examples": [
+      "消防車",
+      "消防車はどれかな？",
+      "消防車を見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "ambulance",
+    "display": "きゅうきゅうしゃ",
+    "spokenText": "救急車",
+    "examples": [
+      "救急車",
+      "救急車はどれかな？",
+      "救急車を見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "police",
+    "display": "パトカー",
+    "spokenText": "パトカー",
+    "examples": [
+      "パトカー",
+      "パトカーはどれかな？",
+      "パトカーを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "truck",
+    "display": "トラック",
+    "spokenText": "トラック",
+    "examples": [
+      "トラック",
+      "トラックはどれかな？",
+      "トラックを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "garbage",
+    "display": "ごみしゅうしゅうしゃ",
+    "spokenText": "ごみ収集車",
+    "examples": [
+      "ごみ収集車",
+      "ごみ収集車はどれかな？",
+      "ごみ収集車を見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "excavator",
+    "display": "ショベルカー",
+    "spokenText": "ショベルカー",
+    "examples": [
+      "ショベルカー",
+      "ショベルカーはどれかな？",
+      "ショベルカーを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "dump",
+    "display": "ダンプカー",
+    "spokenText": "ダンプカー",
+    "examples": [
+      "ダンプカー",
+      "ダンプカーはどれかな？",
+      "ダンプカーを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "tractor",
+    "display": "トラクター",
+    "spokenText": "トラクター",
+    "examples": [
+      "トラクター",
+      "トラクターはどれかな？",
+      "トラクターを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "forklift",
+    "display": "フォークリフト",
+    "spokenText": "フォークリフト",
+    "examples": [
+      "フォークリフト",
+      "フォークリフトはどれかな？",
+      "フォークリフトを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "train",
+    "display": "でんしゃ",
+    "spokenText": "電車",
+    "examples": [
+      "電車",
+      "電車はどれかな？",
+      "電車を見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "shinkansen",
+    "display": "しんかんせん",
+    "spokenText": "新幹線",
+    "examples": [
+      "新幹線",
+      "新幹線はどれかな？",
+      "新幹線を見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "locomotive",
+    "display": "エスエル",
+    "spokenText": "エスエル",
+    "examples": [
+      "エスエル",
+      "エスエルはどれかな？",
+      "エスエルを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "plane",
+    "display": "ひこうき",
+    "spokenText": "飛行機",
+    "examples": [
+      "飛行機",
+      "飛行機はどれかな？",
+      "飛行機を見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "helicopter",
+    "display": "ヘリコプター",
+    "spokenText": "ヘリコプター",
+    "examples": [
+      "ヘリコプター",
+      "ヘリコプターはどれかな？",
+      "ヘリコプターを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "boat",
+    "display": "ふね",
+    "spokenText": "船",
+    "examples": [
+      "船",
+      "船はどれかな？",
+      "船を見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "bicycle",
+    "display": "じてんしゃ",
+    "spokenText": "自転車",
+    "examples": [
+      "自転車",
+      "自転車はどれかな？",
+      "自転車を見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "motorbike",
+    "display": "バイク",
+    "spokenText": "バイク",
+    "examples": [
+      "バイク",
+      "バイクはどれかな？",
+      "バイクを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "taxi",
+    "display": "タクシー",
+    "spokenText": "タクシー",
+    "examples": [
+      "タクシー",
+      "タクシーはどれかな？",
+      "タクシーを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  },
+  {
+    "id": "rocket",
+    "display": "ロケット",
+    "spokenText": "ロケット",
+    "examples": [
+      "ロケット",
+      "ロケットはどれかな？",
+      "ロケットを見つけよう。"
+    ],
+    "pronunciationApproved": false,
+    "accentApproved": false,
+    "recordedFile": null,
+    "notes": ""
+  }
+]

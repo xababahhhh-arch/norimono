@@ -1,0 +1,5 @@
+.nori-glyph{display:inline-block;width:1em;height:1em;vertical-align:-.13em;flex:none;overflow:visible}.nori-vehicle-glyph{width:1.35em}.nori-glyph svg{width:100%;height:100%}.nori-glyph[data-nori-vehicle]{filter:drop-shadow(0 2px 1px #24475812)}
+.card .nori-glyph{width:52px;height:42px}.card .nori-vehicle-glyph{width:70px;height:42px}.star .nori-glyph,.spark .nori-glyph,.stars .nori-glyph{width:1em;height:1em}.fleet .nori-glyph{max-width:100%}.shadow-wrap svg [fill]{transition:none}button:focus-visible,a:focus-visible{outline:4px solid #dc9d5d;outline-offset:3px}
+
+.sample .nori-vehicle-glyph,.choice .nori-vehicle-glyph{width:1em}.sample+.arrow+.choices .choice span{font-size:clamp(22px,7vw,34px)}
+@media(max-width:380px){.sample+.arrow+.choices{grid-template-columns:1fr;gap:8px}.sample+.arrow+.choices .choice span{font-size:42px}}
