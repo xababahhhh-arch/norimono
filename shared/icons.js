@@ -1,6 +1,6 @@
 /* Original supporting symbols and emoji-to-vector migration for legacy game views. */
 (function(root){
- const vehicleMap={'🚗':'car','🚙':'car','🏎':'car','🚌':'bus','🚐':'bus','🚒':'fire','🚑':'ambulance','🚓':'police','🚔':'police','🚚':'truck','🚛':'truck','🚜':'tractor','🚂':'locomotive','🚆':'train','🚃':'train','🚄':'shinkansen','🚅':'shinkansen','🚝':'train','🚲':'bicycle','🚕':'taxi','✈':'plane','🛩':'plane','🚁':'helicopter','🚢':'boat','⛴':'boat','🚀':'rocket','🏍':'motorbike'};
+ const vehicleMap={'🚗':'car','🚙':'car','🏎':'car','🚌':'bus','🚐':'bus','🚒':'fire','🚑':'ambulance','🚓':'police','🚔':'police','🚚':'truck','🚛':'truck','🚜':'tractor','🚂':'locomotive','🚆':'train','🚃':'train','🚄':'shinkansen','🚅':'shinkansen','🚝':'train','🚲':'bicycle','🚕':'taxi','✈':'plane','🛩':'plane','🚁':'helicopter','🚢':'boat','⛴':'boat','⛵':'boat','🚤':'boat','🚀':'rocket','🏍':'motorbike'};
  const symbols={
   '⭐':'<path d="m32 5 8 17 19 3-14 14 3 19-16-9-17 9 4-19L5 25l19-3Z" fill="#e9b24c"/>',
   '★':'<path d="m32 5 8 17 19 3-14 14 3 19-16-9-17 9 4-19L5 25l19-3Z" fill="#e9b24c"/>',
@@ -60,7 +60,7 @@
  symbols['🌈']='<path d="M5 54q0-77 54 0" fill="none" stroke="#d99980" stroke-width="7"/><path d="M12 54q0-58 40 0" fill="none" stroke="#e5c67d" stroke-width="7"/><path d="M19 54q0-38 26 0" fill="none" stroke="#90b398" stroke-width="7"/><path d="M26 54q0-17 12 0" fill="none" stroke="#82a7b5" stroke-width="7"/>';
  const keys=[...Object.keys(vehicleMap),...Object.keys(symbols)].sort((a,b)=>b.length-a.length);
  const pattern=new RegExp(keys.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'gu');
- function svg(key){key=key.replace(/[\ufe0e\ufe0f]/g,'');if(vehicleMap[key])return root.NoriVehicles.artwork(vehicleMap[key]).replace('<svg ','<svg class="nori-glyph nori-vehicle-glyph" ');return `<svg class="nori-glyph" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-nori-icon="${key}">${symbols[key]||symbols['⭐']}</svg>`;}
+ function svg(key){key=key.replace(/[\ufe0e\ufe0f]/g,'');if(vehicleMap[key])return root.NoriVehicles.artwork(vehicleMap[key]).replace('<svg ','<svg class="nori-glyph nori-vehicle-glyph" ');return `<svg class="nori-glyph" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-nori-icon="${key}">${symbols[key]||`<text x="32" y="44" text-anchor="middle" font-size="43">${key.replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}</text>`}</svg>`;}
  function apply(container){
   if(!container)return;
   const walker=document.createTreeWalker(container,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
