@@ -9,18 +9,18 @@ for(const width of [320,390,768])for(const id of ids){const page=await browser.n
 await page.addInitScript(()=>{window.speechSynthesis={cancel(){},speak(u){u.onend?.()},getVoices(){return[]}};window.SpeechSynthesisUtterance=class{constructor(t){this.text=t}}});
 const response=await page.goto('http://127.0.0.1:18765/games/play/daily-20261122.html?id='+id);assert.equal(response.status(),200);await page.getByRole('button',{name:'▶️ はじめる'}).click();
 for(let round=0;round<3;round++){await page.waitForFunction(n=>document.querySelector('#progress')?.textContent.startsWith((n+1)+' / 3'),round);
-for(let attempts=0;attempts<18;attempts++){const p=await page.locator('#progress').textContent();if(!p.startsWith((round+1)+' / 3'))break;const buttons=await page.locator('#choices button').allTextContents();assert.ok(buttons.length,'choices exist');
-let choice=buttons[0];if(id==='memory-airport-gates'){choice=buttons.includes('👀 おぼえた')?'👀 おぼえた':(await page.locator('#visual').textContent()).match(/✈️([ＡＢＣ])/)?.[1]||buttons[0]}
+let rememberedGate='';let nextBus=0;for(let attempts=0;attempts<24;attempts++){const p=await page.locator('#progress').textContent();if(!p.startsWith((round+1)+' / 3'))break;const buttons=await page.locator('#choices button').allTextContents();assert.ok(buttons.length,'choices exist');
+let choice=buttons[0];if(id==='memory-airport-gates'){choice=buttons.includes('👀 おぼえた')?(rememberedGate=(await page.locator('#visual').textContent()).match(/✈️([ＡＢＣ])/)?.[1]||'Ａ','👀 おぼえた'):rememberedGate}
 if(id==='sound-train-rhythm')choice='🔔 たたく';
-if(id==='direction-tugboat')choice=['➡️','⬆️','➡️'][round]===undefined?'➡️':buttons.find(x=>x==='➡️')||buttons[0];
-if(id==='order-bus-trip')choice=buttons.find(x=>x.includes(['のる','しめる','しゅっぱつ'][Math.min(attempts,2)]))||buttons[0];
+if(id==='direction-tugboat')choice=buttons[attempts%buttons.length];
+if(id==='order-bus-trip')choice=buttons.find(x=>x.includes(['のる','しめる','しゅっぱつ'][nextBus]))||buttons[0];
 if(id==='operation-snow-truck')choice='🚛 すすむ';
 if(id==='cause-balloon-burner')choice=['🔥 つよく','❄️ よわく','✋ そのまま'][round];
 if(id==='shape-bridge-fit')choice=['●','▲','■'][round];
 if(id==='color-tram-lamps')choice=['🔴','🟡','🟢'][round];
 if(id==='count-ferry-seats')choice=String((await page.locator('#visual').textContent()).split('🐶').length-1);
 if(id==='observation-construction')choice=['🔨','🪣','🧱'][round];
-await page.locator('#choices button').filter({hasText:choice}).first().click();await page.waitForTimeout(900)}
+const before=await page.locator('#visual').textContent();await page.locator('#choices button').filter({hasText:choice}).first().click();await page.waitForTimeout(900);if(id==='order-bus-trip'&&(await page.locator('#visual').textContent())!==before)nextBus=Math.min(2,nextBus+1)}
 assert.notEqual((await page.locator('#progress').textContent()).startsWith((round+1)+' / 3'),true,'stage advanced')}
 await page.getByRole('button',{name:'🔁 もういちど'}).waitFor({timeout:10000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2),false);assert.deepEqual(errors,[]);await page.getByRole('button',{name:'🔁 もういちど'}).click();await page.getByRole('button',{name:'▶️ はじめる'}).waitFor();console.log('PASS',width,id);
 }catch(e){failures.push(width+' '+id+': '+e.message);console.error('FAIL',width,id,e.message)}finally{await page.close()}}
