@@ -1,6 +1,6 @@
 'use strict';
 const {chromium}=require('playwright');const {spawn}=require('node:child_process');const http=require('node:http');const path=require('node:path');const assert=require('node:assert/strict');
-const ids=['count-ferry-seats','shape-bridge-fit','color-tram-lamps','memory-airport-gates','sound-train-rhythm','direction-tugboat','order-bus-trip','observation-construction','cause-balloon-burner','operation-snow-truck'];
+const ids=["count-parking-tickets","shape-rocket-parts","color-cargo-sort","memory-submarine-lights","sound-crossing-count","direction-airplane-runway","order-fire-rescue","observation-train-window","cause-waterwheel","operation-crane-load"];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function ready(){for(let i=0;i<100;i++){try{await new Promise((ok,no)=>http.get('http://127.0.0.1:18765/index.html',r=>{r.resume();r.statusCode===200?ok():no(Error('HTTP '+r.statusCode))}).on('error',no));return}catch{await sleep(100)}}throw Error('HTTP server not ready')}
 async function main(){const server=spawn('python3',['-m','http.server','18765','--bind','127.0.0.1'],{cwd:path.resolve(__dirname,'..'),stdio:'ignore'});let browser;const failures=[];
